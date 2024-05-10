@@ -81,7 +81,7 @@ export default defineComponent({
 .layout-wrapper.layout-nav-type-vertical {
   // TODO(v2): Check why we need height in vertical nav & min-height in horizontal nav
   block-size: 100%;
-  
+
   .layout-content-wrapper {
     display: flex;
     flex-direction: column;
@@ -89,6 +89,7 @@ export default defineComponent({
     min-block-size: 100dvh;
     transition: padding-inline-start 0.2s ease-in-out;
     will-change: padding-inline-start;
+    background-color: #f8fafc!important;
 
     @media screen and (min-width: 1280px) {
       padding-inline-start: variables.$layout-vertical-nav-width;
@@ -97,6 +98,9 @@ export default defineComponent({
 
   .layout-navbar {
     z-index: variables.$layout-vertical-nav-layout-navbar-z-index;
+    position: sticky;
+    top: 0;
+    
 
     .navbar-content-container {
       block-size: variables.$layout-vertical-nav-navbar-height;
@@ -134,7 +138,7 @@ export default defineComponent({
   .layout-overlay {
     position: fixed;
     z-index: variables.$layout-overlay-z-index;
-    background-color: rgba(39, 39, 39, 60%);
+    background-color: rgba(194, 63, 63, 0.6) !important;
     cursor: pointer;
     inset: 0;
     opacity: 0;

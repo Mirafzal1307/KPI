@@ -27,6 +27,7 @@ const isCardDetailsVisible = ref(false)
       cols="12"
       sm="6"
       md="4"
+      class="pa-6"
     >
       <VCard >
         <VImg

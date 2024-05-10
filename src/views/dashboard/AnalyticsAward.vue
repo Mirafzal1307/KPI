@@ -3,7 +3,7 @@ import trophy from '@images/misc/trophy.png'
 </script>
 
 <template>
-  <VCard class="position-relative border">
+  <VCard class="position-relative border ">
     <VCardText>
       <div class="mb-2">
         <h5 class="text-h5">

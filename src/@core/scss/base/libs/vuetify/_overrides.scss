@@ -160,7 +160,7 @@ body,
   This is because card title gets padding of 20px and list item have padding of 16px. Moreover, list container have padding-bottom as well.
 */
 .card-list {
-  --v-card-list-gap: 20px;
+  --v-card-list-gap: 30px;
 
   &.v-list {
     padding-block: 0;

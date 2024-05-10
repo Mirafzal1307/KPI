@@ -12,46 +12,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-  :item="{
-      title: 'Calendar',
-      icon: 'ri-calendar-line',
-      href: '/',
+    :item="{
+      title: 'Dashboards',
+      icon: 'ri-lock-2-line',
+
     }"
-    />
-  <!-- 👉 Front Pages -->
+  />
 
-    <VerticalNavLink
-      :item="{
-        title: 'Landing',
-        href: '/',
-        icon: 'ri-file-copy-line',
-
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: 'Pricing',
-        href: '#',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: 'Payment',
-        href: '#',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: 'Checkout',
-        href: '#',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: 'Help Center',
-        href: '#',
-      }"
-    />
 
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle
@@ -119,94 +86,5 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
 
-  <!-- 👉 User Interface -->
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'User Interface',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Typography',
-      icon: 'ri-text',
-      to: '/typography',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Icons',
-      icon: 'ri-remixicon-line',
-      to: '/icons',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Cards',
-      icon: 'ri-bar-chart-box-line',
-      to: '/cards',
-    }"
-  />
 
-  <!-- 👉 Forms & Tables -->
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'Forms & Tables',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Form Layouts',
-      icon: 'ri-layout-4-line',
-      to: '/form-layouts',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Form Validation',
-      icon: 'ri-checkbox-multiple-line',
-      href: '/',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Form Wizard',
-      icon: 'ri-git-commit-line',
-      href: '/',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Tables',
-      icon: 'ri-table-alt-line',
-      to: '/tables',
-    }"
-  />
-
-  <!-- 👉 Others -->
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'Others',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Access Control',
-      icon: 'ri-shield-line',
-      href: '/',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Documentation',
-      icon: 'ri-article-line',
-      href: '/',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Raise Support',
-      href: '/',
-      icon: 'ri-lifebuoy-line',
-    }"
-  />
 </template>

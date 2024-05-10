@@ -1,12 +1,12 @@
-export const staticPrimaryColor = '#8C57FF'
-export const staticPrimaryDarkenColor = '#7E4EE6'
+export const staticPrimaryColor = '#3cab3d'
+export const staticPrimaryDarkenColor = '#37bd38'
 export const themes = {
   light: {
     dark: false,
     colors: {
       'primary': staticPrimaryColor,
       'on-primary': '#fff',
-      'primary-darken-1': '#7E4EE6',
+      'primary-darken-1': '#37bd38',
       'secondary': '#8A8D93',
       'secondary-darken-1': '#7C7F84',
       'on-secondary': '#fff',
@@ -55,8 +55,8 @@ export const themes = {
       'pressed-opacity': 0.14,
       'dragged-opacity': 0.1,
       'disabled-opacity': 0.4,
-      'border-color': '#E0E0E0',
-      'border-opacity': 0.5,
+      'border-color': '#e2e8f0',
+      'border-opacity': 0.95,
       'table-header-color': '#F6F7FB',
       'high-emphasis-opacity': 0.9,
       'medium-emphasis-opacity': 0.7,
@@ -75,7 +75,7 @@ export const themes = {
     colors: {
       'primary': staticPrimaryColor,
       'on-primary': '#fff',
-      'primary-darken-1': '#7E4EE6',
+      'primary-darken-1': '#37bd38',
       'secondary': '#8A8D93',
       'secondary-darken-1': '#7C7F84',
       'on-secondary': '#fff',

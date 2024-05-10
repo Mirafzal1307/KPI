@@ -11,7 +11,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
   <VerticalNavLayout>
     <!-- 👉 navbar -->
     <template #navbar="{ toggleVerticalOverlayNavActive }">
-      <div class="d-flex h-100 align-center vertical-nav-items-shadow">
+      <div class="d-flex h-100 align-center vertical-nav-items-shadow nav">
         <!-- 👉 Vertical nav toggle in overlay mode -->
         <IconBtn
           class="ms-n3 d-lg-none"
@@ -42,8 +42,6 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
           <VIcon icon="ri-notification-line" />
         </IconBtn>
 
-        <NavbarThemeSwitcher class="me-2" />
-
         <UserProfile />
       </div>
     </template>
@@ -70,7 +68,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
     </template>
 
     <template #vertical-nav-content>
-        <NavItems />
+      <NavItems />
     </template>
 
     <!-- 👉 Pages -->
@@ -106,5 +104,14 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
   }
 }
 
-
+.nav {
+  background-color: white !important ;
+  /* stylelint-disable-next-line order/properties-order */
+  border: solid 1px #e2e8f0;
+  border-radius: 12px;
+  padding: 0px 15px 0px 0px; 
+  position: sticky !important;
+  top: 0 !important;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
 </style>

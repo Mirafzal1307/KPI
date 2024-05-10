@@ -5,7 +5,7 @@ import CardSolid from '@/views/pages/cards/card-basic/CardSolid.vue'
 </script>
 
 <template>
-  <div class="border" >
+  <div class="border " >
     <p class="text-2xl mb-6">
       Basic Cards
     </p>

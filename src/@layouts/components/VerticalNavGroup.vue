@@ -55,6 +55,7 @@ const isOpen = ref(false)
       display: grid;
       grid-template-rows: 0fr;
       transition: grid-template-rows 0.3s ease-in-out;
+       
 
       .nav-group-children {
         overflow: hidden;

@@ -17,8 +17,9 @@
 
 // This is same as `%vertical-nav-item` except section title is excluded
 %vertical-nav-item-interactive {
-  border-radius: 0.5rem;
+  border-radius: 0.2rem;
   block-size: 2.75rem;
+
 
   /*
     ℹ️ We will use `margin-block-end` instead of `margin-block` to give more space for shadow to appear.

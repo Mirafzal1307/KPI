@@ -1,7 +1,7 @@
 <script setup>
 import { useTheme } from 'vuetify'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import logo from '@images/logo.svg?raw'
+import logo from '@/assets/images/MKBANK(M).png'
 import authV1MaskDark from '@images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@images/pages/auth-v1-mask-light.png'
 import authV1Tree2 from '@images/pages/auth-v1-tree-2.png'
@@ -34,12 +34,12 @@ const isPasswordVisible = ref(false)
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="d-flex">
-            <div v-html="logo" />
+          <img :src="logo" width="30px" alt="logo image">
           </div>
         </template>
 
         <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-          Materio
+          MKBANK
         </VCardTitle>
       </VCardItem>
 
