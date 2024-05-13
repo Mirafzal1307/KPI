@@ -1,38 +1,39 @@
-import { login } from '@/services/user.service'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref({})
   const loading = ref(false)
   const router = useRouter()
 
-  const userLogin = async userCredentials => {
-   
+  const userLogin = async (userCredentials) => {
+    console.log(userCredentials)
+
     try {
       loading.value = true
 
       // const { data } = await login(userCredentials)
 
       // user.value = data
-     
 
-      if (userCredentials.email === 'mkb@gmail.uz' && userCredentials.password === '12345') {
-  
+      if (userCredentials?.login == 'admin' && userCredentials?.password == '12345') {
         localStorage.setItem(
           'token',
           'sdkjgflitjghlgkhglkjhgkjerhgpiutyjfneirhppierhfpierutweiourtoweqifdsfokjdklmfowefiportiperfgngeorigi',
         )
+        toast.success('Siz ilovaga kirdingiz !', {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+        })
+        await router.replace({name:'dashboard'})
+      } else {
+        toast.error('Login yoki parolda xatolik bor  !', {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+        })
       }
-
-      // toast.success('Muaffaqiyatli kirildi', {
-      //   autoClose: 4000,
-
-      //   position: toast.POSITION.TOP_RIGHT,
-      // } as ToastOptions)
-
-      await router.replace('/dashboard')
 
       return data
     } catch (error) {

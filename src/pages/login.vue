@@ -23,9 +23,9 @@
             <!-- email -->
             <VCol cols="12">
               <VTextField
-                v-model="form.email"
+                v-model="form.login"
                 label="Email"
-                type="email"
+                type="text"
               />
             </VCol>
 
@@ -69,13 +69,13 @@ const isPasswordVisible = ref(false)
 
 
 const form = ref({
-  email: '',
+  login: '',
   password: '',
 })
 
 const submit = async () => {
   const usercredentials = {
-    email: form.value.email,
+    login: form.value.login,
     password: form.value.password,
   }
   console.log(usercredentials)

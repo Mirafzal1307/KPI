@@ -10,6 +10,7 @@ import AnalyticsUserTable from '@/views/dashboard/AnalyticsUserTable.vue'
 import AnalyticsWeeklyOverview from '@/views/dashboard/AnalyticsWeeklyOverview.vue'
 import CardStatisticsVertical from '@core/components/cards/CardStatisticsVertical.vue'
 
+
 const totalProfit = {
   title: 'Total Profit',
   color: 'secondary',
@@ -30,11 +31,12 @@ const newProject = {
 </script>
 
 <template>
-  <VRow class="match-height" >
+  <VRow class="match-height">
     <VCol
       cols="12"
       md="4"
     >
+
       <AnalyticsAward />
     </VCol>
 
