@@ -2,15 +2,12 @@
   <!-- eslint-disable vue/no-v-html -->
 
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-4 pt-7 w-25 "
-      
-    >
+    <VCard class="auth-card pa-4 pt-7 w-25">
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="d-flex">
             <img
-              :src="logo"
+              src="/MKBANK(M).png"
               width="30px"
               alt="mkb logo img"
             />
@@ -20,7 +17,7 @@
         <VCardTitle class="font-weight-semibold text-2xl text-uppercase"> MKBANK </VCardTitle>
       </VCardItem>
 
-      <VCardText class="w-100" >
+      <VCardText class="w-100">
         <VForm @submit.prevent="() => {}">
           <VRow>
             <!-- email -->
@@ -45,7 +42,7 @@
 
               <!-- login button -->
               <VBtn
-              class="mt-5"
+                class="mt-5"
                 block
                 type="submit"
                 to="/"
@@ -62,13 +59,14 @@
 </template>
 
 <script setup>
-import logo from '@/assets/images/MKBANK(M).png'
 import { useUserStore } from '@/store/user'
 import { storeToRefs } from 'pinia'
 
 const { userLogin } = useUserStore()
 const userStore = useUserStore()
 const { loading } = storeToRefs(userStore)
+const isPasswordVisible = ref(false)
+
 
 const form = ref({
   email: '',
@@ -76,22 +74,20 @@ const form = ref({
 })
 
 const submit = async () => {
-  console.log('form submitted')
   const usercredentials = {
-    email: form.email,
-    password: form.password,
+    email: form.value.email,
+    password: form.value.password,
   }
-
-  // try {
-  //   await userLogin(usercredentials)
-  // } catch (error) {
-  //   return error
-  // }
+  console.log(usercredentials)
+  try {
+    await userLogin(usercredentials)
+  } catch (error) {
+    return error
+  }
 }
 
 console.log(form)
 
-const isPasswordVisible = ref(false)
 </script>
 
 <style lang="scss">

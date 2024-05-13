@@ -63,21 +63,6 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       to: '/account-settings',
     }"
   />
-
-  <VerticalNavLink
-    :item="{
-      title: 'Login',
-      icon: 'ri-login-box-line',
-      to: '/login',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Register',
-      icon: 'ri-user-add-line',
-      to: '/register',
-    }"
-  />
   <VerticalNavLink
     :item="{
       title: 'Error',

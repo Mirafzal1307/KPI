@@ -8,22 +8,31 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref(false)
   const router = useRouter()
 
-  const userLogin = async (userCredentials) => {
+  const userLogin = async userCredentials => {
+   
     try {
       loading.value = true
 
-      const { data } = await login(userCredentials)
+      // const { data } = await login(userCredentials)
 
-      user.value = data
+      // user.value = data
+     
 
-      localStorage.setItem('token', user.value.token)
+      if (userCredentials.email === 'mkb@gmail.uz' && userCredentials.password === '12345') {
+  
+        localStorage.setItem(
+          'token',
+          'sdkjgflitjghlgkhglkjhgkjerhgpiutyjfneirhppierhfpierutweiourtoweqifdsfokjdklmfowefiportiperfgngeorigi',
+        )
+      }
+
       // toast.success('Muaffaqiyatli kirildi', {
       //   autoClose: 4000,
 
       //   position: toast.POSITION.TOP_RIGHT,
       // } as ToastOptions)
 
-      await router.replace({ name: 'employee-list' })
+      await router.replace('/dashboard')
 
       return data
     } catch (error) {

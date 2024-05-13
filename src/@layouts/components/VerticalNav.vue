@@ -1,5 +1,4 @@
 <script setup>
-import logo from '@images/MKBANK(M).png'
 import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
 import { useDisplay } from 'vuetify'
 
@@ -64,7 +63,7 @@ const handleNavScroll = evt => {
           class="app-logo app-title-wrapper"
         >
           <img
-            :src="logo"
+            src="/MKBANK(M).png"
             alt="logo"
             width="30px"
           />
@@ -119,6 +118,8 @@ const handleNavScroll = evt => {
   z-index: variables.$layout-vertical-nav-z-index;
   display: flex;
   flex-direction: column;
+  border: solid #e2e8f0 1px;
+  border-radius: 12px;
   background-color: white !important;
   block-size: 100%;
   inline-size: variables.$layout-vertical-nav-width;
@@ -126,9 +127,6 @@ const handleNavScroll = evt => {
   inset-inline-start: 0;
   transition: inline-size 0.25s ease-in-out, box-shadow 0.25s ease-in-out;
   will-change: transform, inline-size;
-
-  border: solid #e2e8f0 1px;
-  border-radius: 12px;
 
   .nav-header {
     display: flex;

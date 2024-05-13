@@ -1,10 +1,8 @@
 <script setup>
-import NavItems from '@/layouts/components/NavItems.vue'
-import logo from '@images/MKBANK(M).png'
-import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 import Footer from '@/layouts/components/Footer.vue'
-import NavbarThemeSwitcher from '@/layouts/components/NavbarThemeSwitcher.vue'
+import NavItems from '@/layouts/components/NavItems.vue'
 import UserProfile from '@/layouts/components/UserProfile.vue'
+import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 </script>
 
 <template>
@@ -52,7 +50,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
         class="app-logo app-title-wrapper"
       >
         <img
-          :src="logo"
+          src="/MKBANK(M).png"
           alt="logo"
           width="30px"
         />
@@ -109,9 +107,10 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
   /* stylelint-disable-next-line order/properties-order */
   border: solid 1px #e2e8f0;
   border-radius: 12px;
-  padding: 0px 15px 0px 0px; 
+  padding-block: 0;
+  padding-inline: 0 15px;
   position: sticky !important;
-  top: 0 !important;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  inset-block-start: 0 !important;
+  box-shadow: rgba(149, 157, 165, 20%) 0 8px 24px;
 }
 </style>

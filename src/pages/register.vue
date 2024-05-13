@@ -1,11 +1,10 @@
 <script setup>
-import { useTheme } from 'vuetify'
 import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import logo from '@/assets/images/MKBANK(M).png'
 import authV1MaskDark from '@images/pages/auth-v1-mask-dark.png'
 import authV1MaskLight from '@images/pages/auth-v1-mask-light.png'
 import authV1Tree2 from '@images/pages/auth-v1-tree-2.png'
 import authV1Tree from '@images/pages/auth-v1-tree.png'
+import { useTheme } from 'vuetify'
 
 const form = ref({
   username: '',
@@ -34,22 +33,20 @@ const isPasswordVisible = ref(false)
       <VCardItem class="justify-center">
         <template #prepend>
           <div class="d-flex">
-          <img :src="logo" width="30px" alt="logo image">
+            <img
+              src="/MKBANK(M).png"
+              width="30px"
+              alt="logo image"
+            />
           </div>
         </template>
 
-        <VCardTitle class="font-weight-semibold text-2xl text-uppercase">
-          MKBANK
-        </VCardTitle>
+        <VCardTitle class="font-weight-semibold text-2xl text-uppercase"> MKBANK </VCardTitle>
       </VCardItem>
 
       <VCardText class="pt-2">
-        <h5 class="text-h5 font-weight-semibold mb-1">
-          Adventure starts here 🚀
-        </h5>
-        <p class="mb-0">
-          Make your app management easy and fun!
-        </p>
+        <h5 class="text-h5 font-weight-semibold mb-1">Adventure starts here 🚀</h5>
+        <p class="mb-0">Make your app management easy and fun!</p>
       </VCardText>
 
       <VCardText>
@@ -91,13 +88,14 @@ const isPasswordVisible = ref(false)
                 />
                 <VLabel
                   for="privacy-policy"
-                  style="opacity: 1;"
+                  style="opacity: 1"
                 >
                   <span class="me-1">I agree to</span>
                   <a
                     href="javascript:void(0)"
                     class="text-primary"
-                  >privacy policy & terms</a>
+                    >privacy policy & terms</a
+                  >
                 </VLabel>
               </div>
 
@@ -166,5 +164,5 @@ const isPasswordVisible = ref(false)
 </template>
 
 <style lang="scss">
-@use "@core/scss/pages/page-auth.scss";
+@use '@core/scss/pages/page-auth.scss';
 </style>

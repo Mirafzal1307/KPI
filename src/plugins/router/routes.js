@@ -2,10 +2,12 @@ export const routes = [
   { path: '/', redirect: '/dashboard' },
   {
     path: '/',
+    name:'home',
     component: () => import('@/layouts/default.vue'),
     children: [
       {
         path: 'dashboard',
+        name: 'dashboard',
         component: () => import('@/pages/dashboard.vue'),
       },
       {
