@@ -29,72 +29,16 @@ const earnings = [
 </script>
 
 <template>
-  <VCard class="border" >
-    <VCardItem>
-      <VCardTitle>Total Earning</VCardTitle>
-
-      <template #append>
-        <div class="me-n3">
-          <MoreBtn />
-        </div>
-      </template>
-    </VCardItem>
-
-    <VCardText>
-      <div class="d-flex align-center">
-        <h3 class="text-h3">
-          $24,895
-        </h3>
-
-        <VIcon
-          size="24"
-          icon="ri-arrow-up-s-line"
-          color="success"
-        />
-        <div class="text-success">
-          10%
-        </div>
-      </div>
-      <div class="text-body-1 mb-12">
-        Compared to $84,325 last year
-      </div>
-
-      <VList class="card-list">
-        <VListItem
-          v-for="earning in earnings"
-          :key="earning.title"
-        >
-          <template #prepend>
-            <VAvatar
-              rounded
-              :image="earning.avatar"
-              variant="tonal"
-            />
-          </template>
-
-          <VListItemTitle class="font-weight-medium">
-            {{ earning.title }}
-          </VListItemTitle>
-          <VListItemSubtitle class="text-body-1">
-            {{ earning.subtitle }}
-          </VListItemSubtitle>
-
-          <template #append>
-            <div>
-              <h6 class="text-h6 mb-2">
-                {{ earning.amount }}
-              </h6>
-              <VProgressLinear
-                :color="earning.progress"
-                model-value="80"
-                rounded-bar
-                rounded
-              />
-            </div>
-          </template>
-        </VListItem>
-      </VList>
-    </VCardText>
+  <VCard class="border">
+    <div class="ma-12 d-flex justify-center align-center flex-column" >
+      <img 
+      class="w-100 mb-10 text-center"
+        src="/src/assets//images/logos/american-bank.png"
+        alt=""
+      />
+      <VBtn>Shaxsiy monitoring / ma'lumot</VBtn>
+    </div>
+  
   </VCard>
 </template>
 
