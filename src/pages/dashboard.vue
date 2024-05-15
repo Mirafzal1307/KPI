@@ -3,7 +3,7 @@ import RegionFilter from '@/views/dashboard/RegionFilter.vue'
 import DateCard from '@/views/dashboard/DateCard.vue'
 import TeamTable from '@/views/dashboard/TeamTable.vue'
 import UserInfoTable from '@/views/dashboard/UserInfoTable.vue'
-import AnalyticsTotalEarning from '@/views/dashboard/AnalyticsTotalEarning.vue'
+import UserProfileCard from '@/views/dashboard/UserProfileCard.vue'
 
 </script>
 
@@ -11,7 +11,7 @@ import AnalyticsTotalEarning from '@/views/dashboard/AnalyticsTotalEarning.vue'
   <VRow class="match-height">
     <VCol
       cols="12"
-      md="8"
+      md="9"
     >
 
       <RegionFilter />
@@ -19,19 +19,19 @@ import AnalyticsTotalEarning from '@/views/dashboard/AnalyticsTotalEarning.vue'
 
     <VCol
       cols="12"
-      md="4"
+      md="3"
     >
       <DateCard />
     </VCol>
 
-    <VCol cols="12" md="8" >
+    <VCol cols="12" md="9" >
       <UserInfoTable />
     </VCol>
     <VCol
       cols="12"
-      md="4"
+      md="3"
     >
-      <AnalyticsTotalEarning />
+      <UserProfileCard />
     </VCol>
     <VCol cols="12">
       <TeamTable />
