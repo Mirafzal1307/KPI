@@ -2,9 +2,12 @@
   <DefaultLayoutWithVerticalNav>
     <v-col cols="12 mx-auto mt-4">
       <v-card>
-        <template v-slot:title>
-          <span class="font-weight-black font-bold text-h2">Monitoring</span>
-        </template>
+        <v-col
+          cols="12"
+          class="text-center text-h2"
+        >
+          <span class="font-weight-black">Monitoring</span>
+        </v-col>
         <v-row class="flex justify-center mb-4">
           <v-col cols="2">
             <v-autocomplete
