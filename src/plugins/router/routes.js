@@ -2,7 +2,7 @@ export const routes = [
   { path: '/', redirect: '/dashboard' },
   {
     path: '/',
-    name:'home',
+    name: 'home',
     component: () => import('@/layouts/default.vue'),
     children: [
       {
@@ -24,11 +24,15 @@ export const routes = [
         path: 'login',
         component: () => import('@/pages/login.vue'),
       },
-   
+
       {
         path: '/:pathMatch(.*)*',
         component: () => import('@/pages/[...error].vue'),
       },
     ],
+  },
+  {
+    path: '/monitoring-statistics',
+    component: () => import('@/views/statistics/KpiMonitoring.vue'),
   },
 ]
