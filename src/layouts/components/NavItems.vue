@@ -15,10 +15,8 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     :item="{
       title: 'Dashboards',
       icon: 'ri-lock-2-line',
-
     }"
   />
-
 
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle
@@ -39,6 +37,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       title: 'Email',
       icon: 'ri-mail-line',
       href: '/',
+    }"
+  />
+  <VerticalNavLink
+    :item="{
+      title: 'Monitoring Statisatikasi',
+      icon: 'ri-mail-line',
+      href: '/monitoring-statistics',
     }"
   />
   <VerticalNavLink
@@ -70,6 +75,4 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
       to: '/no-existence',
     }"
   />
-
-
 </template>
