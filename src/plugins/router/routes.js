@@ -15,10 +15,10 @@ export const routes = [
         component: () => import('@/pages/account-settings.vue'),
       },
       {
-        path: 'user-profile' ,
+        path: 'user-profile',
         name: 'user-profile',
-        component: ()=> import('@/pages/user-profile.vue')
-      }
+        component: () => import('@/pages/user-profile.vue'),
+      },
     ],
   },
   {
