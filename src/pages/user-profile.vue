@@ -4,7 +4,7 @@
       cols="12"
       md="8"
     >
-      <Indicator />
+      <Indicator class="mb-6" />
       <Chart />
 
     </VCol>
