@@ -12,9 +12,10 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-    :item="{
+  :item="{
       title: 'Dashboards',
-      icon: 'ri-lock-2-line',
+      icon: 'ri-mail-line',
+      to: '/dashboard',
     }"
   />
 
@@ -28,7 +29,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     :item="{
       title: 'Permissions',
       icon: 'ri-lock-2-line',
-      href: '/',
+      to: '/',
       target: '_blank',
     }"
   />
@@ -36,28 +37,28 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     :item="{
       title: 'Email',
       icon: 'ri-mail-line',
-      href: '/',
+      to: '/',
     }"
   />
   <VerticalNavLink
     :item="{
       title: 'Monitoring Statisatikasi',
       icon: 'ri-mail-line',
-      href: '/monitoring-statistics',
+      to: '/monitoring-statistics',
     }"
   />
   <VerticalNavLink
     :item="{
       title: 'Chat',
       icon: 'ri-wechat-line',
-      href: '/',
+      to: '/',
     }"
   />
   <VerticalNavLink
     :item="{
       title: 'Calendar',
       icon: 'ri-calendar-line',
-      href: '/',
+      to: '/',
     }"
   />
 
