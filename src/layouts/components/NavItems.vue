@@ -12,10 +12,25 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
     }"
   />
   <VerticalNavLink
-  :item="{
-      title: 'Dashboards',
+    :item="{
+      title: 'Asosiy',
       icon: 'ri-mail-line',
       to: '/dashboard',
+    }"
+  />
+
+  <!-- thumb -> KPI  -->
+  <VerticalNavSectionTitle
+    :item="{
+      heading: 'KPI',
+    }"
+  />
+
+  <VerticalNavLink
+    :item="{
+      title: 'KPI ko\'rsatkichlari',
+      icon: 'ri-mail-line',
+      to: '/kpi-indicator',
     }"
   />
 
