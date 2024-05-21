@@ -9,15 +9,20 @@
       <v-tab>KO'RSATKICH BIRIKTIRISH</v-tab>
     </v-tabs>
     <v-window v-model="tab">
-      <v-window-item><div class="pa-10">one</div> </v-window-item>
-      <v-window-item><div class="pa-10">two</div></v-window-item>
-      <v-window-item><div class="pa-10">three</div></v-window-item>
+      <v-window-item
+        ><div class="pa-10"><IndicatorCategory /></div>
+      </v-window-item>
+      <v-window-item><div class="pa-10"><IndicatorList/></div></v-window-item>
+      <v-window-item><div class="pa-10"><AddIndicator/></div></v-window-item>
     </v-window>
   </v-card>
 </template>
 
 <script setup>
+import AddIndicator from '@/views/kpi/AddIndicator.vue';
+import IndicatorCategory from '@/views/kpi/IndicatorCategory.vue'
+import IndicatorList from '@/views/kpi/IndicatorList.vue';
 import { ref } from 'vue'
 
-const tab = ref(null)
+const tab = ref(null);
 </script>
