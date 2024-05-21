@@ -1,8 +1,8 @@
 <script setup>
-import Footer from '@/layouts/components/Footer.vue'
-import NavItems from '@/layouts/components/NavItems.vue'
-import UserProfile from '@/layouts/components/UserProfile.vue'
-import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
+import Footer from '@/layouts/components/Footer.vue';
+import NavItems from '@/layouts/components/NavItems.vue';
+import UserProfile from '@/layouts/components/UserProfile.vue';
+import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue';
 </script>
 
 <template>
@@ -11,18 +11,12 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center vertical-nav-items-shadow nav">
         <!-- 👉 Vertical nav toggle in overlay mode -->
-        <IconBtn
-          class="ms-n3 d-lg-none"
-          @click="toggleVerticalOverlayNavActive(true)"
-        >
+        <IconBtn class="ms-n3 d-lg-none" @click="toggleVerticalOverlayNavActive(true)">
           <VIcon icon="ri-menu-line" />
         </IconBtn>
 
         <!-- 👉 Search -->
-        <div
-          class="d-flex align-center cursor-pointer"
-          style="user-select: none"
-        >
+        <div class="d-flex align-center cursor-pointer" style="user-select: none">
           <!-- 👉 Search Trigger button -->
           <IconBtn>
             <VIcon icon="ri-search-line" />
@@ -45,22 +39,12 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
     </template>
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
-      <RouterLink
-        to="/"
-        class="app-logo app-title-wrapper"
-      >
-        <img
-          src="/MKBANK(M).png"
-          alt="logo"
-          width="30px"
-        />
+      <RouterLink to="/" class="app-logo app-title-wrapper">
+        <img src="/MKBANK(M).png" alt="logo" width="30px" />
         <h1 class="font-weight-medium leading-normal text-xl text-uppercase">MKBANK</h1>
       </RouterLink>
 
-      <IconBtn
-        class="d-block d-lg-none"
-        @click="toggleIsOverlayNavActive(false)"
-      >
+      <IconBtn class="d-block d-lg-none" @click="toggleIsOverlayNavActive(false)">
         <VIcon icon="ri-close-line" />
       </IconBtn>
     </template>
@@ -103,7 +87,7 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 }
 
 .nav {
-  background-color: white !important ;
+  background-color: white !important;
   /* stylelint-disable-next-line order/properties-order */
   border: solid 1px #e2e8f0;
   border-radius: 12px;
