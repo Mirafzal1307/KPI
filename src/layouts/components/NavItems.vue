@@ -15,6 +15,21 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/dashboard',
   }" />
 
+  <!-- thumb -> KPI  -->
+  <VerticalNavSectionTitle
+    :item="{
+      heading: 'KPI',
+    }"
+  />
+
+  <VerticalNavLink
+    :item="{
+      title: 'KPI ko\'rsatkichlari',
+      icon: 'ri-mail-line',
+      to: '/kpi-indicator',
+    }"
+  />
+
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle :item="{
     heading: 'Apps & Pages',

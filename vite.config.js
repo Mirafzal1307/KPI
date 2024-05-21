@@ -18,6 +18,7 @@ export default defineConfig({
       styles: {
         configFile: 'src/assets/styles/variables/_vuetify.scss',
       },
+      autoImport: true,
     }),
     Components({
       dirs: ['src/@core/components', 'src/components'],
