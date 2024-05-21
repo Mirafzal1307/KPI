@@ -40,4 +40,14 @@ export const routes = [
     path: '/monitoring-statistics',
     component: () => import('@/views/statistics/KpiMonitoring.vue'),
   },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: 'info-graphics',
+        component: () => import('@/views/statistics/infoGraphics/MainGraph.vue'),
+      },
+    ],
+  },
 ]
