@@ -91,13 +91,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 
   <VerticalNavLink :item="{
     title: 'Monitoring Statisatikasi',
-    icon: 'ri-datamoney-dollar-box-line',
+    icon: 'ri-line-chart-line',
     to: '/monitoring-statistics',
   }" />
 
   <VerticalNavLink :item="{
     title: 'Infographics',
-    icon: 'ri-mail-line',
+    icon: 'ri-bar-chart-grouped-line',
     to: '/info-graphics',
   }" />
 
