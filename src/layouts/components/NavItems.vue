@@ -14,8 +14,59 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     icon: 'ri-dashboard-line',
     to: '/dashboard',
   }" />
+  <!-- 👉 Struktura  -->
+  <VerticalNavSectionTitle :item="{
+    heading: 'Struktura',
+  }" />
 
-  <!-- thumb -> KPI  -->
+  <VerticalNavLink :item="{
+    title: 'Filial',
+    icon: 'ri-bar-chart-2-line',
+    to: '/branch',
+  }" />
+
+  <VerticalNavLink :item="{
+    title: 'Blok',
+    icon: 'ri-bar-chart-2-line',
+    to: '/block',
+  }" />
+
+  <VerticalNavLink :item="{
+    title: 'Departament',
+    icon: 'ri-bar-chart-2-line',
+    to: '/department',
+  }" />
+
+  <VerticalNavLink :item="{
+    title: 'Boshqarma',
+    icon: 'ri-bar-chart-2-line',
+    to: '/management',
+  }" />
+
+  <VerticalNavLink :item="{
+    title: 'Bo\'lim',
+    icon: 'ri-bar-chart-2-line',
+    to: '/section',
+  }" />
+
+  <!-- 👉  Employees  -->
+  <VerticalNavSectionTitle :item="{
+    heading: 'Xodimlar',
+  }" />
+
+<VerticalNavLink :item="{
+    title: 'Xodimlar ro\'yxati',
+    icon: 'ri-bar-chart-2-line',
+    to: '/employee-list',
+  }" />
+
+<VerticalNavLink :item="{
+    title: 'Lavozimlar',
+    icon: 'ri-bar-chart-2-line',
+    to: '/positions',
+  }" />
+
+  <!-- 👉  KPI  -->
   <VerticalNavSectionTitle :item="{
     heading: 'KPI',
   }" />
@@ -26,7 +77,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/kpi-indicator',
   }" />
 
-<VerticalNavLink :item="{
+  <VerticalNavLink :item="{
     title: 'KPI hisob-kitobi',
     icon: 'ri-file-copy-2-line',
     to: '/kpi-indicator-details',
