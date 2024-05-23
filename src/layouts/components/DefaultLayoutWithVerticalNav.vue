@@ -39,10 +39,12 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue';
     </template>
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
-      <RouterLink to="/" class="app-logo app-title-wrapper">
-        <img src="/MKBANK(M).png" alt="logo" width="30px" />
-        <h1 class="font-weight-medium leading-normal text-xl text-uppercase">MKBANK</h1>
-      </RouterLink>
+      <v-col cols="12">
+        <RouterLink to="/" class="app-logo app-title-wrapper ">
+          <img src="../../assets/images/1MKBANK.png" alt="logo" width="240px" />
+        </RouterLink>
+      </v-col>
+
 
       <IconBtn class="d-block d-lg-none" @click="toggleIsOverlayNavActive(false)">
         <VIcon icon="ri-close-line" />
