@@ -1,3 +1,4 @@
+/* stylelint-disable liberty/use-logical-spec */
 @use "@core/scss/base/placeholders" as *;
 @use "@core/scss/template/placeholders" as *;
 @use "@layouts/styles/mixins" as layoutsMixins;
@@ -65,7 +66,7 @@
           rgba(#{variables.$vertical-nav-background-color-rgb}, 20%) 80%,
           transparent
         );
-      block-size: 55px;
+      block-size: 50px;
       inline-size: 100%;
       inset-block-start: calc(#{variables.$vertical-nav-header-height} - 2px);
       opacity: 0;
@@ -81,6 +82,7 @@
     &.scrolled {
       .vertical-nav-items-shadow {
         opacity: 1;
+        top: 100px;
       }
     }
 
