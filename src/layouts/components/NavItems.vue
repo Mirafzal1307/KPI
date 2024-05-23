@@ -11,59 +11,43 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
   }" />
   <VerticalNavLink :item="{
     title: 'Dashboards',
-    icon: 'ri-mail-line',
+    icon: 'ri-dashboard-line',
     to: '/dashboard',
   }" />
 
   <!-- thumb -> KPI  -->
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'KPI',
-    }"
-  />
+  <VerticalNavSectionTitle :item="{
+    heading: 'KPI',
+  }" />
 
-  <VerticalNavLink
-    :item="{
-      title: 'KPI ko\'rsatkichlari',
-      icon: 'ri-mail-line',
-      to: '/kpi-indicator',
-    }"
-  />
+  <VerticalNavLink :item="{
+    title: 'KPI ko\'rsatkichlari',
+    icon: 'ri-bar-chart-2-line',
+    to: '/kpi-indicator',
+  }" />
+
+<VerticalNavLink :item="{
+    title: 'KPI hisob-kitobi',
+    icon: 'ri-file-copy-2-line',
+    to: '/kpi-indicator-details',
+  }" />
+
 
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle :item="{
     heading: 'Apps & Pages',
   }" />
-  <VerticalNavLink :item="{
-    title: 'Permissions',
-    icon: 'ri-lock-2-line',
-    to: '/',
-    target: '_blank',
-  }" />
-  <VerticalNavLink :item="{
-    title: 'Email',
-    icon: 'ri-mail-line',
-    to: '/',
-  }" />
+
   <VerticalNavLink :item="{
     title: 'Monitoring Statisatikasi',
     icon: 'ri-datamoney-dollar-box-line',
     to: '/monitoring-statistics',
   }" />
+
   <VerticalNavLink :item="{
     title: 'Infographics',
     icon: 'ri-mail-line',
     to: '/info-graphics',
-  }" />
-  <VerticalNavLink :item="{
-    title: 'Chat',
-    icon: 'ri-wechat-line',
-    to: '/',
-  }" />
-  <VerticalNavLink :item="{
-    title: 'Calendar',
-    icon: 'ri-calendar-line',
-    to: '/',
   }" />
 
   <VerticalNavLink :item="{
@@ -71,9 +55,5 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     icon: 'ri-user-settings-line',
     to: '/account-settings',
   }" />
-  <VerticalNavLink :item="{
-    title: 'Error',
-    icon: 'ri-information-line',
-    to: '/no-existence',
-  }" />
+
 </template>

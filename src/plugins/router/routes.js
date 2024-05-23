@@ -11,8 +11,11 @@ export const routes = [
         component: () => import('@/pages/dashboard.vue'),
       },
       {
-        path: 'kpi-indicator',
-        component: () => import('@/pages/kpi/kpi-indicator.vue'),
+        path:'kpi-indicator',
+        component: () => import('@/pages/kpi/kpi-indicator.vue')
+      },{
+        path:'kpi-indicator-details',
+        component: () => import('@/pages/kpi/kpi-indicator-details.vue')
       },
       {
         path: 'account-settings',
