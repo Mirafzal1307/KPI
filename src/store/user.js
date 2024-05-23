@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref(false)
   const router = useRouter()
 
-  const userLogin = async (userCredentials) => {
+  const userLogin = async userCredentials => {
     console.log(userCredentials)
 
     try {
@@ -17,7 +17,6 @@ export const useUserStore = defineStore('user', () => {
       // const { data } = await login(userCredentials)
 
       // user.value = data
-
       if (userCredentials?.login == 'admin' && userCredentials?.password == '12345') {
         localStorage.setItem(
           'token',
@@ -27,7 +26,7 @@ export const useUserStore = defineStore('user', () => {
           autoClose: 4000,
           position: toast.POSITION.TOP_RIGHT,
         })
-        await router.replace({name:'dashboard'})
+        await router.replace({ name: 'dashboard' })
       } else {
         toast.error('Login yoki parolda xatolik bor  !', {
           autoClose: 4000,

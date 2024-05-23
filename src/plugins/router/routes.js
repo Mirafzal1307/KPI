@@ -9,11 +9,10 @@ export const routes = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('@/pages/dashboard.vue'),
-
       },
       {
-        path:'kpi-indicator',
-        component: () => import('@/pages/kpi/kpi-indicator.vue')
+        path: 'kpi-indicator',
+        component: () => import('@/pages/kpi/kpi-indicator.vue'),
       },
       {
         path: 'account-settings',
@@ -42,8 +41,14 @@ export const routes = [
     ],
   },
   {
-    path: '/monitoring-statistics',
-    component: () => import('@/views/statistics/KpiMonitoring.vue'),
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: 'monitoring-statistics',
+        component: () => import('@/views/statistics/KpiMonitoring.vue'),
+      },
+    ],
   },
   {
     path: '/',

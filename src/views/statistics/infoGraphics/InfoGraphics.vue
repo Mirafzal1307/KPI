@@ -2,7 +2,7 @@
 
   <VCard class="border">
     <template #title>
-      Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichalar (foizda)
+      Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
     <div id="main" style="block-size: 330px; " class="mx-auto"></div>
   </VCard>
@@ -23,16 +23,14 @@ const props = defineProps({
 })
 onMounted(() => {
   var chartDom = document.getElementById('main');
+
   var myChart = echarts.init(chartDom);
 
-
-  // Extract valid scores and sort them
   const scores = props.datasetSource.map(item => item[1]).sort((a, b) => a - b);
 
   const minScore = scores[0];
   const maxScore = scores[scores.length - 1];
 
-  // Function to generate color based on score
   const getColor = (score) => {
     const ratio = (score - minScore) / (maxScore - minScore);
     const green = Math.round((1 - ratio) * 255);
@@ -74,9 +72,8 @@ onMounted(() => {
   myChart.setOption(option);
 
   myChart.on('click', function (params) {
-    const id = params.value[2];  // Get the ID from the clicked item
+    const id = params.value[2];
     console.log('Clicked item ID:', id);
-    // You can perform additional actions with the ID, like fetching detailed data
   });
 });
 </script>

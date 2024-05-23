@@ -1,6 +1,6 @@
 <template>
   <v-card class="border">
-    <v-data-table-server height="727" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
+    <v-data-table-server height="800" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
       :items-length="totalItems" :loading="loading" item-value="name" @update:options="loadItems" />
   </v-card>
 </template>
@@ -30,6 +30,38 @@ const desserts = [
     carbs: 65,
     protein: 7,
     iron: '6',
+  },
+  {
+    name: 'Frozen Yogurt',
+    calories: 159,
+    fat: 6.0,
+    carbs: 24,
+    protein: 4.0,
+    iron: '1',
+  },
+  {
+    name: 'Jelly bean',
+    calories: 375,
+    fat: 0.0,
+    carbs: 94,
+    protein: 0.0,
+    iron: '0',
+  },
+  {
+    name: 'KitKat',
+    calories: 518,
+    fat: 26.0,
+    carbs: 65,
+    protein: 7,
+    iron: '6',
+  },
+  {
+    name: 'Frozen Yogurt',
+    calories: 159,
+    fat: 6.0,
+    carbs: 24,
+    protein: 4.0,
+    iron: '1',
   },
   {
     name: 'Frozen Yogurt',
