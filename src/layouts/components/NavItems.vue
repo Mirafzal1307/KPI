@@ -26,7 +26,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/kpi-indicator',
   }" />
 
-<VerticalNavLink :item="{
+  <VerticalNavLink :item="{
     title: 'KPI hisob-kitobi',
     icon: 'ri-file-copy-2-line',
     to: '/kpi-indicator-details',
@@ -40,13 +40,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 
   <VerticalNavLink :item="{
     title: 'Monitoring Statisatikasi',
-    icon: 'ri-datamoney-dollar-box-line',
+    icon: 'ri-line-chart-line',
     to: '/monitoring-statistics',
   }" />
 
   <VerticalNavLink :item="{
     title: 'Infographics',
-    icon: 'ri-mail-line',
+    icon: 'ri-bar-chart-grouped-line',
     to: '/info-graphics',
   }" />
 
