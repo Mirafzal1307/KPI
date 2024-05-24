@@ -16,6 +16,9 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/dashboard',
   }" />
   <!-- 👉 Struktura  -->
+  <VerticalNavSectionTitle :item="{
+    heading: 'Struktura',
+  }" />
 
   <VerticalNavGroup :item="{
     title: 'Struktura',
@@ -53,9 +56,6 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 
   </VerticalNavGroup>
 
-  <VerticalNavSectionTitle :item="{
-    heading: 'Struktura',
-  }" />
 
 
 
