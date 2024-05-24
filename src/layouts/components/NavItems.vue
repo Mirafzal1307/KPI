@@ -54,13 +54,13 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     heading: 'Xodimlar',
   }" />
 
-<VerticalNavLink :item="{
+  <VerticalNavLink :item="{
     title: 'Xodimlar ro\'yxati',
     icon: 'ri-bar-chart-2-line',
     to: '/employee-list',
   }" />
 
-<VerticalNavLink :item="{
+  <VerticalNavLink :item="{
     title: 'Lavozimlar',
     icon: 'ri-bar-chart-2-line',
     to: '/positions',

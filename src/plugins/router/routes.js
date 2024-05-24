@@ -11,11 +11,12 @@ export const routes = [
         component: () => import('@/pages/dashboard.vue'),
       },
       {
-        path:'kpi-indicator',
-        component: () => import('@/pages/kpi/kpi-indicator.vue')
-      },{
-        path:'kpi-indicator-details',
-        component: () => import('@/pages/kpi/kpi-indicator-details.vue')
+        path: 'kpi-indicator',
+        component: () => import('@/pages/kpi/kpi-indicator.vue'),
+      },
+      {
+        path: 'kpi-indicator-details',
+        component: () => import('@/pages/kpi/kpi-indicator-details.vue'),
       },
       {
         path: 'account-settings',
@@ -60,6 +61,16 @@ export const routes = [
       {
         path: 'info-graphics',
         component: () => import('@/views/statistics/infoGraphics/MainGraph.vue'),
+      },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: '/employee-list',
+        component: () => import('@/views/employee/EmployeeList.vue'),
       },
     ],
   },
