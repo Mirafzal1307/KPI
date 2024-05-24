@@ -84,4 +84,14 @@ export const routes = [
       },
     ],
   },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: '/employee-list',
+        component: () => import('@/views/employee/EmployeeList.vue'),
+      },
+    ],
+  },
 ]
