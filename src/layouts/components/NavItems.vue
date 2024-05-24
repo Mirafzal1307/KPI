@@ -1,4 +1,5 @@
 <script setup>
+import VerticalNavGroup from '@/@layouts/components/VerticalNavGroup.vue';
 import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue';
 import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 </script>
@@ -19,35 +20,44 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     heading: 'Struktura',
   }" />
 
-  <VerticalNavLink :item="{
-    title: 'Filial',
+  <VerticalNavGroup :item="{
+    title: 'Struktura',
     icon: 'ri-bar-chart-2-line',
-    to: '/branch',
-  }" />
+  }">
+    <VerticalNavLink :item="{
+      title: 'Filial',
+      icon: 'ri-bar-chart-2-line',
+      to: '/branch',
+    }" />
 
-  <VerticalNavLink :item="{
-    title: 'Blok',
-    icon: 'ri-bar-chart-2-line',
-    to: '/block',
-  }" />
+    <VerticalNavLink :item="{
+      title: 'Blok',
+      icon: 'ri-bar-chart-2-line',
+      to: '/block',
+    }" />
 
-  <VerticalNavLink :item="{
-    title: 'Departament',
-    icon: 'ri-bar-chart-2-line',
-    to: '/department',
-  }" />
+    <VerticalNavLink :item="{
+      title: 'Departament',
+      icon: 'ri-bar-chart-2-line',
+      to: '/department',
+    }" />
 
-  <VerticalNavLink :item="{
-    title: 'Boshqarma',
-    icon: 'ri-bar-chart-2-line',
-    to: '/management',
-  }" />
+    <VerticalNavLink :item="{
+      title: 'Boshqarma',
+      icon: 'ri-bar-chart-2-line',
+      to: '/menagment',
+    }" />
 
-  <VerticalNavLink :item="{
-    title: 'Bo\'lim',
-    icon: 'ri-bar-chart-2-line',
-    to: '/section',
-  }" />
+    <VerticalNavLink :item="{
+      title: 'Bo\'lim',
+      icon: 'ri-bar-chart-2-line',
+      to: '/section',
+    }" />
+
+  </VerticalNavGroup>
+
+
+
 
   <!-- 👉  Employees  -->
   <VerticalNavSectionTitle :item="{

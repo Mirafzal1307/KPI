@@ -11,6 +11,26 @@ export const routes = [
         component: () => import('@/pages/dashboard.vue'),
       },
       {
+        path: 'block',
+        component: () => import('@/pages/structure/block.vue'),
+      },
+      {
+        path: 'branch',
+        component: () => import('@/pages/structure/branch.vue'),
+      },
+      {
+        path: 'department',
+        component: () => import('@/pages/structure/department.vue'),
+      },
+      {
+        path: 'menagment',
+        component: () => import('@/pages/structure/menagment.vue'),
+      },
+      {
+        path: 'section',
+        component: () => import('@/pages/structure/section.vue'),
+      },
+      {
         path: 'kpi-indicator',
         component: () => import('@/pages/kpi/kpi-indicator.vue'),
       },

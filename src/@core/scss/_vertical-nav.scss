@@ -1,3 +1,4 @@
+/* stylelint-disable order/properties-order */
 @use "./placeholders";
 @use "@configured-variables" as variables;
 @use "@core/scss/mixins" as mixins;
@@ -50,7 +51,7 @@
           rgba(#{variables.$vertical-nav-background-color-rgb}, 30%) 75%,
           transparent
         );
-      block-size: 64px;
+      block-size: 30px;
       inline-size: 100%;
       inset-block-start: calc(#{variables.$vertical-nav-header-height} - 2px);
       opacity: 0;
@@ -63,6 +64,7 @@
     &.scrolled {
       .vertical-nav-items-shadow {
         opacity: 1;
+        /* stylelint-disable-next-line liberty/use-logical-spec */
       }
     }
 
