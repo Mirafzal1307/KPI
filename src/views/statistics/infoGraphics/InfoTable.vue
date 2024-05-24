@@ -1,10 +1,13 @@
 <template>
+  <v-card>
+    <v-autocomplete class="mb-2" :label="'Davrni tanlang'" />
+  </v-card>
   <v-card class="border">
-    <v-data-table-server height="800" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
+    <template #title>Respublika bo'yicha o'rtacha KPI reytingi</template>
+    <v-data-table-server height="675" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
       :items-length="totalItems" :loading="loading" item-value="name" @update:options="loadItems" />
   </v-card>
 </template>
-
 <script>
 const desserts = [
   {

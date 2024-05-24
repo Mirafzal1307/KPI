@@ -1,54 +1,26 @@
+import { login } from '@/services/user.service'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { toast } from 'vue3-toastify'
 
-export const useUserStore = defineStore('user', () => {
-  const user = ref({})
-  const loading = ref(false)
-  const router = useRouter()
-
-  const userLogin = async userCredentials => {
-    console.log(userCredentials)
-
-    try {
-      loading.value = true
-
-      // const { data } = await login(userCredentials)
-
-      // user.value = data
-      if (userCredentials?.login == 'admin' && userCredentials?.password == '12345') {
-        localStorage.setItem(
-          'token',
-          'sdkjgflitjghlgkhglkjhgkjerhgpiutyjfneirhppierhfpierutweiourtoweqifdsfokjdklmfowefiportiperfgngeorigi',
-        )
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    user: ref({}),
+    router: useRouter(),
+    loading: false,
+  }),
+  actions: {
+    async userLogin(req) {
+      try {
+        const res = await login(req)
+        console.log(res)
+        localStorage.setItem('access_token', res?.token)
         toast.success('Siz ilovaga kirdingiz !', {
           autoClose: 4000,
-          position: toast.POSITION.TOP_RIGHT,
+          position: toast.POSITION.BOTTOM_CENTER,
         })
-        await router.replace({ name: 'dashboard' })
-      } else {
-        toast.error('Login yoki parolda xatolik bor  !', {
-          autoClose: 4000,
-          position: toast.POSITION.TOP_RIGHT,
-        })
+      } catch (error) {
+        toast.error('Ilovaga kirishda xatolik')
       }
-
-      return data
-    } catch (error) {
-      // toast.error('Xatolik sodir boldi', {
-      //   autoClose: 4000,
-      //   position: toast.POSITION.TOP_RIGHT,
-      // } as ToastOptions)
-
-      return error
-    } finally {
-      loading.value = false
-    }
-  }
-
-  return {
-    user,
-    userLogin,
-  }
+    },
+  },
 })
