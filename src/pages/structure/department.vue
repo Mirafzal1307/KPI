@@ -1,5 +1,5 @@
 <template>
-  <VCard class="pa-10 border rounded-lg" >
+  <VCard class="pa-10 border rounded-lg">
     <div class="w-100">
       <VForm @submit.prevent class="d-flex justify">
         <div class="w-50">
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 const search = ref('')
 

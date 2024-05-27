@@ -1,4 +1,5 @@
-import { login } from '@/services/user.service'
+import { getAllUsers, login } from '@/services/user.service'
+
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 
@@ -7,6 +8,7 @@ export const useUserStore = defineStore('user', {
     user: ref({}),
     router: useRouter(),
     loading: false,
+    userList: [],
   }),
   actions: {
     async userLogin(req) {
@@ -20,6 +22,15 @@ export const useUserStore = defineStore('user', {
         })
       } catch (error) {
         toast.error('Ilovaga kirishda xatolik')
+      }
+    },
+    async getUsers() {
+      try {
+        const data = await getAllUsers()
+        this.userList = data
+        return data
+      } catch (error) {
+        console.log(error)
       }
     },
   },
