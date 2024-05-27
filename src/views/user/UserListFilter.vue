@@ -6,7 +6,7 @@
         <v-text-field v-model="filterName" label="Ism" />
       </v-col>
       <v-col cols="3">
-        <v-autocomplete v-model="block" :items="departments" label="Blok" />
+        <v-autocomplete item-title="name" text="name" v-model="block" :items="departments" label="Blok" />
       </v-col>
       <v-col cols="3">
         <v-autocomplete label="Filial" />
@@ -29,19 +29,20 @@
 </template>
 
 <script setup>
+import { useBranchStore } from '@/store/branches';
 import { useDepartmentStore } from '@/store/department';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 
-
 const depStore = useDepartmentStore()
-
+const branchStore = useBranchStore()
 const { departments } = storeToRefs(depStore)
 const filterName = ref('')
 const block = ref()
 
 onMounted(() => {
   depStore.fetchDepartments()
+  branchStore.fetchBranches()
 })
 
 </script>
