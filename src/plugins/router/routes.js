@@ -94,4 +94,24 @@ export const routes = [
       },
     ],
   },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: '/user-list',
+        component: () => import('@/views/user/UserList.vue'),
+      },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: '/positions-list',
+        component: () => import('@/views/position/PositionList.vue'),
+      },
+    ],
+  },
 ]

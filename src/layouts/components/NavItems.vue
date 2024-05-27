@@ -4,6 +4,7 @@ import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTit
 import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 </script>
 
+
 <template>
   <!-- 👉 Dashboards -->
 
@@ -71,9 +72,15 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
   }" />
 
   <VerticalNavLink :item="{
+    title: 'Foydalanuvchilar ro\'yxati',
+    icon: 'ri-user-3-line',
+    to: '/user-list',
+  }" />
+
+  <VerticalNavLink :item="{
     title: 'Lavozimlar',
     icon: 'ri-bar-chart-2-line',
-    to: '/positions',
+    to: '/positions-list',
   }" />
 
   <!-- 👉  KPI  -->
