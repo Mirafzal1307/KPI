@@ -25,3 +25,30 @@ export async function getAllUsers() {
     console.log(error)
   }
 }
+
+export async function getUserById(id) {
+  try {
+    const { data } = await axios.get(`/user/${id}`)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function createUser(user) {
+  try {
+    const { data } = await axios.post('/user/v1/create', user)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function updateUser(id, user) {
+  try {
+    const { data } = await axios.put(`/user/v1/update/${id}`, user)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}

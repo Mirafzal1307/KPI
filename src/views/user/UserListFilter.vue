@@ -23,7 +23,9 @@
       <v-col cols="3">
         <v-text-field label="INPS" />
       </v-col>
-      <v-btn class="mt-3">Izlash</v-btn>
+      <v-col cols="3">
+        <v-btn class="d-flex justify-end">Izlash</v-btn>
+      </v-col>
     </v-row>
   </v-card>
 </template>
