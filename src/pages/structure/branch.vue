@@ -49,7 +49,7 @@
                   <VDialog v-model="editModal" max-width="600" persistent>
                     <template v-slot:activator="{ props: activatorProps }">
                       <VCol cols="auto">
-                        <VBtn icon="ri-edit-2-line" class="btn" v-bind="activatorProps"></VBtn>
+                        <VBtn  @click="openModal()" icon="ri-edit-2-line" class="btn" v-bind="activatorProps"></VBtn>
                       </VCol>
 
                     </template>
@@ -67,20 +67,13 @@
                       </template>
                     </VCard>
                   </VDialog>
-
-
                   <VDialog v-model="deleteModal" max-width="600" persistent>
                     <template v-slot:activator="{ props: activatorProps }">
                       <VCol cols="auto">
                         <VBtn icon="ri-delete-bin-6-line" class="delete" v-bind="activatorProps"></VBtn>
                       </VCol>
-                  
-
                     </template>
-
                     <VCard title="Filialni o'chirish" text="Filialni o'chirishga ishonchingiz komilmi ?! ">
-                      
-
                       <template v-slot:actions>
                         <VSpacer></VSpacer>
                         <VBtn @click="deleteModal = false"> Yo'q </VBtn>
@@ -88,11 +81,7 @@
                       </template>
                     </VCard>
                   </VDialog>
-
                 </div>
-
-
-
               </td>
             </tr>
           </tbody>
@@ -140,6 +129,11 @@ const deleteModal = ref(false);
 onMounted(() => {
   getBranches()
 })
+
+
+const openModal = () => {
+  editModal.value = true;
+}
 
 </script>
 
