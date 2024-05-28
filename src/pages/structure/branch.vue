@@ -44,6 +44,8 @@
               <td>{{ item.code }}</td>
               <td>{{ item.region }}</td>
               <td class="d-flex  justify-end ">
+
+
                 <div class="d-flex justify-end align-center ">
 
                   <VDialog v-model="editModal" max-width="600" persistent>
@@ -92,10 +94,9 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-import { useBranchStore } from '@/store/structure/branch'
-import { ref } from 'vue'
+import { useBranchStore } from '@/store/structure/branch';
 import { storeToRefs } from 'pinia';
+import { onMounted, ref } from 'vue';
 
 const branchStore = useBranchStore()
 const { allBranches } = storeToRefs(branchStore)
@@ -148,16 +149,14 @@ const openModal = () => {
 }
 
 .btn {
+  border: solid 1px rgb(255, 204, 0) !important;
   background-color: transparent !important;
   color: rgb(255, 204, 0) !important;
-  border: solid 1px rgb(255, 204, 0) !important;
 }
 
 .delete {
+  border: solid 1px red !important;
   background-color: transparent !important;
   color: red !important;
-  border: solid 1px red !important;
 }
-
-
 </style>

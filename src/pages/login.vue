@@ -13,7 +13,7 @@
       </VCardItem>
 
       <VCardText class="w-100">
-        <VForm @submit.prevent="() => { }">
+        <VForm @submit.prevent="login()">
           <VRow>
             <!-- email -->
             <VCol cols="12">
@@ -28,7 +28,7 @@
                 @click:append-inner="isPasswordVisible = !isPasswordVisible" />
 
               <!-- login button -->
-              <VBtn class="mt-5" block type="submit" to="/" @click="submit()">
+              <VBtn class="mt-5" block type="submit" to="/">
                 Login
               </VBtn>
             </VCol>
@@ -53,7 +53,7 @@ const form = ref({
   password: '',
 })
 
-const submit = async () => {
+const login = async () => {
   const usercredentials = {
     username: form.value.username,
     password: form.value.password,
