@@ -28,7 +28,7 @@
                 @click:append-inner="isPasswordVisible = !isPasswordVisible" />
 
               <!-- login button -->
-              <VBtn class="mt-5" block type="submit" to="/">
+              <VBtn class="mt-5" block :type="'submit'">
                 Login
               </VBtn>
             </VCol>
@@ -59,7 +59,9 @@ const login = async () => {
     password: form.value.password,
   }
   try {
-    await userStore.userLogin(usercredentials)
+    const res = await userStore.userLogin(usercredentials)
+    console.log(res);
+    toast.success('Siz ilovaga kirdingiz !')
   } catch (error) {
     return error
   }

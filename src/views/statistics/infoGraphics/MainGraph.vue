@@ -20,6 +20,8 @@ import InfoTable from '@/views/statistics/infoGraphics/InfoTable.vue';
 import MainChartFilter from '@/views/statistics/infoGraphics/MainChartFilter.vue';
 import { onMounted } from 'vue';
 
+
+
 const datasetSource = [
   ['Samarqand', 120, 1],
   ['Toshkent', 100, 2],
@@ -35,15 +37,23 @@ const datasetSource = [
   ['Qoraqalpogiston Res', 59, 12]
 ];
 
-
-const chartStore = useChartStore()
-const getChartData = async () => {
+async function getChartData() {
   try {
-    await chartStore.getChartData()
+    await chartStore.getChartData();
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
+
+
+const chartStore = useChartStore()
+// const getChartData = async () => {
+//   try {
+//     await chartStore.getChartData()
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
 onMounted(() => {
   console.log('here')

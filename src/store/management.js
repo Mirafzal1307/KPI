@@ -16,6 +16,7 @@ export const useManagementStore = defineStore('management', {
     async fetchManagements() {
       try {
         const data = await getManagements()
+        this.managements = data
         return data
       } catch (error) {
         console.log(error)

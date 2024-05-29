@@ -17,15 +17,15 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/dashboard',
   }" />
   <!-- 👉 Struktura  -->
-  <VerticalNavSectionTitle :item="{
+  <!-- <VerticalNavSectionTitle :item="{
     heading: 'Struktura',
   }" />
 
   <VerticalNavGroup :item="{
     title: 'Struktura',
     icon: 'ri-bar-chart-2-line',
-  }">
-    <VerticalNavLink :item="{
+  }"> -->
+  <!-- <VerticalNavLink :item="{
       title: 'Filial',
       icon: 'ri-bar-chart-2-line',
       to: '/branch',
@@ -35,9 +35,9 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
       title: 'Blok',
       icon: 'ri-bar-chart-2-line',
       to: '/block',
-    }" />
+    }" /> -->
 
-    <VerticalNavLink :item="{
+  <!-- <VerticalNavLink :item="{
       title: 'Departament',
       icon: 'ri-bar-chart-2-line',
       to: '/department',
@@ -53,32 +53,32 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
       title: 'Bo\'lim',
       icon: 'ri-bar-chart-2-line',
       to: '/section',
-    }" />
+    }" /> -->
 
-  </VerticalNavGroup>
+  <!-- </VerticalNavGroup> -->
 
 
 
 
   <!-- 👉  Employees  -->
-  <VerticalNavSectionTitle :item="{
+  <!-- <VerticalNavSectionTitle :item="{
     heading: 'Xodimlar',
-  }" />
+  }" /> -->
 
 
-  <VerticalNavLink :item="{
+  <!-- <VerticalNavLink :item="{
     title: 'Foydalanuvchilar ro\'yxati',
     icon: 'ri-user-3-line',
     to: '/user-list',
-  }" />
+  }" /> -->
 
-  <VerticalNavLink :item="{
+  <!-- <VerticalNavLink :item="{
     title: 'Lavozimlar',
     icon: 'ri-bar-chart-2-line',
     to: '/positions-list',
-  }" />
+  }" /> -->
 
-  <!-- 👉  KPI  -->
+  <!-- 👉  KPI 
   <VerticalNavSectionTitle :item="{
     heading: 'KPI',
   }" />
@@ -93,7 +93,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     title: 'KPI hisob-kitobi',
     icon: 'ri-file-copy-2-line',
     to: '/kpi-indicator-details',
-  }" />
+  }" /> -->
 
 
   <!-- 👉 Apps & Pages -->
@@ -107,16 +107,29 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     to: '/monitoring-statistics',
   }" />
 
-  <VerticalNavLink :item="{
-    title: 'Infographics',
-    icon: 'ri-bar-chart-grouped-line',
-    to: '/info-graphics',
-  }" />
 
+
+  <VerticalNavGroup :item="{
+    title: 'InfoGraphic',
+    icon: 'ri-bar-chart-2-line',
+  }">
+    <VerticalNavLink :item="{
+      title: 'Umumiy statistika',
+      icon: 'ri-bar-chart-grouped-line',
+      to: '/general-data',
+    }" />
+    <VerticalNavLink :item="{
+      title: 'Bosh ofis statistikasi',
+      icon: 'ri-bar-chart-grouped-line',
+      to: '/main-office-data',
+    }" />
+
+  </VerticalNavGroup>
+  <!-- 
   <VerticalNavLink :item="{
     title: 'Account Settings',
     icon: 'ri-user-settings-line',
     to: '/account-settings',
-  }" />
+  }" /> -->
 
 </template>
