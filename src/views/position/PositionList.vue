@@ -17,7 +17,6 @@
       </template>
     </v-data-table>
 
-
     <v-dialog v-model="deleteDialog" max-width="400" persistent>
       <v-card>
         <v-card-title class="headline">O'chirishni tasdiqlash</v-card-title>

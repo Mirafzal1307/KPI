@@ -8,6 +8,7 @@ export const useBranchStore = defineStore('banches', {
     async fetchBranches() {
       try {
         const data = await getBranches()
+        this.branches = data
         return data
       } catch (error) {
         console.log(error)

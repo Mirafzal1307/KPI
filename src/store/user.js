@@ -1,7 +1,7 @@
 import { createUser, getAllUsers, getUserById, login, updateUser } from '@/services/user.service'
-
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue3-toastify'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -12,17 +12,17 @@ export const useUserStore = defineStore('user', {
   }),
   actions: {
     async userLogin(req) {
-      try {
-        const res = await login(req)
-        console.log(res)
+      const res = await login(req)
+
+      if (res.token) {
+        this.router.push('/')
         localStorage.setItem('access_token', res?.token)
         toast.success('Siz ilovaga kirdingiz !', {
           autoClose: 4000,
           position: toast.POSITION.BOTTOM_CENTER,
         })
-      } catch (error) {
-        toast.error('Ilovaga kirishda xatolik')
       }
+      return res
     },
     async getUsers() {
       try {

@@ -4,7 +4,10 @@ import avatar1 from '@images/avatars/avatar-1.png';
 
 
 function logout() {
-  console.log('log out');
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('user');
+  localStorage.removeItem('name');
+  console.log('cleared');
 }
 </script>
 

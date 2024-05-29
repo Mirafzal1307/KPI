@@ -3,6 +3,10 @@
 
   <v-card class="border">
     <template #title>Foydalanuvchilar ro'yxati</template>
+    <v-row justify="end" class="pa-4">
+      <v-btn color="primary" @click="openCreateDialog">Add User</v-btn>
+
+    </v-row>
     <v-data-table v-if="userList" :loading="false" :headers="headers" :items="userList.items">
       <template v-slot:item="{ item }">
         <tr>
@@ -31,7 +35,7 @@
       </template>
     </v-data-table>
 
-    <!-- Delete Confirmation Dialog -->
+
     <v-dialog v-model="deleteDialog" max-width="400" persistent>
       <v-card>
         <v-card-title class="headline">Confirm Deletion</v-card-title>
@@ -46,32 +50,32 @@
 
     <v-dialog v-model="editDialog" max-width="600" persistent>
       <v-card>
-        <v-card-title class="headline">Edit User</v-card-title>
+        <v-card-title class="headline">{{ isEditing ? 'Edit User' : 'Create User' }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="currentItem.username" label="Username"></v-text-field>
           <v-text-field v-model="currentItem.full_name" label="Full Name"></v-text-field>
-          <v-text-field v-model="currentItem.user_status.name" label="User Status"></v-text-field>
-          <v-autocomplete item-title="name" v-model="currentItem.branch" :items="branches" label="Branch"
-            :loading="loadingBranches"></v-autocomplete>
-          <v-autocomplete item-title="name" v-model="currentItem.block" :items="blocks" label="Block"
-            :loading="loadingBlocks"></v-autocomplete>
-          <v-autocomplete item-title="name" v-model="currentItem.department" :items="departments" label="Department"
-            :loading="loadingDepartments"></v-autocomplete>
-          <v-autocomplete item-title="name" v-model="currentItem.management" :items="managements" label="Management"
-            :loading="loadingManagements"></v-autocomplete>
-          <v-autocomplete item-title="name" v-model="currentItem.division" :items="divisions" label="Division"
-            :loading="loadingDivisions"></v-autocomplete>
-          <v-autocomplete item-title="name" v-model="currentItem.position" :items="positions" label="Position"
-            :loading="loadingPositions"></v-autocomplete>
-          <v-autocomplete item-title="full_name" v-model="currentItem.head" :items="userList.items" label="Boshliq"
-            :loading="loadingHeads"></v-autocomplete>
-          <v-text-field v-model="currentItem.head" label="Head"></v-text-field>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.user_status"
+            :items="statuses" label="Fotyalanuvchi statusi" :loading="loadingStatus"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.branch" :items="branches"
+            label="Filial" :loading="loadingBranches"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.block" :items="blocks"
+            label="Block" :loading="loadingBlocks"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.department"
+            :items="departments" label="Department" :loading="loadingDepartments"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.management"
+            :items="managements" label="Management" :loading="loadingManagements"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.division"
+            :items="divisions" label="Division" :loading="loadingDivisions"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="name" v-model="currentItem.position"
+            :items="positions" label="Position" :loading="loadingPositions"></v-autocomplete>
+          <v-autocomplete return-object item-value="id" item-title="full_name" v-model="currentItem.head"
+            :items="userList.items" label="Boshliq" :loading="loadingHeads"></v-autocomplete>
           <v-text-field v-model="currentItem.tabel_number" label="Table Number"></v-text-field>
           <v-text-field v-model="currentItem.inps" label="INPS"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="saveEdit">Saqlash</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{ isEditing ? 'Saqlash' : 'Create' }}</v-btn>
           <v-btn color="error" @click="editDialog = false">Bekor qilish</v-btn>
         </v-card-actions>
       </v-card>
@@ -86,13 +90,13 @@ import { useDepartmentStore } from '@/store/department';
 import { useDivisionStore } from '@/store/division';
 import { useManagementStore } from '@/store/management';
 import { usePositionStore } from '@/store/position';
+import { useStatusStore } from '@/store/status';
 import { useUserStore } from '@/store/user';
 import { storeToRefs } from 'pinia';
 import { onMounted, reactive, ref } from 'vue';
 import UserListFilter from './UserListFilter.vue';
 
-
-
+const statusStore = useStatusStore();
 const userStore = useUserStore();
 const departmentStore = useDepartmentStore();
 const branchStore = useBranchStore();
@@ -108,6 +112,7 @@ const { blocks } = storeToRefs(blockStore);
 const { managements } = storeToRefs(managementStore);
 const { divisions } = storeToRefs(divisionStore);
 const { positions } = storeToRefs(positionStore);
+const { statuses } = storeToRefs(statusStore);
 
 const loadingBranches = ref(true);
 const loadingBlocks = ref(true);
@@ -116,7 +121,7 @@ const loadingManagements = ref(true);
 const loadingDivisions = ref(true);
 const loadingPositions = ref(true);
 const loadingHeads = ref(true);
-
+const loadingStatus = ref(true);
 
 const getUserList = async () => {
   try {
@@ -129,6 +134,7 @@ const getUserList = async () => {
 const getOptions = async () => {
   try {
     await Promise.all([
+      statusStore.fetchStatuses(),
       userStore.getUsers(),
       branchStore.fetchBranches(),
       blockStore.fetchBlocks(),
@@ -147,10 +153,9 @@ const getOptions = async () => {
     loadingManagements.value = false;
     loadingDivisions.value = false;
     loadingPositions.value = false;
+    loadingStatus.value = false;
   }
 };
-
-
 
 const headers = [
   { title: "img" },
@@ -172,6 +177,7 @@ const headers = [
 const deleteDialog = ref(false);
 const editDialog = ref(false);
 const currentItem = reactive({});
+const isEditing = ref(false);
 
 const openDeleteDialog = (item) => {
   Object.assign(currentItem, item);
@@ -179,14 +185,34 @@ const openDeleteDialog = (item) => {
 };
 
 const openEditDialog = (item) => {
+  isEditing.value = true;
   Object.assign(currentItem, item);
+  editDialog.value = true;
+};
+
+const openCreateDialog = () => {
+  isEditing.value = false;
+  Object.assign(currentItem, {
+    username: '',
+    full_name: '',
+    user_status: null,
+    branch: null,
+    block: null,
+    department: null,
+    management: null,
+    division: 1,
+    position: null,
+    head: null,
+    tabel_number: '',
+    inps: ''
+  });
   editDialog.value = true;
 };
 
 const confirmDelete = async () => {
   try {
     await userStore.deleteUser(currentItem.id);
-    await getUserList(); // Refresh the list
+    await getUserList();
   } catch (error) {
     console.error('Error deleting user:', error);
   } finally {
@@ -194,12 +220,33 @@ const confirmDelete = async () => {
   }
 };
 
+
 const saveEdit = async () => {
   try {
-    await userStore.updateUser(currentItem.id, currentItem);
+    const userPayload = {
+      username: currentItem.username,
+      full_name: currentItem.full_name,
+      user_status_id: currentItem.user_status?.id || null,
+      branch_id: currentItem.branch?.id || null,
+      block_id: currentItem.block?.id || null,
+      department_id: currentItem.department?.id || null,
+      management_id: currentItem.management?.id || null,
+      division_id: currentItem.division?.id || null,
+      position_id: currentItem.position?.id || null,
+      head_id: currentItem.head?.id || null,
+      tabel_number: currentItem.tabel_number,
+      inps: currentItem.inps
+    };
+
+    if (isEditing.value) {
+      await userStore.updateUser(currentItem.id, userPayload);
+    } else {
+      await userStore.createUser(userPayload);
+    }
+
     await getUserList(); // Refresh the list
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error('Error saving user:', error);
   } finally {
     editDialog.value = false;
   }
