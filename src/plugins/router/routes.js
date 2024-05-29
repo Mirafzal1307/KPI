@@ -79,8 +79,18 @@ export const routes = [
     component: () => import('@/layouts/default.vue'),
     children: [
       {
-        path: 'info-graphics',
+        path: 'general-data',
         component: () => import('@/views/statistics/infoGraphics/MainGraph.vue'),
+      },
+    ],
+  },
+  {
+    path: '/',
+    component: () => import('@/layouts/default.vue'),
+    children: [
+      {
+        path: 'main-office-data',
+        component: () => import('@/views/statistics/infoGraphics/MainOfficeData.vue'),
       },
     ],
   },

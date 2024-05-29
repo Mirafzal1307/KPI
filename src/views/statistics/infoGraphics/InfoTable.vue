@@ -4,7 +4,7 @@
   </v-card>
   <v-card class="border">
     <template #title>Respublika bo'yicha o'rtacha KPI reytingi</template>
-    <v-data-table-server height="675" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
+    <v-data-table-server height="600" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
       :items-length="totalItems" :loading="loading" item-value="name" @update:options="loadItems" />
   </v-card>
 </template>
