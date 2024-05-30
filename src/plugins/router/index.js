@@ -6,17 +6,17 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  const publicPages = ['/login']
+// router.beforeEach((to, from, next) => {
+//   const publicPages = ['/login']
 
-  const authRequired = !publicPages.includes(to.path)
+//   const authRequired = !publicPages.includes(to.path)
 
-  const loggedIn = localStorage.getItem('access_token')
+//   const loggedIn = localStorage.getItem('access_token')
 
-  if (authRequired && !loggedIn) return next('login')
+//   if (authRequired && !loggedIn) return next('login')
 
-  return next()
-})
+//   return next()
+// })
 
 export default function (app) {
   app.use(router)
