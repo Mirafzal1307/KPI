@@ -1,206 +1,92 @@
 <template>
   <v-card>
-    <v-autocomplete class="mb-2" :label="'Davrni tanlang'" />
+    <v-autocomplete v-model="periodInput" item-title="period" :items="period" class="my-2" label="Davrni tanlang"
+      @change="onChangePeriod" />
   </v-card>
   <v-card class="border">
-    <template #title>Respublika bo'yicha o'rtacha KPI reytingi</template>
-    <v-data-table-server height="600" v-model:items-per-page="itemsPerPage" :headers="headers" :items="serverItems"
-      :items-length="totalItems" :loading="loading" item-value="name" @update:options="loadItems" />
+    <template #title>Respublika bo'yicha o'rtacha KPI reytingi: {{ formatKPI(branchTableData.average_kpi) }}</template>
+    <v-data-table height="665" :headers="headers" :items="branchTableData.branches" hide-default-footer>
+      <template #item.id="{ item }">
+        <v-chip color="primary" dark>{{ item.id }}</v-chip>
+      </template>
+      <template #item.average_kpi="{ item }">
+        {{ formatKPI(item.average_kpi) }}
+      </template>
+    </v-data-table>
+
   </v-card>
 </template>
-<script>
-const desserts = [
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-    fat: 6.0,
-    carbs: 24,
-    protein: 4.0,
-    iron: '1',
-  },
-  {
-    name: 'Jelly bean',
-    calories: 375,
-    fat: 0.0,
-    carbs: 94,
-    protein: 0.0,
-    iron: '0',
-  },
-  {
-    name: 'KitKat',
-    calories: 518,
-    fat: 26.0,
-    carbs: 65,
-    protein: 7,
-    iron: '6',
-  },
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-    fat: 6.0,
-    carbs: 24,
-    protein: 4.0,
-    iron: '1',
-  },
-  {
-    name: 'Jelly bean',
-    calories: 375,
-    fat: 0.0,
-    carbs: 94,
-    protein: 0.0,
-    iron: '0',
-  },
-  {
-    name: 'KitKat',
-    calories: 518,
-    fat: 26.0,
-    carbs: 65,
-    protein: 7,
-    iron: '6',
-  },
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-    fat: 6.0,
-    carbs: 24,
-    protein: 4.0,
-    iron: '1',
-  },
-  {
-    name: 'Frozen Yogurt',
-    calories: 159,
-    fat: 6.0,
-    carbs: 24,
-    protein: 4.0,
-    iron: '1',
-  },
-  {
-    name: 'Jelly bean',
-    calories: 375,
-    fat: 0.0,
-    carbs: 94,
-    protein: 0.0,
-    iron: '0',
-  },
-  {
-    name: 'KitKat',
-    calories: 518,
-    fat: 26.0,
-    carbs: 65,
-    protein: 7,
-    iron: '6',
-  },
-  {
-    name: 'Eclair',
-    calories: 262,
-    fat: 16.0,
-    carbs: 23,
-    protein: 6.0,
-    iron: '7',
-  },
-  {
-    name: 'Gingerbread',
-    calories: 356,
-    fat: 16.0,
-    carbs: 49,
-    protein: 3.9,
-    iron: '16',
-  },
-  {
-    name: 'Ice cream sandwich',
-    calories: 237,
-    fat: 9.0,
-    carbs: 37,
-    protein: 4.3,
-    iron: '1',
-  },
-  {
-    name: 'Lollipop',
-    calories: 392,
-    fat: 0.2,
-    carbs: 98,
-    protein: 0,
-    iron: '2',
-  },
-  {
-    name: 'Cupcake',
-    calories: 305,
-    fat: 3.7,
-    carbs: 67,
-    protein: 4.3,
-    iron: '8',
-  },
-  {
-    name: 'Honeycomb',
-    calories: 408,
-    fat: 3.2,
-    carbs: 87,
-    protein: 6.5,
-    iron: '45',
-  },
-  {
-    name: 'Donut',
-    calories: 452,
-    fat: 25.0,
-    carbs: 51,
-    protein: 4.9,
-    iron: '22',
-  },
-]
 
-const FakeAPI = {
-  async fetch({ page, itemsPerPage, sortBy }) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const start = (page - 1) * itemsPerPage
-        const end = start + itemsPerPage
-        const items = desserts.slice()
+<script setup>
+import { useKpiStore } from '@/store/kpi';
+import { storeToRefs } from 'pinia';
+import { onMounted, ref, watch } from 'vue';
 
-        if (sortBy.length) {
-          const sortKey = sortBy[0].key
-          const sortOrder = sortBy[0].order
-          items.sort((a, b) => {
-            const aValue = a[sortKey]
-            const bValue = b[sortKey]
-            return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-          })
-        }
+const kpiStore = useKpiStore();
+const { branchTableData, period } = storeToRefs(kpiStore);
 
-        const paginated = items.slice(start, end)
 
-        resolve({ items: paginated, total: items.length })
-      }, 500)
-    })
-  },
+// const period = ref([
+//   { period: '2021-01-01' },
+//   { period: '2021-02-01' },
+//   { period: '2021-03-01' },
+//   { period: '2021-04-01' },
+//   { period: '2021-05-01' },
+//   { period: '2021-06-01' },
+//   { period: '2021-07-01' },
+//   { period: '2021-08-01' },
+//   { period: '2021-09-01' },
+//   { period: '2021-10-01' },
+//   { period: '2021-11-01' },
+//   { period: '2021-12-01' },
+// ]);
+const periodInput = ref('2024-04-30');
+const user_type = ref(1);
+const itemsPerPage = ref(10);
+kpiStore.currentPeriod = periodInput.value;
+
+function formatKPI(value) {
+  return parseFloat(value).toFixed(2);
 }
 
-export default {
-  data: () => ({
-    itemsPerPage: 20,
-    headers: [
-      {
-        title: '#',
-        align: 'start',
-        sortable: false,
-        key: 'iron',
-      },
-      { title: 'Lokal kodi', key: 'calories', align: 'end' },
-      { title: 'Filial nomi', key: 'name', align: 'end' },
-      { title: 'KPI (%)', key: 'carbs', align: 'end' },
-    ],
-    serverItems: [],
-    loading: true,
-    totalItems: 0,
-  }),
-  methods: {
-    loadItems({ page, itemsPerPage, sortBy }) {
-      this.loading = true
-      FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-        this.serverItems = items
-        this.totalItems = total
-        this.loading = false
-      })
-    },
-  },
+const headers = [
+  { title: 'id', value: 'id' },
+  { title: 'Filial nomi', value: 'name' },
+  { title: 'KPI', value: 'average_kpi' },
+];
+
+async function getPeriods() {
+  try {
+    const res = await kpiStore.fetchKpiPeriods();
+    if (res && period.value.length > 0) {
+      periodInput.value = period.value[0].period;
+      await kpiStore.fetchBranchTableData({ user_type: user_type.value, period: periodInput.value });
+      await kpiStore.fetchKpiByRegion({ user_type: kpiStore.currentUserType, period: kpiStore.currentPeriod })
+
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
+
+async function onChangePeriod() {
+  try {
+    if (periodInput.value) {
+      kpiStore.currentPeriod = periodInput.value;
+      await kpiStore.fetchBranchTableData({ user_type: user_type.value, period: periodInput.value });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+onMounted(() => {
+  getPeriods();
+});
+
+watch(periodInput, (newPeriod) => {
+  if (newPeriod) {
+    onChangePeriod();
+  }
+});
 </script>
