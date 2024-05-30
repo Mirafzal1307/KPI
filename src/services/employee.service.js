@@ -1,16 +1,21 @@
 import axios from '@/plugins/axios/axios'
 
-export async function getAllEmp(filterData) {
-  try {
-    const { data } = await axios.get('user/v1/read/all', {
-      page: filterData.page,
-      size: filterData.size,
-      name: filterData.name,
-      branch_id: filterData.branch_id,
-      block_id: filterData.block_id,
-      department_id: filterData.department_id,
-    })
-  } catch (error) {
-    console.log(error)
-  }
+export async function getEmpList(page, size, branch, param, period) {
+  const data = await axios.get('kpi_by_excel/v1/emp-list/get', {
+    params: {
+      page,
+      size,
+      period,
+      param,
+      branch,
+    },
+  })
+
+  return data
+}
+
+export async function getPeriod() {
+  const data = await axios.get('kpi_by_excel/v1/period/get')
+
+  return data
 }

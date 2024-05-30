@@ -45,102 +45,94 @@
               <td>{{ item.region }}</td>
               <td class="d-flex  justify-end ">
 
+                <VBtn @click="openModal(item.id)" icon="ri-edit-2-line" class="btn"></VBtn>
+
+
 
                 <div class="d-flex justify-end align-center ">
 
-                  <VDialog v-model="editModal" max-width="600" persistent>
-                    <template v-slot:activator="{ props: activatorProps }">
-                      <VCol cols="auto">
-                        <VBtn icon="ri-edit-2-line" class="btn" v-bind="activatorProps"></VBtn>
-                      </VCol>
-
-                    </template>
-
-                    <VCard title="Filial nomini o'zgartish">
-                      <div class="px-10 py-4 ">
-                        <VTextField label="Filial nomi" v-model="item.name" class="mb-10"></VTextField>
-                        <VTextField label="Filial raqami" v-model="item.code"></VTextField>
-                      </div>
-
-                      <template v-slot:actions>
-                        <VSpacer></VSpacer>
-                        <VBtn @click="editModal = false"> Yo'q </VBtn>
-                        <VBtn @click="editModal = false"> Qo'shish </VBtn>
-                      </template>
-                    </VCard>
-                  </VDialog>
-
-
-                  <VDialog v-model="deleteModal" max-width="600" persistent>
+                  <!-- <VDialog v-model="deleteModal" max-width="600" persistent>
                     <template v-slot:activator="{ props: activatorProps }">
                       <VCol cols="auto">
                         <VBtn icon="ri-delete-bin-6-line" class="delete" v-bind="activatorProps"></VBtn>
                       </VCol>
-
-
                     </template>
-
                     <VCard title="Filialni o'chirish" text="Filialni o'chirishga ishonchingiz komilmi ?! ">
-
-
                       <template v-slot:actions>
                         <VSpacer></VSpacer>
                         <VBtn @click="deleteModal = false"> Yo'q </VBtn>
                         <VBtn @click="deleteModal = false"> Ha </VBtn>
                       </template>
                     </VCard>
-                  </VDialog>
-
+                  </VDialog> -->
                 </div>
-
-
-
               </td>
             </tr>
           </tbody>
         </VTable>
+
+
+        <VDialog v-model="editModal" max-width="600" persistent>
+          <VCard title="Filial nomini o'zgartish">
+            <div class="px-10 py-10" v-if="selectedBranch">
+              <VTextField label="Filial nomi" v-model="selectedBranch.name" class="mb-10"></VTextField>
+              <VTextField label="Filial raqami" v-model="selectedBranch.code" class="mb-10"></VTextField>
+              <v-autocomplete v-model="selectedBranch.region" :items="allRegions" item-title="name" item-value="id"
+                label="Select a location" return-object outlined class="mb-10"></v-autocomplete>
+              <v-autocomplete v-model="selectedBranch.head" item-title="name" item-value="id" label="Select a location"
+                outlined></v-autocomplete>
+            </div>
+            <template v-slot:actions>
+              <VSpacer></VSpacer>
+              <VBtn @click="editModal = false"> Yo'q </VBtn>
+              <VBtn @click="editModal = false"> Qo'shish </VBtn>
+            </template>
+          </VCard>
+        </VDialog>
       </VCard>
     </div>
   </VCard>
 </template>
 
 <script setup>
-import { useBranchStore } from '@/store/structure/branch';
+import { useBranchStore } from '@/store/branch';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 
 const branchStore = useBranchStore()
-const { allBranches } = storeToRefs(branchStore)
-const { getBranches } = useBranchStore()
+const { allBranches, allRegions, branches } = storeToRefs(branchStore)
+const { getBranches, getRegions } = useBranchStore()
 const search = ref('')
 
-const data = [
-  {
-    name: 'Global',
-  },
-  {
-    name: 'National',
-  },
-  {
-    name: 'Regional',
-  },
-  {
-    name: 'District',
-  },
-  {
-    name: 'City',
-  },
-  {
-    name: 'Village',
-  },
-];
+
+// console.log(typeof branches.value);
+
+// const branch = ref({ ...branches.value })
+
+// console.log(branch.value);
+
+const selectedBranchId = ref(null);
+
+const selectedBranch = computed(() => {
+  // return branch.value.find(branch => branch.id === selectedBranchId.value);
+});
+
+function openModal(branchId) {
+  console.log(branchId);
+  selectedBranchId.value = branchId;
+  editModal.value = true;
+}
+
+
 const dialog = ref(false);
 const editModal = ref(false);
 const deleteModal = ref(false);
 
 onMounted(() => {
   getBranches()
+  getRegions()
 })
+
 
 </script>
 
