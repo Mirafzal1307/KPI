@@ -32,7 +32,11 @@ export const useKpiStore = defineStore('kpi', {
 
     async fetchKpiByBranchesDetails(req) {
       try {
-        const data = await getKpiByBranchesDetails(req)
+        const data = await getKpiByBranchesDetails({
+          ...req,
+          period: this.currentPeriod,
+          user_type: this.currentUserType,
+        })
         this.kpiByBranchesDetails = data
         return data
       } catch (error) {

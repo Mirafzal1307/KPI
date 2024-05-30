@@ -1,5 +1,6 @@
 <template>
   <VRow class="d-flex">
+
     <v-col cols="7">
       <Infographics v-if="formattedDatasetSource.length >= 0" :dataset-source="formattedDatasetSource" />
       <ChildGraph v-if="formattedBranchData.length >= 0" :data-set="formattedBranchData"
@@ -27,6 +28,7 @@ const formattedBranchData = ref([])
 const defaultRegionData = ref({});
 
 const { kpiByBranches } = storeToRefs(kpiStore);
+
 async function getChartData() {
   try {
     if (!period.value.length) {
@@ -34,7 +36,13 @@ async function getChartData() {
     }
 
     const data = await kpiStore.fetchKpiByRegion({ user_type: kpiStore.currentUserType, period: kpiStore.currentPeriod });
+
+    if (!data.length) {
+      return formattedDatasetSource.value = [];
+    }
+
     kpiStore.currentRegion = data[0];
+
     formatData(data);
 
     if (formattedDatasetSource.value.length > 0) {
@@ -49,7 +57,8 @@ async function getBranchesData() {
   try {
     if (formattedDatasetSource.value.length > 0 && formattedDatasetSource.value[0]) {
       const branchData = await kpiStore.fetchKpiByBranches({ region_id: kpiStore.currentRegion?.id });
-      console.log('branchData', branchData)
+
+      if (!branchData[0]) return formattedBranchData.value = [];
       formatBranchData(branchData);
     }
   } catch (error) {
@@ -89,12 +98,23 @@ onMounted(() => {
 
 watch(() => kpiStore.currentPeriod, () => {
   getChartData();
+
 });
 
 watch(() => kpiStore.currentRegion, () => {
   getBranchesData();
 });
+
 watch(() => kpiStore.currentUserType, () => {
   getChartData();
+  kpiStore.fetchBranchTableData({ user_type: kpiStore.currentUserType, period: kpiStore.currentPeriod });
+  getBranchesData();
+
+});
+
+watch(() => formattedDatasetSource, (newValue) => {
+  if (!newValue.length) {
+    return formattedBranchData.value = [];
+  }
 });
 </script>

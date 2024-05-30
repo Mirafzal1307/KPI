@@ -13,6 +13,9 @@
         {{ formatKPI(item.average_kpi) }}
       </template>
       <template #bottom></template>
+      <template #no-data>
+        <span>Ma'lumot yo'q</span>
+      </template>
     </v-data-table>
 
   </v-card>

@@ -37,7 +37,10 @@
     <template #title>
       Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
-    <div id="main" style="block-size: 330px;" class="mx-auto "></div>
+    <div v-show="!datasetSource.length" class="text-center">
+      Ma'lumot yo'q
+    </div>
+    <div id="main" style="block-size: 330px;" class="mx-auto"></div>
   </v-card>
 </template>
 
@@ -153,22 +156,15 @@ const initializeChart = () => {
     const id = params.value[2];
     const name = params.name;
     const average_kpi = params.value[1];
-    console.log('Clicked item ID:', params.data);
-
-
     kpiStore.currentRegion = {
       id: id,
       name: params.name,
-      average_kpi: average_kpi
     };
-
   });
 };
 
-watch(() => props.datasetSource, (newSource) => {
-  if (newSource.length > 0) {
-    initializeChart();
-  }
+watch(() => props.datasetSource, () => {
+  initializeChart();
 });
 
 onMounted(() => {

@@ -47,11 +47,9 @@ export async function getBranchTableData(req) {
 
 export async function getKpiByBranchesDetails(req) {
   try {
-    const { data } = await axios.get('/kpi_new/v1/details-by-branch/get', {
-      period: req.period,
-      branch_id: req.branch_id,
-      user_type: req.user_type,
-    })
+    const { data } = await axios.get(
+      `/kpi_new/v1/details-by-branch/get?period=${req.period}&branch_id=${req.branch_id}&user_type=${req.user_type}`,
+    )
     return data
   } catch (error) {
     console.log(error)
