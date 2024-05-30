@@ -1,13 +1,38 @@
 <script setup>
-import TeamTable from '@/views/dashboard/TeamTable.vue'
-import UserInfoTable from '@/views/dashboard/UserInfoTable.vue'
-import UserProfileCard from '@/views/dashboard/UserProfileCard.vue'
+import { useEmployeeStore } from '@/store/employee';
+import TeamTable from '@/views/dashboard/TeamTable.vue';
+import UserProfileCard from '@/views/dashboard/UserProfileCard.vue';
+import { storeToRefs } from 'pinia';
+
+
+
+const useEmployee = useEmployeeStore();
+
+const { employeeList, period } = storeToRefs(useEmployee);
+const { getEmployeeList, getPeriodList } = useEmployeeStore()
+
+
 
 const headers = ref([
-  { title: 'Name', key: 'name' },
-  { title: 'Age', key: 'age' },
+  { title: 'ID', key: 'emp_id' },
+  { title: 'F.I.SH', key: 'full_name' },
+  { title: 'KPI', key: 'kpi' },
+  { title: 'average_kpi', key: 'average_kpi' },
   // Add more headers as needed
 ]);
+
+const filters = ref({
+  page: 1,
+  size: 10,
+  branch: [],
+  param: null,
+  period: [],
+});
+
+onMounted(() => {
+  getEmployeeList(filters.value.page, filters.value.size, filters.value.branch, filters.value.param, filters.value.period);
+  getPeriodList()
+})
 
 const items = ref([
   { id: 1, name: 'John Doe', age: 30 },
@@ -20,13 +45,7 @@ const items = ref([
   // Add more items as needed
 ]);
 
-const filters = ref({
-  page: 1,
-  size: 2,
-  branch: [],
-  param: '',
-  period: [],
-});
+
 
 const branches = ref([
   { text: 'Branch 1', value: 'branch1' },
@@ -69,15 +88,10 @@ watch(
 
       <v-card class="border pa-4">
         <v-container>
+          {{ period }}
 
           <v-row>
-            <v-col cols="12" md="6">
-              <v-text-field v-model="filters.page" label="Page" type="number"></v-text-field>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-text-field v-model="filters.size" label="Size" type="number" :value="itemsPerPage"
-                @change="updateItemsPerPage"></v-text-field>
-            </v-col>
+          
             <v-col cols="12" md="6">
               <v-autocomplete v-model="filters.branch" :items="branches" label="Branch" multiple></v-autocomplete>
             </v-col>
@@ -85,12 +99,13 @@ watch(
               <v-text-field v-model="filters.param" label="Param"></v-text-field>
             </v-col>
             <v-col cols="12" md="12">
-              <v-autocomplete v-model="filters.period" :items="periods" label="Period" multiple></v-autocomplete>
+              <v-autocomplete v-model="filters.period" :items="period"   item-title="period"
+    item-value="id" label="Period"></v-autocomplete>
             </v-col>
             <v-col cols="12" md="12">
               <v-btn @click="applyFilters">Apply Filters</v-btn>
             </v-col>
-           
+
           </v-row>
         </v-container>
       </v-card>
@@ -98,10 +113,10 @@ watch(
 
     <VCol cols="12" md="9">
       <v-card class="pa-4 border">
-        <VDataTable :headers="headers" :items="items" :items-per-page="itemsPerPage"
+        <VDataTable :headers="headers" :items="employeeList.items" :items-per-page="itemsPerPage"
           @update:items-per-page="updateItemsPerPage" item-value="id" class="text-no-wrap"></VDataTable>
-      
-        </v-card>
+
+      </v-card>
     </VCol>
     <VCol cols="12" md="3">
       <UserProfileCard />

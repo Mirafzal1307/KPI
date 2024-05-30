@@ -1,7 +1,7 @@
 import { getEmpList , getPeriod } from '@/services/employee.service'
 import { ref } from 'vue'
 
-export const useEmployee = defineStore('employee', () => {
+export const useEmployeeStore = defineStore('employee', () => {
   const loading = ref(false)
   const employeeList = ref({})
   const period = ref({})
