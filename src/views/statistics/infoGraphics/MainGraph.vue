@@ -1,61 +1,56 @@
 <template>
   <VRow class="d-flex">
     <v-col cols="7">
-      <MainChartFilter />
-      <Infographics :dataset-source="datasetSource" />
-      <ChildGraph :title-districts="'Samarqand'" class="mt-4" />
+      <Infographics v-if="formattedDatasetSource.length >= 0" :dataset-source="formattedDatasetSource" />
+      <ChildGraph :title-districts="defaultRegionData.name" class="mt-4" />
     </v-col>
     <v-col cols="5">
-      <InfoTable />
+      <InfoTable :items="period" />
     </v-col>
   </VRow>
-
-
 </template>
+
 <script setup>
-import { useChartStore } from '@/store/chartStore';
+import { useKpiStore } from '@/store/kpi';
 import ChildGraph from '@/views/statistics/infoGraphics/ChildGraph.vue';
 import Infographics from '@/views/statistics/infoGraphics/InfoGraphics.vue';
 import InfoTable from '@/views/statistics/infoGraphics/InfoTable.vue';
-import MainChartFilter from '@/views/statistics/infoGraphics/MainChartFilter.vue';
-import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { onMounted, ref } from 'vue';
 
+const kpiStore = useKpiStore();
+const { period, regionKpi } = storeToRefs(kpiStore);
 
-
-const datasetSource = [
-  ['Samarqand', 120, 1],
-  ['Toshkent', 100, 2],
-  ['Navoiy', 99, 3],
-  ['Sirdaryo', 110, 4],
-  ['Buxoro', 87, 5],
-  ['Namangan', 74, 6],
-  ['Fargona', 83, 7],
-  ['Andijon', 92, 8],
-  ['Surxondaryo', 54, 9],
-  ['Qashqadaryo', 75, 10],
-  ['Xorazm', 88, 11],
-  ['Qoraqalpogiston Res', 59, 12]
-];
+const formattedDatasetSource = ref([]);
 
 async function getChartData() {
   try {
-    await chartStore.getChartData();
+    if (!period.value.length) {
+      await kpiStore.fetchKpiPeriods();
+    }
+
+    const data = await kpiStore.fetchKpiByRegion({ user_type: kpiStore.currentUserType, period: kpiStore.currentPeriod });
+    return formatData(data);
   } catch (error) {
     console.log(error);
   }
 }
 
+const defaultRegionData = ref({});
+function formatData(data) {
+  formattedDatasetSource.value = data.map((item, index) => [item.name, item.average_kpi, item.id]);
+  defaultRegionData.value = data[0];
+  return formattedDatasetSource.value;
+}
 
-const chartStore = useChartStore()
-// const getChartData = async () => {
-//   try {
-//     await chartStore.getChartData()
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+
+async function getBranchesData() {
+  kpiStore.fetchKpiPeriods()
+  const data = kpiStore.fetchKpiByBranches({ region_id: 13 });
+}
 
 onMounted(() => {
-  console.log('here')
-})
+  getChartData();
+  getBranchesData();
+});
 </script>
