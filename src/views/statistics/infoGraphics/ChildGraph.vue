@@ -1,44 +1,42 @@
 <template>
-
   <VCard class="border">
     <template #title>
-      {{ props.titleDistricts }} filiallari bo'yicha KPI ko'rsatkichlari (foizda)
+      {{ titleDistricts }} filiallari bo'yicha KPI ko'rsatkichlari (foizda)
     </template>
-    <div id="chart" style="block-size: 310px; " class="mx-auto"></div>
+    <div id="chart" style="block-size: 310px;" class="mx-auto"></div>
   </VCard>
-
-
 </template>
 
 <script setup>
 import * as echarts from 'echarts';
-import { onMounted } from 'vue';
-
-
-
+import { onMounted, watch } from 'vue';
 
 const props = defineProps({
   titleDistricts: {
-    type: [
-      String,
-    ]
+    type: String,
+    required: true
   },
   dataSet: {
     type: Array,
     default: () => []
-
   }
-})
-onMounted(() => {
+});
 
-  var chartDom = document.getElementById('chart');
-  var myChart = echarts.init(chartDom);
-  var option;
+let myChart;
 
-  option = {
+const initializeChart = () => {
+  const chartDom = document.getElementById('chart');
+  myChart = echarts.init(chartDom);
+  updateChart();
+};
+
+const updateChart = () => {
+  if (!myChart) return;
+
+  const option = {
     dataset: [
       {
-        dimensions: ['name', 'age', 'profession', 'score', 'date'],
+        dimensions: ['name', 'score', 'id'],
         source: props.dataSet
       },
       {
@@ -56,11 +54,27 @@ onMounted(() => {
     series: {
       type: 'bar',
       encode: { x: 'name', y: 'score' },
-      datasetIndex: 1
+      datasetIndex: 1,
+      itemStyle: {
+        color: 'blue'
+      }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
     }
   };
 
-  option && myChart.setOption(option);
+  myChart.setOption(option);
+};
 
+onMounted(() => {
+  initializeChart();
+});
+
+watch(() => props.dataSet, () => {
+  updateChart();
 });
 </script>

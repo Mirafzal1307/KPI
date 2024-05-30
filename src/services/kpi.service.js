@@ -23,7 +23,6 @@ export async function getKpiByRegion(req) {
 
 export async function getKpiByBranches(req) {
   try {
-    console.log(req)
     const { data } = await axios.get(
       `/kpi_new/v1/average-by-region-branches/get?region_id=${req.region_id}&period=${req.period}&user_type=${req.user_type}`,
     )

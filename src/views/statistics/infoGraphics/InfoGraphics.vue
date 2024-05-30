@@ -1,8 +1,8 @@
 <template>
   <v-card class="border mb-2 px-4 py-3">
-    <v-row justify="center" class="d-flex justify-center">
-      <v-row justify="center" class="d-flex justify-center">
-        <v-col cols="12 d-flex">
+    <v-row justify="center" class="d-flex justify-center px-2">
+      <v-row justify="center" class="d-flex justify-center px-2">
+        <v-col cols="12 d-flex justify-center">
           <v-col cols="2 d-flex justify-center">
             <v-btn :color="kpiStore.currentUserType === 1 ? 'primary' : ''" color="secondary" :dark="true"
               :class="{ 'primary': kpiStore.currentUserType === 1 }" class="text-caption border"
@@ -37,7 +37,7 @@
     <template #title>
       Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
-    <div id="main" style="block-size: 330px;" class="mx-auto"></div>
+    <div id="main" style="block-size: 330px;" class="mx-auto "></div>
   </v-card>
 </template>
 
@@ -105,12 +105,29 @@ const initializeChart = () => {
         }
       }
     ],
+
     xAxis: {
       type: 'category',
-      axisLabel: { interval: 0, rotate: 30 }
+      axisLabel: {
+        interval: 0,
+        rotate: 30,
+        margin: 6,
+      },
     },
     yAxis: {
       // max: 120
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
     },
 
     series: {
@@ -124,6 +141,9 @@ const initializeChart = () => {
           return getColor(score);
         }
       }
+    },
+    legend: {
+      data: ['Data']
     }
   };
 
@@ -131,8 +151,17 @@ const initializeChart = () => {
 
   myChart.on('click', function (params) {
     const id = params.value[2];
-    console.log('Clicked item ID:', id);
-    const data = kpiStore.fetchKpiByBranches
+    const name = params.name;
+    const average_kpi = params.value[1];
+    console.log('Clicked item ID:', params.data);
+
+
+    kpiStore.currentRegion = {
+      id: id,
+      name: params.name,
+      average_kpi: average_kpi
+    };
+
   });
 };
 

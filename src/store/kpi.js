@@ -16,6 +16,8 @@ export const useKpiStore = defineStore('kpi', {
     regionKpi: [],
     currentPeriod: '2024-04-30',
     currentUserType: 1,
+    currentRegion: {},
+    currentRegionId: null,
   }),
   actions: {
     async fetchBranchTableData(req) {
