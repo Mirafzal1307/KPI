@@ -20,7 +20,7 @@ function logout() {
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
         <VList>
           <!-- 👉 User Avatar & Name -->
-          <VListItem>
+          <!-- <VListItem>
             <template #prepend>
               <VListItemAction start>
                 <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success">
@@ -29,50 +29,50 @@ function logout() {
                   </VAvatar>
                 </VBadge>
               </VListItemAction>
-            </template>
+            </template> -->
 
-            <VListItemTitle class="font-weight-semibold">
+            <!-- <VListItemTitle class="font-weight-semibold">
               John Doe
             </VListItemTitle>
             <VListItemSubtitle>Admin</VListItemSubtitle>
           </VListItem>
-          <VDivider class="my-2" />
+          <VDivider class="my-2" /> -->
 
           <!-- 👉 Profile -->
-          <VListItem link>
+          <!-- <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="ri-user-line" size="22" />
             </template>
 
             <VListItemTitle>Profile</VListItemTitle>
-          </VListItem>
+          </VListItem> -->
 
           <!-- 👉 Settings -->
-          <VListItem link>
+          <!-- <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="ri-settings-4-line" size="22" />
             </template>
 
             <VListItemTitle>Settings</VListItemTitle>
-          </VListItem>
+          </VListItem> -->
 
           <!-- 👉 Pricing -->
-          <VListItem link>
+          <!-- <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="ri-money-dollar-circle-line" size="22" />
             </template>
 
             <VListItemTitle>Pricing</VListItemTitle>
-          </VListItem>
+          </VListItem> -->
 
           <!-- 👉 FAQ -->
-          <VListItem link>
+          <!-- <VListItem link>
             <template #prepend>
               <VIcon class="me-2" icon="ri-question-line" size="22" />
             </template>
 
             <VListItemTitle>FAQ</VListItemTitle>
-          </VListItem>
+          </VListItem> -->
 
           <!-- Divider -->
           <VDivider class="my-2" />
