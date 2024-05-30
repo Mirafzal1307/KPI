@@ -1,43 +1,108 @@
 <template>
-  <v-card class="border">
-    <v-col cols="12 mx-auto mt-4">
-      <v-col cols="12" class="text-center text-h2">
+  <VCard class="border">
+    <VCol cols="12 mx-auto mt-4">
+      <VCol
+        cols="12"
+        class="text-center text-h2"
+      >
         <span class="font-weight-black">Monitoring</span>
-      </v-col>
-      <v-row class="flex justify-center mb-4">
-        <v-col cols="2">
-          <v-autocomplete label="Viloyat" :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            class="mt-4" />
-        </v-col>
-        <v-col cols="2">
-          <v-autocomplete label="Filial/BXM/BXO"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas ', 'Wyoming']" class="mt-4" />
-        </v-col>
-        <v-col cols="2">
-          <v-autocomplete label="Bo'lim" :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            class="mt-4" />
-        </v-col>
-        <v-col cols="2">
-          <v-autocomplete label="Xodim" :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
-            class="mt-4" />
-        </v-col>
-        <v-col cols="2">
-          <v-autocomplete label="Ko'rsatkich"
-            :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']" class="mt-4" />
-        </v-col>
-      </v-row>
-      <v-card-actions>
-        <div id="chart" style="block-size: 400px; inline-size: 100%" class="mx-auto"></div>
-      </v-card-actions>
-    </v-col>
-  </v-card>
+      </VCol>
+      <VRow class="flex justify-center mb-4">
+        <VCol cols="6">
+          <VAutocomplete
+            v-model="branchId"
+            label="Filial"
+            item-title="name"
+            clearable
+            item-value="id"
+            :items="branchList"
+            class="mt-4"
+            @update:model-value="getDivisionByBranch"
+          />
+        </VCol>
+        <VCol cols="6">
+          <VAutocomplete
+            label="Blok"
+            class="mt-4"
+          />
+        </VCol>
+        <VCol cols="6">
+          <VAutocomplete
+            label="Departament"
+            class="mt-4"
+          />
+        </VCol>
+        <VCol cols="6">
+          <VAutocomplete
+            label="Boshqarma"
+            class="mt-4"
+          />
+        </VCol>
+        <VCol cols="6">
+          <VAutocomplete
+            label="Bo'lim"
+            class="mt-4"
+          />
+        </VCol>
+        <VCol cols="6">
+          <VAutocomplete
+            label="KPI ko'rsatkichi"
+            class="mt-4"
+          />
+        </VCol>
+      </VRow>
+      <VCardActions>
+        <div
+          id="chart"
+          style="block-size: 400px; inline-size: 100%"
+          class="mx-auto"
+        />
+      </VCardActions>
+    </VCol>
+  </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import { onMounted } from 'vue';
+import * as echarts from 'echarts'
+import { onMounted } from 'vue'
+import { fetchBranchList } from '@/services/main.office.service'
+
+const branchId=ref(null)
+const branchList = ref ([])
+async function getBranchList() {
+  branchList.value = await fetchBranchList()
+}
+
+const divisionsList= ref([])
+const indicatorsList= ref([])
+const indicatorDetailsList= ref([])
+const managementsList= ref([])
+
+async function getDivisionByBranch() {
+  if (!branchId.value) {
+    divisionsList.value = []
+    indicatorsList.value = []
+    indicatorDetailsList.value = []
+    managementsList.value = []
+  }
+  this.divisionId = null
+  this.cell = 'branch'
+  this.cellId = this.branch_id
+  if (this.branch_id) {
+    // const data = await this.$store.dispatch('kpiIndicator/getDataByBranch', branchId.value)
+    // this.divisionsList = data.divisions
+    // this.managementsList = data.managements
+    // this.departmentsList = data.departments
+    // this.blocksList = await this.$store.dispatch('kpiIndicator/getBlockByBranch',branchId.value)
+    // // await this.getIndicatorsList()
+    // // await this.getIndicatorDetails()
+  }
+}
+
 
 onMounted(() => {
+  getBranchList()
+
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
 
