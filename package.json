@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "lint": "eslint . -c .eslintrc.cjs --fix --ext .ts,.js,.cjs,.vue,.tsx,.jsx",
@@ -26,6 +26,7 @@
     "prismjs": "^1.29.0",
     "roboto-fontface": "^0.10.0",
     "vue": "^3.3.4",
+    "vue-echarts": "^6.7.2",
     "vue-flatpickr-component": "11.0.3",
     "vue-prism-component": "^2.0.0",
     "vue-router": "^4.2.5",

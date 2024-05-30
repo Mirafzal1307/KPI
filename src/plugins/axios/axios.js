@@ -2,7 +2,7 @@ import { useUserStore } from '@/store/user'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
 
-const userStore = useUserStore()
+// const userStore = useUserStore()
 
 axios.defaults.baseURL = 'http://172.29.64.65:8000'
 
@@ -24,6 +24,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   response => response,
   error => {
+    const userStore = useUserStore()
+
     if (error?.response?.status.includes(500)) {
       toast.error('Серверда хатолик!')
     }
@@ -31,14 +33,17 @@ axios.interceptors.response.use(
       userStore.logout()
       toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
     }
-    return error
+
+    return Promise.reject(error)
   },
 )
 
 axios.interceptors.response.use(
   config => config,
   error => {
-    const { logout } = useUserStore()
+    // const { logout } = useUserStore()
+
+    const userStore = useUserStore()
 
     if (error.response?.status === 400 && error.response.data?.message.includes('Already authenticated')) {
       userStore.logout()
@@ -53,7 +58,7 @@ axios.interceptors.response.use(
 
     if (error.message === 'Network Error') toast.error('Серверда хатолик юз берди, илтимос қайтадан уриниб кўринг')
 
-    return error
+    return Promise.reject(error)
   },
 )
 

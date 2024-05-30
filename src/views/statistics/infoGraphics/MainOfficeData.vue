@@ -1,134 +1,206 @@
 <template>
-  <v-card class="border">
+  <VCard class="border">
+    <VRow class="px-4">
+      <VCol
+        cols="12"
+        md="5"
+      >
+        <VSelect
+          v-model="dataParams.type"
+          item-title="name"
+          item-value="value"
+          :items="[{name:'Rahbariyat', value:1},{name:'Tarkibiy bo`linma', value:2}]"
+          @update:model-value="getStatistics"
+        />
+      </VCol>
+      <VCol
+        cols="12"
+        md="2"
+      />
+      <VCol
+        cols="12"
+        md="5"
+      >
+        <VSelect
+          v-model="dataParams.period"
+          :items="periodList"
+          label="Davr bo'yicha"
+          item-title="period"
+          item-value="period"
+          @update:model-value="getStatistics"
+        />
+      </VCol>
+    </VRow>
+    <VCardItem class="text-right text-h5">
+      <span class="font-weight-bold"> O'rtacha KPI natijasi: </span> <span :class="getColor(statistics.all_kpi)"> {{ statistics.average_kpi }} </span>
+    </VCardItem>
     <template #title>
       Bosh ofis bo'yicha KPI ko'rsatkichlari boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
-    <div id="main" style="block-size: 1050px;" class="mx-auto"></div>
-  </v-card>
+    <VSheet
+      v-show="dataParams.type === 1"
+      id="main"
+      height="300"
+    />
+    <VSheet
+      v-show="dataParams.type === 2"
+      id="second"
+      height="1000"
+    />
+  </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
+import * as echarts from 'echarts'
+import { onMounted, watch } from 'vue'
 
-const props = defineProps({
-  datasetSource: {
-    type: Array,
-    default: () => []
-  }
-});
+import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service'
+
+const datasetSourceItem = ref([])
 
 const initializeChart = () => {
-  var chartDom = document.getElementById('main');
-  var myChart = echarts.init(chartDom);
+  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second')
 
-  const datasetSource = [
-    { name: 'Region A', score: 85, id: 1 },
-    { name: 'Region B', score: 72, id: 2 },
-    { name: 'Region C', score: 91, id: 3 },
-    { name: 'Region D', score: 68, id: 4 },
-    { name: 'Region E', score: 79, id: 5 },
-    { name: 'Region F', score: 83, id: 6 },
-    { name: 'Region G', score: 67, id: 7 },
-    { name: 'Region H', score: 89, id: 8 },
-    { name: 'Region I', score: 75, id: 9 },
-    { name: 'Region J', score: 78, id: 10 },
-    { name: 'Region K', score: 88, id: 11 },
-    { name: 'Region L', score: 82, id: 12 },
-    { name: 'Region M', score: 73, id: 13 },
-    { name: 'Region N', score: 90, id: 14 },
-    { name: 'Region O', score: 77, id: 15 },
-    { name: 'Region P', score: 81, id: 16 },
-    { name: 'Region Q', score: 87, id: 17 },
-    { name: 'Region R', score: 74, id: 18 },
-    { name: 'Region S', score: 86, id: 19 },
-    { name: 'Region T', score: 76, id: 20 },
-    { name: 'Region U', score: 80, id: 21 },
-    { name: 'Region V', score: 71, id: 22 },
-    { name: 'Region W', score: 84, id: 23 },
-    { name: 'Region X', score: 92, id: 24 },
-    { name: 'Region Y', score: 69, id: 25 },
-    { name: 'Region Z', score: 93, id: 26 },
-    { name: 'Region AA', score: 94, id: 27 },
-    { name: 'Region AB', score: 95, id: 28 },
-    { name: 'Region AC', score: 96, id: 29 },
-    { name: 'Region AD', score: 97, id: 30 },
-  ];
+  // if (dataParams.value.type === 1) {
+  //   chartDom.style.height = '300px'
+  // }
+  // if(dataParams.value.type === 2) {
+  //   chartDom.style.height = '800px'
+  // }
 
-  const scores = datasetSource.map(item => item.score).sort((a, b) => a - b);
-  const minScore = scores[0];
-  const maxScore = scores[scores.length - 1];
+  const myChart = echarts.init(chartDom)
 
-  const getColor = (score) => {
-    const ratio = (score - minScore) / (maxScore - minScore);
-    const green = Math.round((1 - ratio) * 255);
-    const red = Math.round(ratio * 255);
-    return `rgb(${green}, ${red}, 0)`;
-  };
+  const datasetSource = datasetSourceItem.value
 
-  var option = {
+  // const scores = datasetSource.map(item => item.kpi)
+  // const minScore = scores[0]
+  // const maxScore = scores[100]
+
+  // const getColor = score => {
+  //   const ratio = (score - minScore) / (maxScore - minScore)
+  //   const green = Math.round((1 - ratio) * 255)
+  //   const red = Math.round(ratio * 255)
+  //
+  //   return `rgb(${green}, ${red}, 0)`
+  // }
+
+  const option = {
     dataset: [
       {
-        dimensions: ['name', 'score', 'id'],
-        source: datasetSource
+        dimensions: ['name', 'kpi', 'id'],
+        source: datasetSource,
       },
       {
         transform: {
           type: 'sort',
-          config: { dimension: 'score', order: 'desc' }
-        }
-      }
+          config: { dimension: 'kpi', order: 'asc' },
+        },
+      },
+
     ],
+
     yAxis: {
       type: 'category',
-      axisLabel: { interval: 0 }
+      axisLabel: { interval: 0 },
     },
     xAxis: {
-      type: 'value'
+      type: 'value',
+      data: [100],
+      max: 100,
     },
+
     series: {
+      label: {
+        show: true,
+        fontSize: 14,
+        position: 'right',
+        formatter(value) {
+          return `${value.value.kpi} %`
+        },
+      },
       type: 'bar',
-      encode: { y: 'name', x: 'score' },
+      encode: { y: 'name', x: 'kpi' },
       datasetIndex: 1,
-      itemStyle: {
-        color: function (params) {
-          const score = params.value[1];
-          return getColor(score);
-        }
-      }
+
+      // itemStyle: {
+      //   color: function (params) {
+      //     const score = params.value[1]
+      //
+      //     // return getColor(score)
+      //   },
+      // },
     },
     tooltip: {
+      show: true,
       trigger: 'axis',
       axisPointer: {
-        type: 'shadow'
-      }
+        type: 'shadow',
+      },
     },
     grid: {
       left: '3%',
       right: '4%',
       bottom: '3%',
-      containLabel: true
+      containLabel: true,
     },
     legend: {
-      data: ['Data']
-    }
-  };
+      data: ['Data'],
+    },
+  }
 
-  myChart.setOption(option);
+  myChart.setOption(option)
 
   myChart.on('click', function (params) {
-    const id = params.value[2];
-    console.log('Clicked item ID:', id);
-  });
-};
+    const id = params.value[2]
 
-watch(() => props.datasetSource, (newSource) => {
-  if (newSource.length > 0) {
-    initializeChart(); // Re-initialize chart when data changes
+    console.log('Clicked item ID:', id)
+  })
+}
+
+
+watch(datasetSourceItem, () => {
+  initializeChart()
+})
+
+const dataParams = ref({
+  period: null,
+  type: 1,
+})
+
+const periodList = ref ([])
+async function getPeriodList() {
+  periodList.value = await fetchPeriodList()
+  dataParams.value.period=periodList.value[0]?.period
+  await getStatistics()
+}
+
+const statistics = ref({
+  // eslint-disable-next-line camelcase
+  average_kpi: null,
+  // eslint-disable-next-line camelcase
+  all_kpi: [],
+})
+
+async function getStatistics() {
+  if (!dataParams.value.period) return
+  const result = await fetchStatistics(dataParams)
+  if (result){
+    // eslint-disable-next-line camelcase
+    statistics.value.all_kpi = result.all_kpi
+    // eslint-disable-next-line camelcase
+    statistics.value.average_kpi = result.average_kpi
+    datasetSourceItem.value = statistics.value.all_kpi
   }
-});
+}
+
 
 onMounted(() => {
-  initializeChart();
-});
+  getPeriodList()
+})
+
+function getColor(kpiResult){
+  if (kpiResult>85) return 'font-weight-bold text-success'
+
+  return 'font-weight-bold text-error'
+}
 </script>
