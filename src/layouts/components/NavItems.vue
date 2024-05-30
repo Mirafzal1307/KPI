@@ -101,16 +101,16 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     heading: 'Apps & Pages',
   }" />
 
-  <VerticalNavLink :item="{
+  <!-- <VerticalNavLink :item="{
     title: 'Monitoring Statisatikasi',
     icon: 'ri-line-chart-line',
     to: '/monitoring-statistics',
-  }" />
+  }" /> -->
 
 
 
   <VerticalNavGroup :item="{
-    title: 'InfoGraphic',
+    title: 'Info Grafika',
     icon: 'ri-bar-chart-2-line',
   }">
     <VerticalNavLink :item="{
