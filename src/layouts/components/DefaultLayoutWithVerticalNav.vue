@@ -1,8 +1,8 @@
 <script setup>
-import Footer from '@/layouts/components/Footer.vue';
-import NavItems from '@/layouts/components/NavItems.vue';
-import UserProfile from '@/layouts/components/UserProfile.vue';
-import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue';
+import Footer from '@/layouts/components/Footer.vue'
+import NavItems from '@/layouts/components/NavItems.vue'
+import UserProfile from '@/layouts/components/UserProfile.vue'
+import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue'
 </script>
 
 <template>
@@ -11,22 +11,25 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue';
     <template #navbar="{ toggleVerticalOverlayNavActive }">
       <div class="d-flex h-100 align-center vertical-nav-items-shadow nav">
         <!-- 👉 Vertical nav toggle in overlay mode -->
-        <IconBtn class="ms-n3 d-lg-none" @click="toggleVerticalOverlayNavActive(true)">
+        <IconBtn
+          class="ms-n3 d-lg-none"
+          @click="toggleVerticalOverlayNavActive(true)"
+        >
           <VIcon icon="ri-menu-line" />
         </IconBtn>
 
         <!-- 👉 Search -->
-        <div class="d-flex align-center cursor-pointer" style="user-select: none">
-          <!-- 👉 Search Trigger button -->
-          <IconBtn>
-            <VIcon icon="ri-search-line" />
-          </IconBtn>
+        <!--        <div class="d-flex align-center cursor-pointer" style="user-select: none"> -->
+        <!--          &lt;!&ndash; 👉 Search Trigger button &ndash;&gt; -->
+        <!--          <IconBtn> -->
+        <!--            <VIcon icon="ri-search-line" /> -->
+        <!--          </IconBtn> -->
 
-          <span class="d-none d-md-flex align-center text-disabled">
-            <span class="me-3">Search</span>
-            <span class="meta-key">&#8984;K</span>
-          </span>
-        </div>
+        <!--          <span class="d-none d-md-flex align-center text-disabled"> -->
+        <!--            <span class="me-3">Search</span> -->
+        <!--            <span class="meta-key">&#8984;K</span> -->
+        <!--          </span> -->
+        <!--        </div> -->
 
         <VSpacer />
 
@@ -39,14 +42,24 @@ import VerticalNavLayout from '@layouts/components/VerticalNavLayout.vue';
     </template>
 
     <template #vertical-nav-header="{ toggleIsOverlayNavActive }">
-      <v-col cols="12">
-        <RouterLink to="/" class="app-logo app-title-wrapper ">
-          <img src="../../assets/images/1MKBANK.png" alt="logo" width="240px" />
+      <VCol cols="12">
+        <RouterLink
+          to="/"
+          class="app-logo app-title-wrapper "
+        >
+          <img
+            src="../../assets/images/1MKBANK.png"
+            alt="logo"
+            width="240px"
+          >
         </RouterLink>
-      </v-col>
+      </VCol>
 
 
-      <IconBtn class="d-block d-lg-none" @click="toggleIsOverlayNavActive(false)">
+      <IconBtn
+        class="d-block d-lg-none"
+        @click="toggleIsOverlayNavActive(false)"
+      >
         <VIcon icon="ri-close-line" />
       </IconBtn>
     </template>
