@@ -1,6 +1,6 @@
 <script>
-import { useDisplay } from 'vuetify'
-import VerticalNav from '@layouts/components/VerticalNav.vue'
+import VerticalNav from '@layouts/components/VerticalNav.vue';
+import { useDisplay } from 'vuetify';
 
 export default defineComponent({
   setup(props, { slots }) {
@@ -86,10 +86,10 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    background-color: #f8fafc !important;
     min-block-size: 100dvh;
     transition: padding-inline-start 0.2s ease-in-out;
     will-change: padding-inline-start;
-    background-color: #f8fafc!important;
 
     @media screen and (min-width: 1280px) {
       padding-inline-start: variables.$layout-vertical-nav-width;
@@ -97,10 +97,10 @@ export default defineComponent({
   }
 
   .layout-navbar {
-    z-index: variables.$layout-vertical-nav-layout-navbar-z-index;
     position: sticky;
-    top: 0;
-    
+    z-index: variables.$layout-vertical-nav-layout-navbar-z-index;
+    inset-block-start: 0;
+
 
     .navbar-content-container {
       block-size: variables.$layout-vertical-nav-navbar-height;
@@ -111,7 +111,9 @@ export default defineComponent({
         .layout-navbar {
           @if variables.$layout-vertical-nav-navbar-is-contained {
             @include mixins.boxed-content;
-          } @else {
+          }
+
+          @else {
             .navbar-content-container {
               @include mixins.boxed-content;
             }
@@ -138,7 +140,7 @@ export default defineComponent({
   .layout-overlay {
     position: fixed;
     z-index: variables.$layout-overlay-z-index;
-    background-color: rgba(194, 63, 63, 0.6) !important;
+    background-color: rgba(194, 63, 63, 60%) !important;
     cursor: pointer;
     inset: 0;
     opacity: 0;
