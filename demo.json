@@ -1,0 +1,45 @@
+{
+    "jsonrpc": "2.0",
+    "id": "13579",
+    "result": {
+        "res_id": 1675286008578,
+        "res_code": 10,
+        "res_note": "Арест/запрет 1740366 был ранее снят",
+        "reg_date": "2024-04-16T08:59:08.347",
+        "ban_info": {
+            "doc_type": 32,
+            "doc_num": "202002003004174",
+            "doc_date": "2020-07-17",
+            "org_type": 6,
+            "org_name": "нотариус, Яшнабадского района города Ташкента, занимающийся частной практикой",
+            "org_post": 10,
+            "org_fio": "YOKUBOV DONIYORBEK MANSURBEK O‘G‘LI"
+        },
+        "ban_cancel_info": {
+            "doc_type": 39,
+            "doc_num": "01-08/1468",
+            "doc_date": "2024-04-02",
+            "org_type": 17,
+            "org_name": "Mikrokreditbank ATB",
+            "org_post": 24,
+            "org_fio": "Admin Adminov"
+        },
+        "members": [
+            {
+                "type": 1,
+                "first_name": "MUXAMMADRIZO",
+                "sur_name": "ABDUG‘OFUROV",
+                "last_name": "DILMUROD O‘G‘LI",
+                "birth_date": "15.09.1991",
+                "pin": "31509910580058"
+            }
+        ],
+        "subject": {
+            "type": 2,
+            "cadastre_num": "11:12:08:01:03:1173",
+            "district": "Ўртачирчиқ тумани",
+            "street": "Йунгичколи КФЙ, Гулобод МФЙ",
+            "obj_name": "Йунгичколи КФЙ, Гулобод МФЙ"
+        }
+    }
+}

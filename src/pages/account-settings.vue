@@ -24,7 +24,7 @@ const tabs = [
     icon: 'ri-notification-3-line',
     tab: 'notification',
   },
-]
+];
 </script>
 
 <template>

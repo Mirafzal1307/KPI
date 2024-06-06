@@ -9,7 +9,7 @@ const vuetifyTheme = useTheme()
 
 const authThemeMask = computed(() => {
   return vuetifyTheme.global.name.value === 'light' ? miscMaskLight : miscMaskDark
-})
+});
 </script>
 
 <template>

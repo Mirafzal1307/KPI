@@ -131,7 +131,7 @@ const deleteModal = ref(false);
 onMounted(() => {
   getBranches()
   getRegions()
-})
+});
 
 
 </script>

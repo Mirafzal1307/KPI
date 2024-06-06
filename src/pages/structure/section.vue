@@ -74,7 +74,7 @@ const data = [
     name: 'Village',
   },
 ];
-const dialog = ref(false)
+const dialog = ref(false);
 </script>
 
 <style>
