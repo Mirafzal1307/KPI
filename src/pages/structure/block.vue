@@ -13,15 +13,12 @@
                   Ko'rsatkich biriktirish
                 </VBtn>
               </template>
-
               <VCard prepend-icon="mdi-map-marker"
                 text="Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
                 title="Use Google's location service?">
                 <template v-slot:actions>
                   <VSpacer></VSpacer>
-
                   <VBtn @click="dialog = false"> Disagree </VBtn>
-
                   <VBtn @click="dialog = false"> Agree </VBtn>
                 </template>
               </VCard>
@@ -74,7 +71,7 @@ const data = [
     name: 'Village',
   },
 ];
-const dialog = ref(false)
+const dialog = ref(false);
 </script>
 
 <style>

@@ -67,7 +67,7 @@ const login = async () => {
   }
 }
 
-console.log(form)
+console.log(form);
 
 </script>
 

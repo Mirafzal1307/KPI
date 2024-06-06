@@ -68,7 +68,7 @@ const getEmployeeKPI_ByID = async (id) => {
 
 function formatNumberRoundDown(num) {
   return Math.floor(num * 100) / 100;
-}
+};
 
 
 </script>
