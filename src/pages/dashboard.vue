@@ -6,15 +6,13 @@ import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 
 const branchStore = useBranchStore()
-const { allBranches, } = storeToRefs(branchStore)
-const { getBranches, } = useBranchStore()
+const { allBranches, allRegions } = storeToRefs(branchStore)
+const { getBranches, getRegions, getBranchesByRegionId } = useBranchStore()
 
 const useEmployee = useEmployeeStore();
 
-const { employeeList, period, employee_KPI } = storeToRefs(useEmployee);
+const { employeeList, period, employee_KPI, } = storeToRefs(useEmployee);
 const { getEmployeeList, getPeriodList, getEmployeeKpiById } = useEmployeeStore()
-
-const activeItem = ref(null);
 
 
 const headers = ref([
@@ -31,12 +29,14 @@ const filters = ref({
   branch: null,
   param: null,
   period: null,
+  region: null,
 });
 
 onMounted(() => {
   getEmployeeList(filters.value.page, filters.value.size, filters.value.branch, filters.value.param, filters.value.period);
   getPeriodList()
   getBranches()
+  getRegions()
 })
 
 
@@ -61,7 +61,6 @@ const getEmployeeKPI_ByID = async (item) => {
   });
   item.isActive = true;
   await getEmployeeKpiById(item.emp_id, '2024-03-30');
-
 }
 
 function formatNumberRoundDown(num) {
@@ -73,6 +72,10 @@ function getTableClass(item) {
     return 'active-item'
 };
 
+watch(filters.value, (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+  getBranchesByRegionId(filters.value.region)
+});
 
 </script>
 
@@ -82,20 +85,26 @@ function getTableClass(item) {
       <v-card class="border pa-4">
         <v-container>
           <v-row v-if="period.length">
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="6">
               <v-text-field v-model="filters.param" label="Qidirish"></v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
-              <v-autocomplete v-model="filters.branch" :items="allBranches" label="Filial"
-                item-title="branch_name" item-value="id"></v-autocomplete>
+
+            <v-col cols="12" md="6">
+              <v-autocomplete v-model="filters.region" :items="allRegions" item-title="region_name_uz/" item-value="id"
+                label="Hudud" />
             </v-col>
-      
-            <v-col cols="12" md="3">
+
+            <v-col cols="12" md="6">
+              <v-autocomplete v-model="filters.branch" :items="allBranches" label="Filial" item-title="branch_name"
+                item-value="id"></v-autocomplete>
+            </v-col>
+
+            <v-col cols="12" md="6">
               <v-autocomplete v-model="filters.period" :items="period" item-title="period" item-value="id"
                 label="Davr" />
             </v-col>
             <v-col cols="12" md="3">
-              <v-btn @click="applyFilters" class="w-100 h-100">Qidirish</v-btn>
+              <v-btn @click="applyFilters" class=" px-16 w-100">Qidirish</v-btn>
             </v-col>
           </v-row>
         </v-container>

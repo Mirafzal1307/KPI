@@ -8,7 +8,14 @@ export const getAllBranches = async () => {
 }
 
 export const getAllRegions = async () => {
-  const data = await axios.get('branch/v1/regions/all')
+  const data = await axios.get('branch/v1/read/regions')
+
+  return data
+}
+
+
+export const getBranchByRegionID = async (id) => {
+  const data = await axios.get(`branch/v1/by-region?region_id=${id}`)
 
   return data
 }
