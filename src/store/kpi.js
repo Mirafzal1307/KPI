@@ -4,6 +4,7 @@ import {
   getKpiByBranchesDetails,
   getKpiByRegion,
   getKpiPeriods,
+  getChildGraphData,
 } from '@/services/kpi.service'
 import { defineStore } from 'pinia'
 
@@ -69,6 +70,14 @@ export const useKpiStore = defineStore('kpi', {
       try {
         const data = await getKpiByRegion(req)
         this.regionKpi = data
+        return data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getChildGraphAnnualData(req) {
+      try {
+        const data = await getChildGraphData(req)
         return data
       } catch (error) {
         console.log(error)
