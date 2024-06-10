@@ -1,6 +1,7 @@
 import {
   getBranchTableData,
   getChildGraphData,
+  getDepartmentsTbData,
   getKpiByBranches,
   getKpiByBranchesDetails,
   getKpiByRegion,
@@ -19,6 +20,7 @@ export const useKpiStore = defineStore('kpi', {
     currentUserType: 1,
     currentRegion: {},
     currentRegionId: null,
+    departmentChart: [],
   }),
   actions: {
     async fetchBranchTableData(req) {
@@ -74,6 +76,15 @@ export const useKpiStore = defineStore('kpi', {
     async getChildGraphAnnualData(req) {
       try {
         const data = await getChildGraphData(req)
+        return data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getDepartmentBarData(req) {
+      try {
+        const data = await getDepartmentsTbData(req)
+        this.departmentChart = data
         return data
       } catch (error) {
         console.log(error)

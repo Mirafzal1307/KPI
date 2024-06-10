@@ -13,10 +13,9 @@
           <VToolbar>
             <VToolbarTitle v-if="tab == 0">Yillik KPI ko'rsatkichlari (foizda)</VToolbarTitle>
             <VToolbarTitle v-if="tab == 1">{{ currentPeriod }} davridagi KPI ma'lumotlari </VToolbarTitle>
-
             <VSpacer />
             <VToolbarItems>
-              <VBtn icon @click="dialog = false">
+              <VBtn icon @click="close()">
                 <VIcon>ri-close-large-line</VIcon>
               </VBtn>
             </VToolbarItems>
@@ -24,13 +23,9 @@
           <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
             <VTab>Grafik</VTab>
             <VTab v-if="kpiByBranchesDetails.length > 0">Jadval</VTab>
-
           </VTabs>
-
-
           <VWindow v-model="tab" class="fixed-height">
             <VWindowItem>
-
               <div id="branch-annual-chart" style="block-size: 400px;"></div>
             </VWindowItem>
             <VWindowItem>
@@ -41,17 +36,14 @@
                     <td>{{ item.category }}</td>
                     <td>{{ item.indicator }}</td>
                     <td>{{ formatAndMultiply(item.branch_kpi) }}</td>
-                    <td>{{ item.plan }}</td>
-                    <td>{{ item.fact }}</td>
-                    <td>{{ item.done_percent }}</td>
+                    <td>{{ formatNumberTable(item.plan) }}</td>
+                    <td>{{ formatNumberTable(item.fact) }}</td>
+                    <td>{{ formatNumberTable(item.done_percent) }}</td>
                     <td>{{ formatAndMultiply(item.weight) }}</td>
                     <td>{{ formatAndMultiply(item.kpi_percent) }}</td>
                     <td>{{ formatAndMultiply(item.min_percent) }}</td>
                     <td>{{ formatAndMultiply(item.max_percent) }}</td>
                   </tr>
-                </template>
-                <template #bottom>
-
                 </template>
               </VDataTable>
             </VWindowItem>
@@ -86,14 +78,17 @@ const formatAndMultiply = number => {
   const formattedNum = Math.floor(number * 100) / 100;
   return formattedNum * 100;
 };
+const close = () => {
+  dialog.value = false;
+  tab.value = 0;
+};
 
 const dialog = ref(false);
 const tab = ref(0);
 const selectedBarId = ref(null);
 let myChart;
-let modalChart;
 let annualChart;
-const currentPeriod = ref(null)
+const currentPeriod = ref(null);
 
 const headers = [
   { title: 'ID', value: 'id' },
@@ -127,8 +122,7 @@ const handleChartClick = async params => {
         });
         dialog.value = true;
         nextTick(() => {
-          initializeModalChart();
-          initializeAnnualChart(chartData); // Initialize the annual chart
+          initializeAnnualChart(chartData);
         });
       }
     }
@@ -146,29 +140,39 @@ const initializeChart = () => {
   }
 };
 
-const initializeModalChart = () => {
-  const chartDom = document.getElementById('modal-chart');
-  if (chartDom) {
-    modalChart = echarts.init(chartDom);
-    updateChart(modalChart, props.dataSet);
-    modalChart.resize();
+const formatNumberTable = input => {
+  const number = parseFloat(input);
+  if (isNaN(number)) {
+    throw new Error('Invalid input: Please provide a valid number or string representation of a number');
   }
+  return number.toFixed(2);
 };
 
 const initializeAnnualChart = (data) => {
   const chartDom = document.getElementById('branch-annual-chart');
   if (chartDom) {
     annualChart = echarts.init(chartDom);
+
+    const months = [
+      'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+      'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+    ];
+
+    const filledData = months.map((month, index) => {
+      const monthData = data.find(d => new Date(d.period).getMonth() === index);
+      return monthData ? { period: month, average_kpi: monthData.average_kpi } : { period: month, average_kpi: 0 };
+    });
+
     const option = {
       xAxis: {
         type: 'category',
-        data: data.map(item => item.period),
+        data: filledData.map(item => item.period),
       },
       yAxis: {
         type: 'value',
       },
       series: [{
-        data: data.map(item => item.average_kpi),
+        data: filledData.map(item => item.average_kpi),
         type: 'bar',
         smooth: true,
         label: {
@@ -184,14 +188,13 @@ const initializeAnnualChart = (data) => {
         },
       },
     };
+
     annualChart.setOption(option);
     annualChart.resize();
     annualChart.on('click', function (params) {
       currentPeriod.value = params.name;
-      getTableData(params?.name);
+      getTableData(params.name);
     });
-
-
   }
 };
 
@@ -282,6 +285,7 @@ watch(() => props.dataSet, () => {
   updateChart(myChart, props.dataSet);
 });
 </script>
+
 <style scoped>
 .fixed-height {
   block-size: 600px;

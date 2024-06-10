@@ -13,42 +13,69 @@
       </VCol>
     </VRow>
     <VCardItem class="text-right text-h5">
-      <span class="font-weight-bold"> O'rtacha KPI natijasi: </span> <span :class="colorify(statistics.all_kpi)"> {{
-        statistics.average_kpi }} </span>
+      <span class="font-weight-bold"> O'rtacha KPI natijasi: </span>
+      <span :class="colorify(statistics.average_kpi)"> {{ statistics.average_kpi }} </span>
     </VCardItem>
     <template #title>
       Bosh ofis bo'yicha KPI ko'rsatkichlari boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
     <VSheet v-show="dataParams.type === 1" id="main" height="300" />
     <VSheet v-show="dataParams.type === 2" id="second" height="1000" />
+    <VDialog v-model="dialog" transition="dialog-bottom-transition">
+      <VCard>
+        <VToolbar>
+          <VToolbarTitle> {{ currentDepartment }}ning yillik KPI ko'rsatkichi </VToolbarTitle>
+          <VSpacer />
+          <VToolbarItems>
+            <VBtn icon @click="dialog = false">
+              <VIcon>ri-close-large-line</VIcon>
+            </VBtn>
+          </VToolbarItems>
+        </VToolbar>
+        <VWindow v-model="tab" class="fixed-height">
+          <VWindowItem>
+            <div id="departments-annual-chart" style="block-size: 400px;"></div>
+          </VWindowItem>
+        </VWindow>
+      </VCard>
+    </VDialog>
   </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
-
 import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service';
+import { useKpiStore } from '@/store/kpi';
+import * as echarts from 'echarts';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
-const datasetSourceItem = ref([])
+const kpiStore = useKpiStore();
+const { departmentChart } = storeToRefs(kpiStore);
+const datasetSourceItem = ref([]);
+const dialog = ref(false);
+const departmentChartData = ref([]);
+const tab = ref(0);
+const currentDepartment = ref('null');
 
-const initializeChart = () => {
-  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second')
-  const myChart = echarts.init(chartDom)
-  const datasetSource = datasetSourceItem.value
+const initializeChart = async () => {
+  await nextTick(); // Ensure the DOM is updated before initializing the chart
 
-  if (!datasetSource.length) return
-  const scores = datasetSource.map(item => item.kpi)
-  const minScore = Math.min(...scores)
-  const maxScore = Math.max(...scores)
+  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second');
+  if (!chartDom) return;
+
+  const myChart = echarts.init(chartDom);
+  const datasetSource = datasetSourceItem.value;
+
+  if (!datasetSource.length) return;
+  const scores = datasetSource.map(item => item.kpi);
+  const minScore = Math.min(...scores);
+  const maxScore = Math.max(...scores);
 
   const getColor = score => {
-    console.log(score)
-    const ratio = (score - minScore) / (maxScore - minScore)
-    const green = Math.round((1 - ratio) * 255)
-    const red = Math.round(ratio * 255)
-    return `rgb(${green}, ${red}, 0)`
-  }
+    const ratio = (score - minScore) / (maxScore - minScore);
+    const green = Math.round((1 - ratio) * 255);
+    const red = Math.round(ratio * 255);
+    return `rgb(${green}, ${red}, 0)`;
+  };
 
   const option = {
     dataset: [
@@ -77,7 +104,7 @@ const initializeChart = () => {
         fontSize: 14,
         position: 'right',
         formatter(value) {
-          return `${value.value.kpi} %`
+          return `${value.value.kpi} %`;
         },
       },
       type: 'bar',
@@ -85,8 +112,8 @@ const initializeChart = () => {
       datasetIndex: 1,
       itemStyle: {
         color: function (params) {
-          const score = params.value.kpi
-          return getColor(score)
+          const score = params.value.kpi;
+          return getColor(score);
         },
       },
     },
@@ -106,59 +133,120 @@ const initializeChart = () => {
     legend: {
       data: ['Data'],
     },
-  }
+  };
 
-  myChart.setOption(option)
+  myChart.setOption(option);
 
   myChart.on('click', function (params) {
-    const id = params.value[2]
-    console.log('Clicked item ID:', id)
-  })
-}
-
-watch(datasetSourceItem, () => {
-  initializeChart()
-})
+    currentDepartment.value = params?.data?.name;
+    getDepartmentChartData(params?.data?.id);
+  });
+};
 
 const dataParams = ref({
   period: null,
-  type: 1,
-})
+  type: 2,
+});
 
-const periodList = ref([])
+const periodList = ref([]);
 async function getPeriodList() {
-  periodList.value = await fetchPeriodList()
-  dataParams.value.period = periodList.value[0]?.period
-  await getStatistics()
+  periodList.value = await fetchPeriodList();
+  dataParams.value.period = periodList.value[0]?.period;
+  await getStatistics();
 }
 
 const statistics = ref({
   average_kpi: null,
   all_kpi: [],
-})
+});
 
 async function getStatistics() {
-  if (!dataParams.value.period) return
-  const result = await fetchStatistics(dataParams)
+  if (!dataParams.value.period) return;
+  const result = await fetchStatistics(dataParams);
   if (result) {
-    statistics.value.all_kpi = result.all_kpi
-    statistics.value.average_kpi = result.average_kpi
+    statistics.value.all_kpi = result.all_kpi;
+    statistics.value.average_kpi = result.average_kpi;
     datasetSourceItem.value = statistics.value.all_kpi.map(item => ({
       name: item.name,
       kpi: item.Kpi_by_department.kpi,
-      id: item.Kpi_by_department.id,
-    }))
+      id: item.Kpi_by_department.department_id,
+    }));
   }
 }
 
+const getDepartmentChartData = async (id) => {
+  try {
+    if (dataParams.value.type === 2) {
+      const result = await kpiStore.getDepartmentBarData({ departmentId: id });
+      departmentChartData.value = result;
+      dialog.value = true;
+      await nextTick(); // Ensure the dialog is rendered before initializing the chart
+      initializeDepartmentAnnualChart();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const initializeDepartmentAnnualChart = () => {
+  const chartDom = document.getElementById('departments-annual-chart');
+  if (!chartDom) return;
+
+  const myChart = echarts.init(chartDom);
+
+  const months = [
+    'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+    'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+  ];
+
+  const filledData = months.map((month, index) => {
+    const monthData = departmentChart.value.find(d => new Date(d.period).getMonth() === index);
+    return monthData || { period: month, average_kpi: 0 };
+  });
+
+  const option = {
+    xAxis: {
+      type: 'category',
+      data: filledData.map(item => item.period),
+    },
+    yAxis: {
+      type: 'value',
+      max: 100,
+    },
+    series: [
+      {
+        data: filledData.map(item => item.average_kpi),
+        type: 'bar',
+      },
+    ],
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true,
+    },
+  };
+
+  myChart.setOption(option);
+};
+
 onMounted(() => {
-  getPeriodList()
-})
+  getPeriodList();
+});
+
+watch(datasetSourceItem, () => {
+  initializeChart();
+});
 
 function colorify(kpiResult) {
-  if (kpiResult > 85) return 'font-weight-bold text-success'
-  console.log(kpiResult)
-
-  return 'font-weight-bold text-error'
+  if (kpiResult > 85) return 'font-weight-bold text-success';
+  return 'font-weight-bold text-error';
 }
 </script>
