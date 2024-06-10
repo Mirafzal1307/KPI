@@ -10,7 +10,6 @@ export async function fetchPeriodList() {
   }
 }
 
-
 export async function fetchStatistics(dataParams) {
   try {
     const { data } = await axios.get('/kpi_new/v1/department-kpi', {
@@ -30,7 +29,17 @@ export async function fetchBranchList() {
   try {
     const { data } = await axios.get('/kpi_indicator_details/v1/get-branches')
 
-    return data.branches
+    return data
+  } catch (error) {
+    return error
+  }
+}
+
+export async function getDepartament(id) {
+  try {
+    const { data } = await axios.get(`department/v1/get-by-branch/1${id}`)
+
+    return data
   } catch (error) {
     return error
   }

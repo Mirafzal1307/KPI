@@ -4,9 +4,9 @@ import { ref } from 'vue'
 import { toast } from 'vue3-toastify'
 
 export const useBranchStore = defineStore('branch', () => {
-  const allBranches = ref({})
+  const allBranches = ref([])
   const branches = ref({})
-  const allRegions = ref({})
+  const allRegions = ref([])
   const loading = ref(false)
 
   const getBranches = async () => {

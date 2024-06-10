@@ -1,62 +1,37 @@
 <template>
   <VCard class="border">
     <VCol cols="12 mx-auto mt-4">
-      <VCol
-        cols="12"
-        class="text-center text-h2"
-      >
+      <VCol cols="12" class="text-center text-h2">
         <span class="font-weight-black">Monitoring</span>
       </VCol>
       <VRow class="flex justify-center mb-4">
         <VCol cols="6">
-          <VAutocomplete
-            v-model="branchId"
-            label="Filial"
-            item-title="name"
-            clearable
-            item-value="id"
-            :items="branchList"
-            class="mt-4"
-            @update:model-value="getDivisionByBranch"
-          />
+          <!-- {{ allBranches }} -->
+          <VAutocomplete v-model="branchId" label="Filial" item-title="name" clearable item-value="id"
+            :items="allBranches" class="mt-4" return-object />
+          <!-- <div v-if="allBranches">
+       
+          </div> -->
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Blok"
-            class="mt-4"
-          />
+          {{ departments }}
+          <VAutocomplete label="Blok" class="mt-4" />
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Departament"
-            class="mt-4"
-          />
+          <VAutocomplete label="Departament" class="mt-4" />
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Boshqarma"
-            class="mt-4"
-          />
+          <VAutocomplete label="Boshqarma" class="mt-4" />
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Bo'lim"
-            class="mt-4"
-          />
+          <VAutocomplete label="Bo'lim" class="mt-4" />
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="KPI ko'rsatkichi"
-            class="mt-4"
-          />
+          <VAutocomplete label="KPI ko'rsatkichi" class="mt-4" />
         </VCol>
       </VRow>
       <VCardActions>
-        <div
-          id="chart"
-          style="block-size: 400px; inline-size: 100%"
-          class="mx-auto"
-        />
+        <div id="chart" style="block-size: 400px; inline-size: 100%" class="mx-auto" />
       </VCardActions>
     </VCol>
   </VCard>
@@ -64,44 +39,22 @@
 
 <script setup>
 import * as echarts from 'echarts'
-import { onMounted } from 'vue'
-import { fetchBranchList } from '@/services/main.office.service'
+import { onMounted, watch } from 'vue'
 
-const branchId=ref(null)
-const branchList = ref ([])
-async function getBranchList() {
-  branchList.value = await fetchBranchList()
-}
+import { useStaticsStore } from '@/store/statistics';
+import { storeToRefs } from 'pinia';
 
-const divisionsList= ref([])
-const indicatorsList= ref([])
-const indicatorDetailsList= ref([])
-const managementsList= ref([])
+const statistics = useStaticsStore()
+const { getBranches, getAllDepartaments } = useStaticsStore()
+const { allBranches, departments } = storeToRefs(statistics)
 
-async function getDivisionByBranch() {
-  if (!branchId.value) {
-    divisionsList.value = []
-    indicatorsList.value = []
-    indicatorDetailsList.value = []
-    managementsList.value = []
-  }
-  this.divisionId = null
-  this.cell = 'branch'
-  this.cellId = this.branch_id
-  if (this.branch_id) {
-    // const data = await this.$store.dispatch('kpiIndicator/getDataByBranch', branchId.value)
-    // this.divisionsList = data.divisions
-    // this.managementsList = data.managements
-    // this.departmentsList = data.departments
-    // this.blocksList = await this.$store.dispatch('kpiIndicator/getBlockByBranch',branchId.value)
-    // // await this.getIndicatorsList()
-    // // await this.getIndicatorDetails()
-  }
-}
+const branchId = ref(null)
+console.log(allBranches.value);
+
 
 
 onMounted(() => {
-  getBranchList()
+  getBranches()
 
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
@@ -136,5 +89,11 @@ onMounted(() => {
       },
     ],
   })
-})
+});
+console.log(branchId.value);
+
+watch(branchId, (newValue, oldValue) => {
+  console.log(newValue, oldValue);
+  getAllDepartaments(branchId.value?.id)
+});
 </script>

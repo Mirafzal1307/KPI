@@ -7,7 +7,7 @@ import { onMounted, ref } from 'vue';
 
 const branchStore = useBranchStore()
 const { allBranches, allRegions } = storeToRefs(branchStore)
-const { getBranches, getRegions, getBranchesByRegionId } = useBranchStore()
+const { getBranches, getRegions, getBranchesByRegionId } = useBranchStore(); 
 
 const useEmployee = useEmployeeStore();
 
@@ -73,7 +73,6 @@ function getTableClass(item) {
 };
 
 watch(filters.value, (newValue, oldValue) => {
-  console.log(newValue, oldValue);
   getBranchesByRegionId(filters.value.region)
 });
 
