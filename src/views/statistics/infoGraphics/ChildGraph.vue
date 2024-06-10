@@ -8,23 +8,29 @@
     </div>
     <div id="chart" style="block-size: 330px;" class="mx-auto"></div>
     <div class="text-center">
-      <VDialog v-model="dialog" transition="dialog-bottom-transition" max-width="90%">
+      <VDialog v-model="dialog" transition="dialog-bottom-transition">
         <VCard>
           <VToolbar>
-            <VToolbarTitle>KPI ko'rsatkichlari (foizda)</VToolbarTitle>
+            <VToolbarTitle v-if="tab == 0">Yillik KPI ko'rsatkichlari (foizda)</VToolbarTitle>
+            <VToolbarTitle v-if="tab == 1">{{ currentPeriod }} davridagi KPI ma'lumotlari </VToolbarTitle>
+
             <VSpacer />
             <VToolbarItems>
               <VBtn icon @click="dialog = false">
-                <VIcon>mdi-close</VIcon>
+                <VIcon>ri-close-large-line</VIcon>
               </VBtn>
             </VToolbarItems>
           </VToolbar>
-          <VTabs v-model="tab">
-            <VTab>Chart</VTab>
-            <VTab>Table</VTab>
+          <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
+            <VTab>Grafik</VTab>
+            <VTab v-if="kpiByBranchesDetails.length > 0">Jadval</VTab>
+
           </VTabs>
-          <VWindow v-model="tab">
+
+
+          <VWindow v-model="tab" class="fixed-height">
             <VWindowItem>
+
               <div id="branch-annual-chart" style="block-size: 400px;"></div>
             </VWindowItem>
             <VWindowItem>
@@ -43,6 +49,9 @@
                     <td>{{ formatAndMultiply(item.min_percent) }}</td>
                     <td>{{ formatAndMultiply(item.max_percent) }}</td>
                   </tr>
+                </template>
+                <template #bottom>
+
                 </template>
               </VDataTable>
             </VWindowItem>
@@ -83,6 +92,8 @@ const tab = ref(0);
 const selectedBarId = ref(null);
 let myChart;
 let modalChart;
+let annualChart;
+const currentPeriod = ref(null)
 
 const headers = [
   { title: 'ID', value: 'id' },
@@ -102,23 +113,22 @@ const handleChartClick = async params => {
   try {
     selectedBarId.value = params.data.id;
     if (selectedBarId.value) {
-      const data = await kpiStore.fetchKpiByBranchesDetails({
+      const chartData = await kpiStore.getChildGraphAnnualData({
         user_type: kpiStore.currentUserType,
-        period: kpiStore.currentPeriod,
         branch_id: selectedBarId.value,
       });
-      const chartData = kpiStore.getChildGraphAnnualData(
-        {
+
+      if (chartData) {
+        currentPeriod.value = chartData[0].period;
+        await kpiStore.fetchKpiByBranchesDetails({
           user_type: kpiStore.currentUserType,
+          period: chartData[0].period,
           branch_id: selectedBarId.value,
-        }
-      );
-
-
-      if (data && chartData) {
+        });
         dialog.value = true;
         nextTick(() => {
-          initializeModalChart(); // Initialize the modal chart after the dialog opens
+          initializeModalChart();
+          initializeAnnualChart(chartData); // Initialize the annual chart
         });
       }
     }
@@ -131,7 +141,7 @@ const initializeChart = () => {
   const chartDom = document.getElementById('chart');
   if (chartDom) {
     myChart = echarts.init(chartDom);
-    updateChart(myChart);
+    updateChart(myChart, props.dataSet);
     myChart.on('click', handleChartClick); // Set up the click event listener
   }
 };
@@ -140,15 +150,55 @@ const initializeModalChart = () => {
   const chartDom = document.getElementById('modal-chart');
   if (chartDom) {
     modalChart = echarts.init(chartDom);
-    updateChart(modalChart);
+    updateChart(modalChart, props.dataSet);
     modalChart.resize();
   }
 };
 
-const updateChart = chartInstance => {
+const initializeAnnualChart = (data) => {
+  const chartDom = document.getElementById('branch-annual-chart');
+  if (chartDom) {
+    annualChart = echarts.init(chartDom);
+    const option = {
+      xAxis: {
+        type: 'category',
+        data: data.map(item => item.period),
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [{
+        data: data.map(item => item.average_kpi),
+        type: 'bar',
+        smooth: true,
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
+        },
+      }],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+    };
+    annualChart.setOption(option);
+    annualChart.resize();
+    annualChart.on('click', function (params) {
+      currentPeriod.value = params.name;
+      getTableData(params?.name);
+    });
+
+
+  }
+};
+
+const updateChart = (chartInstance, data) => {
   if (!chartInstance) return;
 
-  const scores = props.dataSet.map(item => item.score).sort((a, b) => a - b);
+  const scores = data.map(item => item.score).sort((a, b) => a - b);
   const minScore = scores[0];
   const maxScore = scores[scores.length - 1];
 
@@ -163,7 +213,7 @@ const updateChart = chartInstance => {
     dataset: [
       {
         dimensions: ['name', 'score', 'id'],
-        source: props.dataSet,
+        source: data,
       },
       {
         transform: {
@@ -207,6 +257,21 @@ const updateChart = chartInstance => {
   chartInstance.setOption(option);
 };
 
+const getTableData = async (period) => {
+  try {
+    const data = await kpiStore.fetchKpiByBranchesDetails({
+      user_type: kpiStore.currentUserType,
+      period: period,
+      branch_id: selectedBarId.value,
+    });
+    if (data && data.length > 0) {
+      tab.value = 1;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 onMounted(() => {
   nextTick(() => {
     initializeChart();
@@ -214,6 +279,11 @@ onMounted(() => {
 });
 
 watch(() => props.dataSet, () => {
-  updateChart(myChart);
+  updateChart(myChart, props.dataSet);
 });
 </script>
+<style scoped>
+.fixed-height {
+  block-size: 600px;
+}
+</style>

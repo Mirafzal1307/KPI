@@ -1,10 +1,10 @@
 import {
   getBranchTableData,
+  getChildGraphData,
   getKpiByBranches,
   getKpiByBranchesDetails,
   getKpiByRegion,
   getKpiPeriods,
-  getChildGraphData,
 } from '@/services/kpi.service'
 import { defineStore } from 'pinia'
 
@@ -33,11 +33,7 @@ export const useKpiStore = defineStore('kpi', {
 
     async fetchKpiByBranchesDetails(req) {
       try {
-        const data = await getKpiByBranchesDetails({
-          ...req,
-          period: this.currentPeriod,
-          user_type: this.currentUserType,
-        })
+        const data = await getKpiByBranchesDetails(req)
         this.kpiByBranchesDetails = data
         return data
       } catch (error) {
