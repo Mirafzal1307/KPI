@@ -1,60 +1,54 @@
 <template>
   <VCard class="border">
-    <template #title>
+    <h3 class="text-center mt-1">
       {{ titleDistricts }} filiallari bo'yicha KPI ko'rsatkichlari (foizda)
-    </template>
-    <div
-      v-show="!dataSet.length"
-      class="text-center"
-    >
+    </h3>
+    <div v-show="!dataSet.length" class="text-center">
       Ma'lumot yo'q
     </div>
-    <div
-      id="chart"
-      style="block-size: 310px;"
-      class="mx-auto"
-    />
-    <div class="text-center pa-4">
-      <VDialog
-        v-model="dialog"
-        transition="dialog-bottom-transition"
-      >
+    <div id="chart" style="block-size: 330px;" class="mx-auto"></div>
+    <div class="text-center">
+      <VDialog v-model="dialog" transition="dialog-bottom-transition">
         <VCard>
           <VToolbar>
-            <VToolbarTitle>KPI ko'rsatkichlari (foizda) </VToolbarTitle>
+            <VToolbarTitle v-if="tab == 0">Yillik KPI ko'rsatkichlari (foizda)</VToolbarTitle>
+            <VToolbarTitle v-if="tab == 1">{{ currentPeriod }} davridagi KPI ma'lumotlari </VToolbarTitle>
             <VSpacer />
             <VToolbarItems>
-              <VBtn
-                icon
-                @click="dialog = false"
-              >
-                <VIcon>ri-close-line</VIcon>
+              <VBtn icon @click="close()">
+                <VIcon>ri-close-large-line</VIcon>
               </VBtn>
             </VToolbarItems>
           </VToolbar>
-          <VDataTable
-            :items-per-page="-1"
-            :items="kpiByBranchesDetails"
-            :headers="headers"
-            dense
-          >
-            <template #item="{ item }">
-              <tr>
-                <td>{{ item.id }}</td>
-                <td>{{ item.category }}</td>
-                <td>{{ item.indicator }}</td>
-                <td>{{ formatAndMultiply(item.branch_kpi) }}</td>
-                <td>{{ item.plan }}</td>
-                <td>{{ (item.fact) }}</td>
-                <td>{{ item.done_percent }}</td>
-                <td>{{ formatAndMultiply(item.weight) }}</td>
-                <td>{{ formatAndMultiply(item.kpi_percent) }}</td>
-                <td>{{ formatAndMultiply(item.min_percent) }}</td>
-                <td>{{ formatAndMultiply(item.max_percent) }}</td>
-              </tr>
-            </template>
-            <template #bottom />
-          </VDataTable>
+          <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
+            <VTab>Grafik</VTab>
+            <VTab v-if="kpiByBranchesDetails.length > 0">Jadval</VTab>
+          </VTabs>
+          <VWindow v-model="tab" class="fixed-height">
+            <VWindowItem>
+              <div id="branch-annual-chart" style="block-size: 400px;"></div>
+            </VWindowItem>
+            <VWindowItem>
+              <VDataTable :items-per-page="-1" :items="kpiByBranchesDetails" :headers="headers" dense>
+                <template #item="{ item }">
+                  <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.indicator }}</td>
+                    <td>{{ formatAndMultiply(item.branch_kpi) }}</td>
+                    <td>{{ formatNumberTable(item.plan) }}</td>
+                    <td>{{ formatNumberTable(item.fact) }}</td>
+                    <td>{{ formatNumberTable(item.done_percent) }}</td>
+                    <td>{{ formatAndMultiply(item.weight) }}</td>
+                    <td>{{ formatAndMultiply(item.kpi_percent) }}</td>
+                    <td>{{ formatAndMultiply(item.min_percent) }}</td>
+                    <td>{{ formatAndMultiply(item.max_percent) }}</td>
+                  </tr>
+                </template>
+                <template #bottom></template>
+              </VDataTable>
+            </VWindowItem>
+          </VWindow>
         </VCard>
       </VDialog>
     </div>
@@ -62,10 +56,10 @@
 </template>
 
 <script setup>
-import { useKpiStore } from '@/store/kpi'
-import * as echarts from 'echarts'
-import { storeToRefs } from 'pinia'
-import { onMounted, ref, watch } from 'vue'
+import { useKpiStore } from '@/store/kpi';
+import * as echarts from 'echarts';
+import { storeToRefs } from 'pinia';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
   titleDistricts: {
@@ -76,28 +70,26 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-})
+});
 
-const kpiStore = useKpiStore()
+const kpiStore = useKpiStore();
+const { kpiByBranchesDetails } = storeToRefs(kpiStore);
 
-const { kpiByBranchesDetails } = storeToRefs(kpiStore)
-function formatAndMultiply(number) {
+const formatAndMultiply = number => {
+  const formattedNum = Math.floor(number * 100) / 100;
+  return formattedNum * 100;
+};
+const close = () => {
+  dialog.value = false;
+  tab.value = 0;
+};
 
-
-  const formattedNum = Math.floor(number * 100) / 100
-
-  return formattedNum * 100
-}
-
-
-const dialog = ref(false)
-const selectedBarId = ref(null)
-
-let myChart
-
-const formatNumber = value => {
-  return parseFloat(value) * 100
-}
+const dialog = ref(false);
+const tab = ref(0);
+const selectedBarId = ref(null);
+let myChart;
+let annualChart;
+const currentPeriod = ref(null);
 
 const headers = [
   { title: 'ID', value: 'id' },
@@ -111,40 +103,144 @@ const headers = [
   { title: 'Samaradorlik bajarilishi', value: 'kpi_percent' },
   { title: 'Minimum', value: 'min_percent' },
   { title: 'Maksimum', value: 'max_percent' },
-]
+];
 
 const handleChartClick = async params => {
   try {
-    selectedBarId.value = params.data.id
+    selectedBarId.value = params.data.id;
     if (selectedBarId.value) {
-      const data = await kpiStore.fetchKpiByBranchesDetails({ user_type: kpiStore.currentUserType, period: kpiStore.currentPeriod, branch_id: selectedBarId.value })
+      const chartData = await kpiStore.getChildGraphAnnualData({
+        user_type: kpiStore.currentUserType,
+        branch_id: selectedBarId.value,
+      });
 
-      if (data) {
-        dialog.value = true
+      if (chartData) {
+        currentPeriod.value = chartData[0].period;
+        await kpiStore.fetchKpiByBranchesDetails({
+          user_type: kpiStore.currentUserType,
+          period: chartData[0].period,
+          branch_id: selectedBarId.value,
+        });
+        dialog.value = true;
+        nextTick(() => {
+          initializeAnnualChart(chartData);
+        });
       }
     }
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-}
+};
 
 const initializeChart = () => {
-  const chartDom = document.getElementById('chart')
+  const chartDom = document.getElementById('chart');
+  if (chartDom) {
+    myChart = echarts.init(chartDom);
+    updateChart(myChart, props.dataSet);
+    myChart.on('click', handleChartClick);
+  }
+};
+function formatNumberTable(input) {
+  const number = parseFloat(input);
 
-  myChart = echarts.init(chartDom)
-  updateChart()
-
-  myChart.on('click', handleChartClick) // Set up the click event listener
+  if (isNaN(number)) {
+    throw new Error('Invalid input: Please provide a valid number or string representation of a number');
+  }
+  return number.toFixed(2);
 }
 
-const updateChart = () => {
-  if (!myChart) return
+
+
+const initializeAnnualChart = (data) => {
+  const chartDom = document.getElementById('branch-annual-chart');
+  if (chartDom) {
+    annualChart = echarts.init(chartDom);
+
+    const months = [
+      'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+      'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+    ];
+
+    const filledData = months.map((month, index) => {
+      const monthData = data.find(d => new Date(d.period).getMonth() === index);
+      return monthData ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi } : { period: month, originalPeriod: null, average_kpi: 0 };
+    });
+
+    const kpiValues = filledData.map(item => item.average_kpi);
+    const minKPI = Math.min(...kpiValues);
+    const maxKPI = Math.max(...kpiValues);
+
+    const getColor = (value) => {
+      const normalizedValue = (value - minKPI) / (maxKPI - minKPI);
+      const green = Math.round(normalizedValue * 255);
+      const red = 255 - green;
+      return `rgb(${red}, ${green}, 0)`;
+    };
+
+    const option = {
+      xAxis: {
+        type: 'category',
+        data: filledData.map(item => item.period),
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [{
+        data: filledData.map(item => ({
+          value: item.average_kpi,
+          // itemStyle: {
+          //   color: getColor(item.average_kpi),
+          // },
+          originalPeriod: item.originalPeriod
+        })),
+        type: 'bar',
+        smooth: true,
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
+        },
+      }],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+    };
+
+    annualChart.setOption(option);
+    annualChart.resize();
+    annualChart.on('click', function (params) {
+      const originalPeriod = params.data.originalPeriod;
+      if (originalPeriod) {
+        currentPeriod.value = originalPeriod;
+        getTableData(originalPeriod);
+      }
+    });
+  }
+};
+
+
+const updateChart = (chartInstance, data) => {
+  if (!chartInstance) return;
+
+  const scores = data.map(item => item.score).sort((a, b) => a - b);
+  const minScore = scores[0];
+  const maxScore = scores[scores.length - 1];
+
+  const getColor = score => {
+    const ratio = (score - minScore) / (maxScore - minScore);
+    const green = Math.round((1 - ratio) * 255);
+    const red = Math.round(ratio * 255);
+    return `rgb(${green}, ${red}, 0)`;
+  };
 
   const option = {
     dataset: [
       {
         dimensions: ['name', 'score', 'id'],
-        source: props.dataSet,
+        source: data,
       },
       {
         transform: {
@@ -164,14 +260,17 @@ const updateChart = () => {
       datasetIndex: 1,
       label: {
         show: true,
-        fontSize: 10,
+        fontSize: 12,
         position: 'top',
         formatter(value) {
-          return `${value.value.score} %`
+          return `${value.value.score}%`;
         },
       },
       itemStyle: {
-        color: 'blue',
+        color: function (params) {
+          const score = params.data.score;
+          return getColor(score);
+        },
       },
     },
     tooltip: {
@@ -180,16 +279,39 @@ const updateChart = () => {
         type: 'shadow',
       },
     },
-  }
+  };
 
-  myChart.setOption(option)
-}
+  chartInstance.setOption(option);
+};
+
+const getTableData = async (period) => {
+  try {
+    const data = await kpiStore.fetchKpiByBranchesDetails({
+      user_type: kpiStore.currentUserType,
+      period: period,
+      branch_id: selectedBarId.value,
+    });
+    if (data && data.length > 0) {
+      tab.value = 1;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 onMounted(() => {
-  initializeChart()
-})
+  nextTick(() => {
+    initializeChart();
+  });
+});
 
 watch(() => props.dataSet, () => {
-  updateChart()
-})
+  updateChart(myChart, props.dataSet);
+});
 </script>
+
+<style scoped>
+.fixed-height {
+  block-size: 600px;
+}
+</style>

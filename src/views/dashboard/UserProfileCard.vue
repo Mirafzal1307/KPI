@@ -8,7 +8,7 @@
   <VCard class="border">
     <div class="mx-10 h-100 d-flex align-center flex-column justify">
       <img
-        class="w-100 mb-10 text-center"
+        class="w-75 h-50 text-center"
         src="/src/assets//images/avatars/userImg.png"
         alt=""
       />

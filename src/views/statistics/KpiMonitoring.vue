@@ -1,110 +1,99 @@
 <template>
   <VCard class="border">
     <VCol cols="12 mx-auto mt-4">
-      <VCol
-        cols="12"
-        class="text-center text-h2"
-      >
+      <VCol cols="12" class="text-center text-h2">
         <span class="font-weight-black">Monitoring</span>
       </VCol>
       <VRow class="flex justify-center mb-4">
         <VCol cols="6">
-          <VAutocomplete
-            v-model="branchId"
-            label="Filial"
-            item-title="name"
-            clearable
-            item-value="id"
-            :items="branchList"
-            class="mt-4"
-            @update:model-value="getDivisionByBranch"
-          />
+
+          <VAutocomplete v-model="statistic.branchId" return-object label="Filial" item-title="name" clearable item-value="id"
+            :items="allBranches" class="mt-4"  />
+
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Blok"
-            class="mt-4"
-          />
+          <div v-if="blocks.blocks">
+            <VAutocomplete v-model="statistic.blockId" return-object :items="blocks.blocks" item-title="block_name"
+              item-value="id" label="Blok" class="mt-4" clearable />
+          </div>
+
+        </VCol>
+
+        <VCol cols="6">
+
+          <div v-if="blocks.departments">
+            <VAutocomplete v-model="statistic.departmentId" label="Departament" class="mt-4" return-object
+              item-value="id" :items="blocks.departments" item-title="department_name" clearable />
+
+          </div>
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Departament"
-            class="mt-4"
-          />
+          <div v-if="blocks?.managements">
+            <VAutocomplete v-model="statistic.managementId" label="Boshqarma" class="mt-4" return-object item-value="id"
+              :items="blocks.managements" item-title="management_name"  clearable />
+          </div>
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Boshqarma"
-            class="mt-4"
-          />
+          <div v-if="blocks?.divisions">
+            <VAutocomplete v-model="statistic.divisionId" label="Bo'lim" class="mt-4" return-object item-value="id"
+              :items="blocks.divisions" item-title="division_name" clearable />
+          </div>
         </VCol>
         <VCol cols="6">
-          <VAutocomplete
-            label="Bo'lim"
-            class="mt-4"
-          />
-        </VCol>
-        <VCol cols="6">
-          <VAutocomplete
-            label="KPI ko'rsatkichi"
-            class="mt-4"
-          />
+          <div v-if="empList.length !== 0 && statistic.branchId ">
+            <VAutocomplete v-model="empId" label="Ishchilar ro'yhati" class="mt-4" :items="empList"
+              item-title="full_name" item-value="id" @update:model-value="empIdChange"  clearable/>
+          </div>
         </VCol>
       </VRow>
+
       <VCardActions>
-        <div
-          id="chart"
-          style="block-size: 400px; inline-size: 100%"
-          class="mx-auto"
-        />
+        <div id="chart" style="block-size: 400px; inline-size: 100%" class="mx-auto" />
       </VCardActions>
     </VCol>
   </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts'
-import { onMounted } from 'vue'
-import { fetchBranchList } from '@/services/main.office.service'
+import * as echarts from 'echarts';
+import { onMounted, watch } from 'vue';
 
-const branchId=ref(null)
-const branchList = ref ([])
-async function getBranchList() {
-  branchList.value = await fetchBranchList()
-}
+import { useStaticsStore } from '@/store/statistics';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
-const divisionsList= ref([])
-const indicatorsList= ref([])
-const indicatorDetailsList= ref([])
-const managementsList= ref([])
+const statistics = useStaticsStore()
+const { getBranches, getAllDepartaments, getAllBlocks, getEmpList, getEmpStatistics } = useStaticsStore()
+const { allBranches, blocks, empList, empStatistic } = storeToRefs(statistics)
 
-async function getDivisionByBranch() {
-  if (!branchId.value) {
-    divisionsList.value = []
-    indicatorsList.value = []
-    indicatorDetailsList.value = []
-    managementsList.value = []
-  }
-  this.divisionId = null
-  this.cell = 'branch'
-  this.cellId = this.branch_id
-  if (this.branch_id) {
-    // const data = await this.$store.dispatch('kpiIndicator/getDataByBranch', branchId.value)
-    // this.divisionsList = data.divisions
-    // this.managementsList = data.managements
-    // this.departmentsList = data.departments
-    // this.blocksList = await this.$store.dispatch('kpiIndicator/getBlockByBranch',branchId.value)
-    // // await this.getIndicatorsList()
-    // // await this.getIndicatorDetails()
-  }
+
+const statistic = ref({
+  branchId: null,
+  blockId: null,
+  departmentId: null,
+  managementId: null,
+  divisionId: null,
+})
+
+const empId = ref(null)
+
+function formatNumberRoundDown(num) {
+  return Math.floor(num * 100) / 100
 }
 
 
-onMounted(() => {
-  getBranchList()
+
+const lineChart = () => {
+  const empsts = empStatistic.value.map(item => item.kpi)
+  const empStsValue = empsts.map(item => formatNumberRoundDown(item) * 100)
+
+
+
 
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
+
+
 
   myChart.setOption({
     xAxis: {
@@ -130,11 +119,38 @@ onMounted(() => {
     },
     series: [
       {
-        data: [22, 32, 62, 68, 72, 87, 92, 98, 89, 85, 90, 93],
+        data: empStsValue,
         type: 'line',
         areaStyle: {},
       },
     ],
   })
-})
+
+}
+
+
+
+onMounted(() => {
+  getBranches()
+  lineChart()
+});
+
+watch(statistic.value, (newValue, oldValue) => {
+  const param = {
+    branch_id: statistic.value.branchId?.id,
+    block_id: statistic.value.blockId?.id,
+    department_id: statistic.value.departmentId?.id,
+    management_id: statistic.value.managementId?.id,
+    division_id: statistic.value.divisionId?.id,
+  }
+  getAllDepartaments(statistic.value.branchId?.id)
+  getAllBlocks(statistic.value.branchId?.id)
+  getEmpList(param)
+});
+
+const empIdChange = async () => {
+  await getEmpStatistics(empId.value)
+  lineChart()
+}
+
 </script>
