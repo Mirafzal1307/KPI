@@ -173,14 +173,13 @@ async function getStatistics() {
     }));
   }
 }
-
 const getDepartmentChartData = async (id) => {
   try {
     if (dataParams.value.type === 2) {
       const result = await kpiStore.getDepartmentBarData({ departmentId: id });
       departmentChartData.value = result;
       dialog.value = true;
-      await nextTick(); // Ensure the dialog is rendered before initializing the chart
+      await nextTick();
       initializeDepartmentAnnualChart();
     }
   } catch (error) {

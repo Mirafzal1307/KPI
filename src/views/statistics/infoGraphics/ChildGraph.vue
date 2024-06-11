@@ -45,6 +45,7 @@
                     <td>{{ formatAndMultiply(item.max_percent) }}</td>
                   </tr>
                 </template>
+                <template #bottom></template>
               </VDataTable>
             </VWindowItem>
           </VWindow>
@@ -136,17 +137,19 @@ const initializeChart = () => {
   if (chartDom) {
     myChart = echarts.init(chartDom);
     updateChart(myChart, props.dataSet);
-    myChart.on('click', handleChartClick); // Set up the click event listener
+    myChart.on('click', handleChartClick);
   }
 };
-
-const formatNumberTable = input => {
+function formatNumberTable(input) {
   const number = parseFloat(input);
+
   if (isNaN(number)) {
     throw new Error('Invalid input: Please provide a valid number or string representation of a number');
   }
   return number.toFixed(2);
-};
+}
+
+
 
 const initializeAnnualChart = (data) => {
   const chartDom = document.getElementById('branch-annual-chart');
@@ -160,8 +163,19 @@ const initializeAnnualChart = (data) => {
 
     const filledData = months.map((month, index) => {
       const monthData = data.find(d => new Date(d.period).getMonth() === index);
-      return monthData ? { period: month, average_kpi: monthData.average_kpi } : { period: month, average_kpi: 0 };
+      return monthData ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi } : { period: month, originalPeriod: null, average_kpi: 0 };
     });
+
+    const kpiValues = filledData.map(item => item.average_kpi);
+    const minKPI = Math.min(...kpiValues);
+    const maxKPI = Math.max(...kpiValues);
+
+    const getColor = (value) => {
+      const normalizedValue = (value - minKPI) / (maxKPI - minKPI);
+      const green = Math.round(normalizedValue * 255);
+      const red = 255 - green;
+      return `rgb(${red}, ${green}, 0)`;
+    };
 
     const option = {
       xAxis: {
@@ -172,7 +186,13 @@ const initializeAnnualChart = (data) => {
         type: 'value',
       },
       series: [{
-        data: filledData.map(item => item.average_kpi),
+        data: filledData.map(item => ({
+          value: item.average_kpi,
+          itemStyle: {
+            color: getColor(item.average_kpi),
+          },
+          originalPeriod: item.originalPeriod
+        })),
         type: 'bar',
         smooth: true,
         label: {
@@ -192,11 +212,15 @@ const initializeAnnualChart = (data) => {
     annualChart.setOption(option);
     annualChart.resize();
     annualChart.on('click', function (params) {
-      currentPeriod.value = params.name;
-      getTableData(params.name);
+      const originalPeriod = params.data.originalPeriod;
+      if (originalPeriod) {
+        currentPeriod.value = originalPeriod;
+        getTableData(originalPeriod);
+      }
     });
   }
 };
+
 
 const updateChart = (chartInstance, data) => {
   if (!chartInstance) return;
