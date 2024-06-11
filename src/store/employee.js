@@ -55,6 +55,7 @@ export const useEmployeeStore = defineStore('employee', () => {
       loading.value = true
       const { data } = await getPersonalData(period)
       personalData.value = data
+      console.log(personalData.value)
 
       return data
     } catch (error) {
