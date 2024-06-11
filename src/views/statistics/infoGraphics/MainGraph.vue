@@ -1,10 +1,9 @@
 <template>
   <VRow class="d-flex">
-
     <v-col cols="7">
       <Infographics v-if="formattedDatasetSource.length >= 0" :dataset-source="formattedDatasetSource" />
       <ChildGraph v-if="formattedBranchData.length >= 0" :data-set="formattedBranchData"
-        :title-districts="kpiStore.currentRegion.name" class="mt-4" />
+        :title-districts="kpiStore.currentRegion.name" class="mt-2" />
     </v-col>
     <v-col cols="5">
       <InfoTable :items="period" />

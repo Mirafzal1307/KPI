@@ -1,88 +1,81 @@
 <template>
   <VCard class="border">
     <VRow class="px-4">
-      <VCol
-        cols="12"
-        md="5"
-      >
-        <VSelect
-          v-model="dataParams.type"
-          item-title="name"
-          item-value="value"
-          :items="[{name:'Rahbariyat', value:1},{name:'Tarkibiy bo`linma', value:2}]"
-          @update:model-value="getStatistics"
-        />
+      <VCol cols="12" md="5">
+        <VSelect v-model="dataParams.type" item-title="name" item-value="value"
+          :items="[{ name: 'Rahbariyat', value: 1 }, { name: 'Tarkibiy bo`linma', value: 2 }]"
+          @update:model-value="getStatistics" />
       </VCol>
-      <VCol
-        cols="12"
-        md="2"
-      />
-      <VCol
-        cols="12"
-        md="5"
-      >
-        <VSelect
-          v-model="dataParams.period"
-          :items="periodList"
-          label="Davr bo'yicha"
-          item-title="period"
-          item-value="period"
-          @update:model-value="getStatistics"
-        />
+      <VCol cols="12" md="2" />
+      <VCol cols="12" md="5">
+        <VSelect v-model="dataParams.period" :items="periodList" label="Davr bo'yicha" item-title="period"
+          item-value="period" @update:model-value="getStatistics" />
       </VCol>
     </VRow>
     <VCardItem class="text-right text-h5">
-      <span class="font-weight-bold"> O'rtacha KPI natijasi: </span> <span :class="getColor(statistics.all_kpi)"> {{ statistics.average_kpi }} </span>
+      <span class="font-weight-bold"> O'rtacha KPI natijasi: </span>
+      <span :class="colorify(statistics.average_kpi)"> {{ statistics.average_kpi }} </span>
     </VCardItem>
     <template #title>
       Bosh ofis bo'yicha KPI ko'rsatkichlari boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
-    <VSheet
-      v-show="dataParams.type === 1"
-      id="main"
-      height="300"
-    />
-    <VSheet
-      v-show="dataParams.type === 2"
-      id="second"
-      height="1000"
-    />
+    <VSheet v-show="dataParams.type === 1" id="main" height="300" />
+    <VSheet v-show="dataParams.type === 2" id="second" height="1000" />
+    <VDialog v-model="dialog" transition="dialog-bottom-transition">
+      <VCard>
+        <VToolbar>
+          <VToolbarTitle> {{ currentDepartment }}ning yillik KPI ko'rsatkichi </VToolbarTitle>
+          <VSpacer />
+          <VToolbarItems>
+            <VBtn icon @click="dialog = false">
+              <VIcon>ri-close-large-line</VIcon>
+            </VBtn>
+          </VToolbarItems>
+        </VToolbar>
+        <VWindow v-model="tab" class="fixed-height">
+          <VWindowItem>
+            <div id="departments-annual-chart" style="block-size: 400px;"></div>
+          </VWindowItem>
+        </VWindow>
+      </VCard>
+    </VDialog>
   </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts'
-import { onMounted, watch } from 'vue'
+import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service';
+import { useKpiStore } from '@/store/kpi';
+import * as echarts from 'echarts';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
-import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service'
+const kpiStore = useKpiStore();
+const { departmentChart } = storeToRefs(kpiStore);
+const datasetSourceItem = ref([]);
+const dialog = ref(false);
+const departmentChartData = ref([]);
+const tab = ref(0);
+const currentDepartment = ref('null');
 
-const datasetSourceItem = ref([])
+const initializeChart = async () => {
+  await nextTick(); // Ensure the DOM is updated before initializing the chart
 
-const initializeChart = () => {
-  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second')
+  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second');
+  if (!chartDom) return;
 
-  // if (dataParams.value.type === 1) {
-  //   chartDom.style.height = '300px'
-  // }
-  // if(dataParams.value.type === 2) {
-  //   chartDom.style.height = '800px'
-  // }
+  const myChart = echarts.init(chartDom);
+  const datasetSource = datasetSourceItem.value;
 
-  const myChart = echarts.init(chartDom)
+  if (!datasetSource.length) return;
+  const scores = datasetSource.map(item => item.kpi);
+  const minScore = Math.min(...scores);
+  const maxScore = Math.max(...scores);
 
-  const datasetSource = datasetSourceItem.value
-
-  // const scores = datasetSource.map(item => item.kpi)
-  // const minScore = scores[0]
-  // const maxScore = scores[100]
-
-  // const getColor = score => {
-  //   const ratio = (score - minScore) / (maxScore - minScore)
-  //   const green = Math.round((1 - ratio) * 255)
-  //   const red = Math.round(ratio * 255)
-  //
-  //   return `rgb(${green}, ${red}, 0)`
-  // }
+  const getColor = score => {
+    const ratio = (score - minScore) / (maxScore - minScore);
+    const green = Math.round((1 - ratio) * 255);
+    const red = Math.round(ratio * 255);
+    return `rgb(${green}, ${red}, 0)`;
+  };
 
   const option = {
     dataset: [
@@ -96,39 +89,33 @@ const initializeChart = () => {
           config: { dimension: 'kpi', order: 'asc' },
         },
       },
-
     ],
-
     yAxis: {
       type: 'category',
       axisLabel: { interval: 0 },
     },
     xAxis: {
       type: 'value',
-      data: [100],
       max: 100,
     },
-
     series: {
       label: {
         show: true,
         fontSize: 14,
         position: 'right',
         formatter(value) {
-          return `${value.value.kpi} %`
+          return `${value.value.kpi} %`;
         },
       },
       type: 'bar',
       encode: { y: 'name', x: 'kpi' },
       datasetIndex: 1,
-
-      // itemStyle: {
-      //   color: function (params) {
-      //     const score = params.value[1]
-      //
-      //     // return getColor(score)
-      //   },
-      // },
+      itemStyle: {
+        color: function (params) {
+          const score = params.value.kpi;
+          return getColor(score);
+        },
+      },
     },
     tooltip: {
       show: true,
@@ -146,61 +133,153 @@ const initializeChart = () => {
     legend: {
       data: ['Data'],
     },
-  }
+  };
 
-  myChart.setOption(option)
+  myChart.setOption(option);
 
   myChart.on('click', function (params) {
-    const id = params.value[2]
-
-    console.log('Clicked item ID:', id)
-  })
-}
-
-
-watch(datasetSourceItem, () => {
-  initializeChart()
-})
+    currentDepartment.value = params?.data?.name;
+    getDepartmentChartData(params?.data?.id);
+  });
+};
 
 const dataParams = ref({
   period: null,
-  type: 1,
-})
+  type: 2,
+});
 
-const periodList = ref ([])
+const periodList = ref([]);
 async function getPeriodList() {
-  periodList.value = await fetchPeriodList()
-  dataParams.value.period=periodList.value[0]?.period
-  await getStatistics()
+  periodList.value = await fetchPeriodList();
+  dataParams.value.period = periodList.value[0]?.period;
+  await getStatistics();
 }
 
 const statistics = ref({
-  // eslint-disable-next-line camelcase
   average_kpi: null,
-  // eslint-disable-next-line camelcase
   all_kpi: [],
-})
+});
 
 async function getStatistics() {
-  if (!dataParams.value.period) return
-  const result = await fetchStatistics(dataParams)
-  if (result){
-    // eslint-disable-next-line camelcase
-    statistics.value.all_kpi = result.all_kpi
-    // eslint-disable-next-line camelcase
-    statistics.value.average_kpi = result.average_kpi
-    datasetSourceItem.value = statistics.value.all_kpi
+  if (!dataParams.value.period) return;
+  const result = await fetchStatistics(dataParams);
+  if (result) {
+    statistics.value.all_kpi = result.all_kpi;
+    statistics.value.average_kpi = result.average_kpi;
+    datasetSourceItem.value = statistics.value.all_kpi.map(item => ({
+      name: item.name,
+      kpi: item.Kpi_by_department.kpi,
+      id: item.Kpi_by_department.department_id,
+    }));
   }
 }
 
+const getDepartmentChartData = async (id) => {
+  try {
+    if (dataParams.value.type === 2) {
+      const result = await kpiStore.getDepartmentBarData({ departmentId: id });
+      departmentChartData.value = result;
+      dialog.value = true;
+      await nextTick();
+      initializeDepartmentAnnualChart();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const initializeDepartmentAnnualChart = () => {
+  const chartDom = document.getElementById('departments-annual-chart');
+  if (!chartDom) return;
+
+  const myChart = echarts.init(chartDom);
+
+  const months = [
+    'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+    'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+  ];
+
+  const filledData = months.map((month, index) => {
+    const monthData = departmentChart.value.find(d => new Date(d.period).getMonth() === index);
+    return monthData ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi } : { period: month, originalPeriod: null, average_kpi: 0 };
+  });
+
+  const kpiValues = filledData.map(item => item.average_kpi);
+  const minKPI = Math.min(...kpiValues);
+  const maxKPI = Math.max(...kpiValues);
+
+  const getColor = (value) => {
+    const normalizedValue = (value - minKPI) / (maxKPI - minKPI);
+    const green = Math.round(normalizedValue * 255);
+    const red = 255 - green;
+    return `rgb(${red}, ${green}, 0)`;
+  };
+
+  const option = {
+    xAxis: {
+      type: 'category',
+      data: filledData.map(item => item.period),
+    },
+    yAxis: {
+      type: 'value',
+      max: 100,
+    },
+    series: [
+      {
+        data: filledData.map(item => ({
+          value: item.average_kpi,
+          // itemStyle: {
+          //   color: getColor(item.average_kpi),
+          // },
+          originalPeriod: item.originalPeriod
+        })),
+        type: 'bar',
+      },
+    ],
+    tooltip: {
+      show: true,
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true,
+    },
+  };
+
+  myChart.setOption(option);
+
+  myChart.on('click', function (params) {
+    const originalPeriod = params.data.originalPeriod;
+    if (originalPeriod) {
+      getDepartmentMonthlyData(originalPeriod);
+    }
+  });
+};
+
+const getDepartmentMonthlyData = async (period) => {
+  try {
+    const result = await kpiStore.getDepartmentMonthlyData({ period });
+    // Handle the result accordingly
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 onMounted(() => {
-  getPeriodList()
-})
+  getPeriodList();
+});
 
-function getColor(kpiResult){
-  if (kpiResult>85) return 'font-weight-bold text-success'
+watch(datasetSourceItem, () => {
+  initializeChart();
+});
 
-  return 'font-weight-bold text-error'
+function colorify(kpiResult) {
+  if (kpiResult > 85) return 'font-weight-bold text-success';
+  return 'font-weight-bold text-error';
 }
 </script>

@@ -1,67 +1,41 @@
 <template>
-  <VCard class="border mb-2 px-4 py-3">
-    <VRow
-      justify="center"
-      class="d-flex justify-center px-2"
-    >
-      <VRow
-        justify="center"
-        class="d-flex justify-center px-2"
-      >
+  <VCard class="border px-4 py-2">
+    <VRow justify="center" class="d-flex justify-center px-2">
+      <VRow justify="center" class="d-flex justify-center px-2">
         <VCol cols="12 d-flex justify-center">
           <VCol cols="2 d-flex justify-center">
-            <VBtn
-              :color="kpiStore.currentUserType === 1 ? 'primary' : ''"
-              color="secondary"
-              :dark="true"
-              :class="{ 'primary': kpiStore.currentUserType === 1 }"
-              class="text-caption border"
+            <VBtn :color="kpiStore.currentUserType === 1 ? 'primary' : ''" color="secondary" :dark="true"
+              :class="{ 'primary': kpiStore.currentUserType === 1 }" class="text-caption border"
               :style="{ boxShadow: kpiStore.currentUserType === 1 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
-              @click="kpiStore.currentUserType = 1"
-            >
+              @click="kpiStore.currentUserType = 1">
               Boshqaruvchi
             </VBtn>
           </VCol>
           <VCol cols="2 d-flex justify-center">
-            <VBtn
-              :style="{ boxShadow: kpiStore.currentUserType === 2 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
-              :color="kpiStore.currentUserType === 2 ? 'primary' : ''"
-              class="text-caption border"
-              @click="kpiStore.currentUserType = 2"
-            >
+            <VBtn :style="{ boxShadow: kpiStore.currentUserType === 2 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
+              :color="kpiStore.currentUserType === 2 ? 'primary' : ''" class="text-caption border"
+              @click="kpiStore.currentUserType = 2">
               Bosh buxgalter
             </VBtn>
           </VCol>
-          <VCol
-            class="d-flex justify-center"
-            cols="3"
-          >
-            <VBtn
-              :style="{ boxShadow: kpiStore.currentUserType === 3 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
-              :color="kpiStore.currentUserType === 3 ? 'primary' : ''"
-              class="text-caption border"
-              @click="kpiStore.currentUserType = 3"
-            >
+          <VCol class="d-flex justify-center" cols="3">
+            <VBtn :style="{ boxShadow: kpiStore.currentUserType === 3 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
+              :color="kpiStore.currentUserType === 3 ? 'primary' : ''" class="text-caption border"
+              @click="kpiStore.currentUserType = 3">
               Davlat dasturlari blok
             </VBtn>
           </VCol>
           <VCol cols="3 d-flex justify-center">
-            <VBtn
-              :style="{ boxShadow: kpiStore.currentUserType === 4 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
-              :color="kpiStore.currentUserType === 4 ? 'primary' : ''"
-              class="text-caption border"
-              @click="kpiStore.currentUserType = 4"
-            >
+            <VBtn :style="{ boxShadow: kpiStore.currentUserType === 4 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
+              :color="kpiStore.currentUserType === 4 ? 'primary' : ''" class="text-caption border"
+              @click="kpiStore.currentUserType = 4">
               Biznes va operatsion blok
             </VBtn>
           </VCol>
           <VCol cols="2 d-flex justify-center">
-            <VBtn
-              :style="{ boxShadow: kpiStore.currentUserType === 5 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
-              :color="kpiStore.currentUserType === 5 ? 'primary' : ''"
-              class="text-caption border"
-              @click="kpiStore.currentUserType = 5"
-            >
+            <VBtn :style="{ boxShadow: kpiStore.currentUserType === 5 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
+              :color="kpiStore.currentUserType === 5 ? 'primary' : ''" class="text-caption border"
+              @click="kpiStore.currentUserType = 5">
               Kredit blok
             </VBtn>
           </VCol>
@@ -70,27 +44,21 @@
     </VRow>
   </VCard>
   <VCard class="border">
-    <template #title>
-      Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
-    </template>
-    <div
-      v-show="!datasetSource.length"
-      class="text-center"
-    >
+
+    <h2 class="text-center mt-1"> Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
+    </h2>
+
+    <div v-show="!datasetSource.length" class="text-center">
       Ma'lumot yo'q
     </div>
-    <div
-      id="main"
-      style="block-size: 330px;"
-      class="mx-auto"
-    />
+    <div id="main" style="block-size: 330px;" class="mx-auto " />
   </VCard>
 </template>
 
 <script setup>
-import { useKpiStore } from '@/store/kpi'
-import * as echarts from 'echarts'
-import { onMounted, ref, watch } from 'vue'
+import { useKpiStore } from '@/store/kpi';
+import * as echarts from 'echarts';
+import { onMounted, ref, watch } from 'vue';
 
 
 const props = defineProps({
@@ -168,7 +136,7 @@ const initializeChart = () => {
     grid: {
       left: '3%',
       right: '4%',
-      bottom: '3%',
+      bottom: '1%',
       containLabel: true,
     },
     tooltip: {
@@ -185,10 +153,10 @@ const initializeChart = () => {
       datasetIndex: 1,
       label: {
         show: true,
-        fontSize: 10,
+        fontSize: 12,
         position: 'top',
         formatter(value) {
-          return `${value.value[1]} %`
+          return `${value.value[1]}%`
         },
       },
       itemStyle: {

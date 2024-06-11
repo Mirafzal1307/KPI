@@ -55,3 +55,21 @@ export async function getKpiByBranchesDetails(req) {
     console.log(error)
   }
 }
+
+export async function getChildGraphData(req) {
+  try {
+    const { data } = await axios.get(`/kpi_new/v1/branch-kpi/year?branch_id=${req.branch_id}&type=${req.user_type}`)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function getDepartmentsTbData(req) {
+  try {
+    const { data } = await axios.get(`/kpi_new/v1/department-kpi/year?department_id=${req.departmentId}`)
+    return data
+  } catch (error) {
+    console.log(error)
+  }
+}
