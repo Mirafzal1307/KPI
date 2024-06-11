@@ -188,9 +188,9 @@ const initializeAnnualChart = (data) => {
       series: [{
         data: filledData.map(item => ({
           value: item.average_kpi,
-          itemStyle: {
-            color: getColor(item.average_kpi),
-          },
+          // itemStyle: {
+          //   color: getColor(item.average_kpi),
+          // },
           originalPeriod: item.originalPeriod
         })),
         type: 'bar',
