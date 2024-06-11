@@ -89,8 +89,8 @@ watch(filters.value, (newValue, oldValue) => {
             </v-col>
 
             <v-col cols="12" md="6">
-              <v-autocomplete v-model="filters.region" :items="allRegions" item-title="region_name_uz/" item-value="id"
-                label="Hudud" />
+              <v-autocomplete v-model="filters.region" :items="allRegions" item-title="region_name_uz" item-value="id"
+                label="Hudud"  />
             </v-col>
 
             <v-col cols="12" md="6">
