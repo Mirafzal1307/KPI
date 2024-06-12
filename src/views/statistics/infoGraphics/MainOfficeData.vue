@@ -3,7 +3,7 @@
     <VRow class="px-4">
       <VCol cols="12" md="5">
         <VSelect v-model="dataParams.type" item-title="name" item-value="value"
-          :items="[{ name: 'Rahbariyat', value: 1 }, { name: 'Tarkibiy bo`linma', value: 2 }]"
+          :items="[{ name: 'Rahbariyat', value: 1 }, { name: 'Tarkibiy bo\'linma', value: 2 }]"
           @update:model-value="getStatistics" />
       </VCol>
       <VCol cols="12" md="2" />

@@ -216,6 +216,7 @@ const initializeAnnualChart = data => {
         axisPointer: {
           type: 'shadow',
         },
+
       },
     }
 
@@ -273,7 +274,7 @@ const updateChart = (chartInstance, data) => {
       datasetIndex: 1,
       label: {
         show: true,
-        fontSize: 12,
+        fontSize: 14,
         position: 'top',
         formatter(value) {
           return `${value.value.score}%`

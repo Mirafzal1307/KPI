@@ -1,25 +1,21 @@
 <script setup>
-import VerticalNavGroup from '@/@layouts/components/VerticalNavGroup.vue'
-import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue'
-import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
+import VerticalNavGroup from '@/@layouts/components/VerticalNavGroup.vue';
+import VerticalNavSectionTitle from '@/@layouts/components/VerticalNavSectionTitle.vue';
+import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
 </script>
 
 
 <template>
   <!-- 👉 Dashboards -->
 
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'Dashboards',
-    }"
-  />
-  <VerticalNavLink
-    :item="{
-      title: 'Dashboard',
-      icon: 'ri-dashboard-line',
-      to: '/dashboard',
-    }"
-  />
+  <VerticalNavSectionTitle :item="{
+    heading: 'Dashboards',
+  }" />
+  <VerticalNavLink :item="{
+    title: 'Dashboard',
+    icon: 'ri-dashboard-line',
+    to: '/dashboard',
+  }" />
   <!-- 👉 Struktura  -->
   <!--
     <VerticalNavSectionTitle :item="{
@@ -115,39 +111,31 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
 
   <!-- 👉 Apps & Pages -->
-  <VerticalNavSectionTitle
-    :item="{
-      heading: 'Apps & Pages',
-    }"
-  />
+  <VerticalNavSectionTitle :item="{
+    heading: 'Apps & Pages',
+  }" />
 
-  
-    <VerticalNavLink :item="{
-    title: 'Monitoring Statisatikasi',
+
+  <VerticalNavLink :item="{
+    title: 'Monitoring Statistikasi',
     icon: 'ri-line-chart-line',
     to: '/monitoring-statistics',
+  }" />
+
+  <VerticalNavGroup :item="{
+    title: 'Infografika',
+    icon: 'ri-bar-chart-2-line',
+  }">
+    <VerticalNavLink :item="{
+      title: 'Umumiy statistika',
+      icon: 'ri-bar-chart-grouped-line',
+      to: '/general-data',
     }" />
- 
-  <VerticalNavGroup
-    :item="{
-      title: 'Info Grafika',
-      icon: 'ri-bar-chart-2-line',
-    }"
-  >
-    <VerticalNavLink
-      :item="{
-        title: 'Umumiy statistika',
-        icon: 'ri-bar-chart-grouped-line',
-        to: '/general-data',
-      }"
-    />
-    <VerticalNavLink
-      :item="{
-        title: 'Bosh ofis statistikasi',
-        icon: 'ri-bar-chart-grouped-line',
-        to: '/main-office-data',
-      }"
-    />
+    <VerticalNavLink :item="{
+      title: 'Bosh ofis statistikasi',
+      icon: 'ri-bar-chart-grouped-line',
+      to: '/main-office-data',
+    }" />
   </VerticalNavGroup>
   <!--
     <VerticalNavLink :item="{

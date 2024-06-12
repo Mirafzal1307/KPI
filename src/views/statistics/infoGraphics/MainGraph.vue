@@ -59,7 +59,6 @@ async function getBranchesData() {
   try {
     if (formattedDatasetSource.value.length > 0 && formattedDatasetSource.value[0]) {
       const branchData = await kpiStore.fetchKpiByBranches({ region_id: kpiStore.currentRegion?.id })
-
       if (!branchData[0]) return (formattedBranchData.value = [])
       formatBranchData(branchData)
     }
@@ -81,11 +80,12 @@ function formatBranchData(data) {
     const formattedName = item.name
       .replace(/.*?viloyati\s*/, '')
       .replace(/.*?Respublikasi\s*/, '')
-      .replace(/ bank xizmatlari markazi$/, '')
-      .replace(/ Bank xizmatlari ofisi$/, '')
-      .replace(/ bank xizmatlari ofisi$/, '')
-      .replace(/ xizmatlari ofisi$/, '')
+      .replace(/ bank xizmatlari markazi$/, ' bxm')
+      .replace(/ Bank xizmatlari ofisi$/, ' bxo')
+      .replace(/ bank xizmatlari ofisi$/, 'bxo')
+      .replace(/ xizmatlari ofisi$/, ' xo')
       .replace(/  ofisi$/, '')
+      .replace(/.?shahar\s*/, ' sh.')
       .replace(/  xizmatlari$/, '')
       .replace(/.?boshqarmasi\s*/, ' b.')
       .trim()

@@ -39,6 +39,7 @@ const user_type = ref(1)
 kpiStore.currentPeriod = periodInput.value
 
 function formatKPI(value) {
+  if (!value) return '0.00'
   return parseFloat(value).toFixed(2)
 }
 
