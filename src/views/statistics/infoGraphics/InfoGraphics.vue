@@ -97,6 +97,8 @@ const initializeChart = () => {
   var myChart = echarts.init(chartDom)
 
   const scores = props.datasetSource.map(item => item[1]).sort((a, b) => a - b)
+console.log(props.datasetSource );
+
   const minScore = scores[0]
   const maxScore = scores[scores.length - 1]
 

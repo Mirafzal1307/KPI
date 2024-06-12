@@ -80,7 +80,7 @@ function logout() {
             <template #prepend>
               <VIcon class="me-2" icon="ri-logout-box-r-line" size="22" />
             </template>
-            <VListItemTitle @click="logout()">Logout</VListItemTitle>
+            <VListItemTitle @click="logout()">Chiqish</VListItemTitle>
           </VListItem>
         </VList>
       </VMenu>

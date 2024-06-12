@@ -10,12 +10,12 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 
   <VerticalNavSectionTitle
     :item="{
-      heading: 'Dashboards',
+      heading: 'Asosiy',
     }"
   />
   <VerticalNavLink
     :item="{
-      title: 'Dashboard',
+      title: 'Asosiy',
       icon: 'ri-dashboard-line',
       to: '/dashboard',
     }"
@@ -117,7 +117,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
   <!-- 👉 Apps & Pages -->
   <VerticalNavSectionTitle
     :item="{
-      heading: 'Apps & Pages',
+      heading: 'Qo\'shimcha',
     }"
   />
 
