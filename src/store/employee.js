@@ -3,32 +3,30 @@ import { ref } from 'vue'
 
 export const useEmployeeStore = defineStore('employee', () => {
   const loading = ref(false)
-  const employeeList = ref({})
-  const period = ref({})
+  const employeeList = ref([])
+  const period = ref([])
   const employee_KPI = ref({})
   const personalData = ref({})
 
   const getEmployeeList = async (page, size, branch, param, period) => {
-    try {
-      loading.value = true
-      const { data } = await getEmpList(page, size, branch, param, period)
-      employeeList.value = data
+    loading.value = true
 
-      return data
+    try {
+      employeeList.value = await getEmpList(page, size, branch, param, period)
+
+      // return data
     } catch (error) {
-      return error
-    } finally {
-      loading.value = false
+      // return error
     }
+
+    loading.value = false
   }
 
   const getPeriodList = async () => {
     try {
       loading.value = true
-      const { data } = await getPeriod()
-      period.value = data
 
-      return data
+      period.value = await getPeriod()
     } catch (error) {
       return error
     } finally {
@@ -39,7 +37,11 @@ export const useEmployeeStore = defineStore('employee', () => {
   const getEmployeeKpiById = async (id, period) => {
     try {
       loading.value = true
-      const { data } = await getEmpKpiById(id, period)
+
+      const data = await getEmpKpiById(id, period)
+
+      console.log(data)
+
       employee_KPI.value = data
 
       return data
@@ -53,9 +55,10 @@ export const useEmployeeStore = defineStore('employee', () => {
   const getPersonalDataByPeriod = async period => {
     try {
       loading.value = true
-      const { data } = await getPersonalData(period)
+
+      const data = await getPersonalData(period)
+
       personalData.value = data
-      console.log(personalData.value)
 
       return data
     } catch (error) {

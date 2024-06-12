@@ -160,13 +160,13 @@ const indicator = ref(null)
 function formatNumberRoundDown(num) {
   return Math.floor(num * 100) / 100
 }
-console.log(personalData.value);
+console.log(personalData.value)
 
 
 
 const KPI = computed(() => personalData.value?.average_kpi / 100)
 
-console.log(KPI.value);
+console.log(KPI.value)
 
 const initGaugeChart = () => {
   const myChart2 = ref(echarts.init(indicator.value))
@@ -279,7 +279,20 @@ const lineChart = () => {
       },
       xAxis: {
         type: 'category',
-        data: months,
+        data: [
+          'Yanvar',
+          'Fevral',
+          'Mart',
+          'Aprel',
+          'May',
+          'Iyun',
+          'Iyul',
+          'Avgust',
+          'Sentabr',
+          'Oktabr',
+          'Noyabr',
+          'Dekabr',
+        ],
       },
       yAxis: {
         type: 'value',

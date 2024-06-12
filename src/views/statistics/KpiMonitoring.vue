@@ -1,66 +1,116 @@
 <template>
   <VCard class="border">
     <VCol cols="12 mx-auto mt-4">
-      <VCol cols="12" class="text-center text-h2">
+      <VCol
+        cols="12"
+        class="text-center text-h2"
+      >
         <span class="font-weight-black">Monitoring</span>
       </VCol>
       <VRow class="flex justify-center mb-4">
         <VCol cols="6">
-
-          <VAutocomplete v-model="statistic.branchId" return-object label="Filial" item-title="name" clearable item-value="id"
-            :items="allBranches" class="mt-4"  />
-
+          <VAutocomplete
+            v-model="statistic.branchId"
+            return-object
+            label="Filial"
+            item-title="name"
+            clearable
+            item-value="id"
+            :items="allBranches"
+            class="mt-4"
+          />
         </VCol>
         <VCol cols="6">
           <div v-if="blocks.blocks">
-            <VAutocomplete v-model="statistic.blockId" return-object :items="blocks.blocks" item-title="block_name"
-              item-value="id" label="Blok" class="mt-4" clearable />
+            <VAutocomplete
+              v-model="statistic.blockId"
+              return-object
+              :items="blocks.blocks"
+              item-title="block_name"
+              item-value="id"
+              label="Blok"
+              class="mt-4"
+              clearable
+            />
           </div>
-
         </VCol>
 
         <VCol cols="6">
-
           <div v-if="blocks.departments">
-            <VAutocomplete v-model="statistic.departmentId" label="Departament" class="mt-4" return-object
-              item-value="id" :items="blocks.departments" item-title="department_name" clearable />
-
+            <VAutocomplete
+              v-model="statistic.departmentId"
+              label="Departament"
+              class="mt-4"
+              return-object
+              item-value="id"
+              :items="blocks.departments"
+              item-title="department_name"
+              clearable
+            />
           </div>
         </VCol>
         <VCol cols="6">
           <div v-if="blocks?.managements">
-            <VAutocomplete v-model="statistic.managementId" label="Boshqarma" class="mt-4" return-object item-value="id"
-              :items="blocks.managements" item-title="management_name"  clearable />
+            <VAutocomplete
+              v-model="statistic.managementId"
+              label="Boshqarma"
+              class="mt-4"
+              return-object
+              item-value="id"
+              :items="blocks.managements"
+              item-title="management_name"
+              clearable
+            />
           </div>
         </VCol>
         <VCol cols="6">
           <div v-if="blocks?.divisions">
-            <VAutocomplete v-model="statistic.divisionId" label="Bo'lim" class="mt-4" return-object item-value="id"
-              :items="blocks.divisions" item-title="division_name" clearable />
+            <VAutocomplete
+              v-model="statistic.divisionId"
+              label="Bo'lim"
+              class="mt-4"
+              return-object
+              item-value="id"
+              :items="blocks.divisions"
+              item-title="division_name"
+              clearable
+            />
           </div>
         </VCol>
         <VCol cols="6">
           <div v-if="empList.length !== 0 && statistic.branchId ">
-            <VAutocomplete v-model="empId" label="Ishchilar ro'yhati" class="mt-4" :items="empList"
-              item-title="full_name" item-value="id" @update:model-value="empIdChange"  clearable/>
+            <VAutocomplete
+              v-model="empId"
+              label="Ishchilar ro'yhati"
+              class="mt-4"
+              :items="empList"
+              item-title="full_name"
+              item-value="id"
+              clearable
+              @update:model-value="empIdChange"
+            />
           </div>
         </VCol>
       </VRow>
 
       <VCardActions>
-        <div id="chart" style="block-size: 400px; inline-size: 100%" class="mx-auto" />
+        <div
+          id="chart"
+          style="block-size: 400px; inline-size: 100%"
+          class="mx-auto"
+        />
       </VCardActions>
     </VCol>
   </VCard>
 </template>
 
 <script setup>
-import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
+import * as echarts from 'echarts'
+import { onMounted, watch, ref } from 'vue'
 
-import { useStaticsStore } from '@/store/statistics';
-import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { useStaticsStore } from '@/store/statistics'
+import { storeToRefs } from 'pinia'
+
 
 const statistics = useStaticsStore()
 const { getBranches, getAllDepartaments, getAllBlocks, getEmpList, getEmpStatistics } = useStaticsStore()
@@ -100,18 +150,18 @@ const lineChart = () => {
       type: 'category',
       boundaryGap: false,
       data: [
-        'December',
-        'January',
-        'February',
-        'March',
+        'Dekabr',
+        'Yanvar',
+        'Fevral',
+        'Mart',
         'April',
         'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'Octobet',
-        'November',
+        'Iyun',
+        'Iyul',
+        'Avgust',
+        'Sentabr',
+        'Oktyabr',
+        'Noyabr',
       ],
     },
     yAxis: {
@@ -133,7 +183,7 @@ const lineChart = () => {
 onMounted(() => {
   getBranches()
   lineChart()
-});
+})
 
 watch(statistic.value, (newValue, oldValue) => {
   const param = {
@@ -143,14 +193,14 @@ watch(statistic.value, (newValue, oldValue) => {
     management_id: statistic.value.managementId?.id,
     division_id: statistic.value.divisionId?.id,
   }
+
   getAllDepartaments(statistic.value.branchId?.id)
   getAllBlocks(statistic.value.branchId?.id)
   getEmpList(param)
-});
+})
 
 const empIdChange = async () => {
   await getEmpStatistics(empId.value)
   lineChart()
 }
-
 </script>
