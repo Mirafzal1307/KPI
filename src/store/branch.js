@@ -1,18 +1,20 @@
-import { getAllBranches, getAllRegions ,getBranchByRegionID } from '@/services/branch.service'
+import { getAllBranches, getAllRegions, getBranchByRegionID } from '@/services/branch.service'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { toast } from 'vue3-toastify'
 
 export const useBranchStore = defineStore('branch', () => {
   const allBranches = ref([])
-  const branches = ref({})
+  const branches = ref([])
   const allRegions = ref([])
   const loading = ref(false)
 
   const getBranches = async () => {
     try {
       loading.value = true
+
       const { data } = await getAllBranches()
+
       allBranches.value = data
       branches.value = data
 
@@ -32,7 +34,9 @@ export const useBranchStore = defineStore('branch', () => {
   const getRegions = async () => {
     try {
       loading.value = true
+
       const { data } = await getAllRegions()
+
       allRegions.value = data
 
       return data
@@ -49,10 +53,12 @@ export const useBranchStore = defineStore('branch', () => {
   }
 
 
-  const getBranchesByRegionId = async (id) => {
+  const getBranchesByRegionId = async id => {
     try {
       loading.value = true
+
       const { data } = await getBranchByRegionID(id)
+
       allBranches.value = data
 
       return data
