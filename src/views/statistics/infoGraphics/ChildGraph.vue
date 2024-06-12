@@ -1,60 +1,33 @@
 <template>
   <VCard class="border">
     <h3 class="text-center mt-1">{{ titleDistricts }} filiallari bo'yicha KPI ko'rsatkichlari (foizda)</h3>
-    <div
-      v-show="!dataSet.length"
-      class="text-center"
-    >
+    <div v-show="!dataSet.length" class="text-center">
       Ma'lumot yo'q
     </div>
-    <div
-      id="chart"
-      style="block-size: 330px"
-      class="mx-auto"
-    />
+    <div id="chart" style="block-size: 330px" class="mx-auto" />
     <div class="text-center">
-      <VDialog
-        v-model="dialog"
-        transition="dialog-bottom-transition"
-      >
+      <VDialog v-model="dialog" transition="dialog-bottom-transition">
         <VCard>
           <VToolbar>
             <VToolbarTitle v-if="tab == 0"> Yillik KPI ko'rsatkichlari (foizda) </VToolbarTitle>
             <VToolbarTitle v-if="tab == 1"> {{ currentPeriod }} davridagi KPI ma'lumotlari </VToolbarTitle>
             <VSpacer />
             <VToolbarItems>
-              <VBtn
-                icon
-                @click="close"
-              >
+              <VBtn icon @click="close">
                 <VIcon>ri-close-large-line</VIcon>
               </VBtn>
             </VToolbarItems>
           </VToolbar>
-          <VTabs
-            v-model="tab"
-            class="d-flex w-full justify-center align-center"
-          >
+          <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
             <VTab>Grafik</VTab>
             <VTab v-if="kpiByBranchesDetails.length > 0"> Jadval </VTab>
           </VTabs>
-          <VWindow
-            v-model="tab"
-            class="fixed-height"
-          >
+          <VWindow v-model="tab" class="fixed-height">
             <VWindowItem>
-              <div
-                id="branch-annual-chart"
-                style="block-size: 400px"
-              />
+              <div id="branch-annual-chart" style="block-size: 400px" />
             </VWindowItem>
             <VWindowItem>
-              <VDataTable
-                :items-per-page="-1"
-                :items="kpiByBranchesDetails"
-                :headers="headers"
-                dense
-              >
+              <VDataTable :items-per-page="-1" :items="kpiByBranchesDetails" :headers="headers" dense>
                 <template #item="{ item, index }">
                   <tr>
                     <td>{{ index + 1 }}</td>
@@ -80,10 +53,10 @@
 </template>
 
 <script setup>
-import { useKpiStore } from '@/store/kpi'
-import * as echarts from 'echarts'
-import { storeToRefs } from 'pinia'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { useKpiStore } from '@/store/kpi';
+import * as echarts from 'echarts';
+import { storeToRefs } from 'pinia';
+import { nextTick, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
   titleDistricts: {
@@ -173,7 +146,6 @@ const initializeAnnualChart = data => {
   const chartDom = document.getElementById('branch-annual-chart')
   if (chartDom) {
     annualChart = echarts.init(chartDom)
-
     const months = [
       'Yanvar',
       'Fevral',
@@ -188,7 +160,6 @@ const initializeAnnualChart = data => {
       'Noyabr',
       'Dekabr',
     ]
-
     const filledData = months.map((month, index) => {
       const monthData = data.find(d => new Date(d.period).getMonth() === index)
 
@@ -202,6 +173,10 @@ const initializeAnnualChart = data => {
     const maxKPI = Math.max(...kpiValues)
 
     const getColor = value => {
+
+      if (minKPI == maxKPI) {
+        return 'rgb(0, 255, 0)'
+      }
       const normalizedValue = (value - minKPI) / (maxKPI - minKPI)
       const green = Math.round(normalizedValue * 255)
       const red = 255 - green
@@ -264,6 +239,9 @@ const updateChart = (chartInstance, data) => {
   const maxScore = scores[scores.length - 1]
 
   const getColor = score => {
+    if (minScore === maxScore) {
+      return 'rgb(0, 255, 0)'
+    }
     const ratio = (score - minScore) / (maxScore - minScore)
     const green = Math.round((1 - ratio) * 255)
     const red = Math.round(ratio * 255)

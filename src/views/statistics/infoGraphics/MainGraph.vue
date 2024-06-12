@@ -1,16 +1,9 @@
 <template>
   <VRow class="d-flex">
     <VCol cols="7">
-      <Infographics
-        v-if="formattedDatasetSource.length >= 0"
-        :dataset-source="formattedDatasetSource"
-      />
-      <ChildGraph
-        v-if="formattedBranchData.length >= 0"
-        :data-set="formattedBranchData"
-        :title-districts="kpiStore.currentRegion.name"
-        class="mt-2"
-      />
+      <Infographics v-if="formattedDatasetSource.length >= 0" :dataset-source="formattedDatasetSource" />
+      <ChildGraph v-if="formattedBranchData.length >= 0" :data-set="formattedBranchData"
+        :title-districts="kpiStore.currentRegion.name" class="mt-2" />
     </VCol>
     <VCol cols="5">
       <InfoTable :items="period" />
@@ -75,8 +68,12 @@ async function getBranchesData() {
   }
 }
 
+
 function formatData(data) {
-  formattedDatasetSource.value = data.map((item, index) => [item.name, item.average_kpi, item.id])
+  formattedDatasetSource.value = data.map((item) => {
+    const formattedName = item.name.replace(/viloyati\s*/, 'v.').replace(/Respublikasi\s*/, 'R.')
+    return [formattedName, item.average_kpi, item.id]
+  })
 }
 
 function formatBranchData(data) {
@@ -90,6 +87,7 @@ function formatBranchData(data) {
       .replace(/ xizmatlari ofisi$/, '')
       .replace(/  ofisi$/, '')
       .replace(/  xizmatlari$/, '')
+      .replace(/.?boshqarmasi\s*/, ' b.')
       .trim()
 
     return {
