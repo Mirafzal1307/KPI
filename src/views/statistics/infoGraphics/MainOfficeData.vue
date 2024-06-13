@@ -188,6 +188,7 @@ const getDepartmentChartData = async (id) => {
   }
 };
 
+
 const initializeDepartmentAnnualChart = () => {
   const chartDom = document.getElementById('departments-annual-chart');
   if (!chartDom) return;
@@ -219,6 +220,10 @@ const initializeDepartmentAnnualChart = () => {
     xAxis: {
       type: 'category',
       data: filledData.map(item => item.period),
+      axisLabel: {
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
     },
     yAxis: {
       type: 'value',
@@ -228,9 +233,9 @@ const initializeDepartmentAnnualChart = () => {
       {
         data: filledData.map(item => ({
           value: item.average_kpi,
-          // itemStyle: {
-          //   color: getColor(item.average_kpi),
-          // },
+          itemStyle: {
+            color: getColor(item.average_kpi),
+          },
           originalPeriod: item.originalPeriod
         })),
         type: 'bar',

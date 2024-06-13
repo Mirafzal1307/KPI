@@ -2,20 +2,20 @@
   <VCard class="border px-4 py-2">
     <VRow justify="center" class="d-flex justify-center px-2">
       <VRow justify="center" class="d-flex justify-center px-2">
-        <VCol cols="12 d-flex justify-center">
+        <VCol cols="12 d-flex justify-center ">
           <VCol cols="2 d-flex justify-center">
             <VBtn :color="kpiStore.currentUserType === 1 ? 'primary' : ''" color="secondary" :dark="true"
               :class="{ 'primary': kpiStore.currentUserType === 1 }" class="text-caption border"
               :style="{ boxShadow: kpiStore.currentUserType === 1 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
               @click="kpiStore.currentUserType = 1">
-              Boshqaruvchi
+              Filial
             </VBtn>
           </VCol>
           <VCol cols="2 d-flex justify-center">
             <VBtn :style="{ boxShadow: kpiStore.currentUserType === 2 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
               :color="kpiStore.currentUserType === 2 ? 'primary' : ''" class="text-caption border"
               @click="kpiStore.currentUserType = 2">
-              Bosh buxgalter
+              Bugalteriya
             </VBtn>
           </VCol>
           <VCol class="d-flex justify-center" cols="3">
@@ -128,7 +128,9 @@ const initializeChart = () => {
         interval: 0,
         rotate: 30,
         margin: 6,
+        fontSize: 14,
       },
+
     },
     yAxis: {
       // max: 120
