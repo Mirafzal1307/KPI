@@ -17,7 +17,6 @@
                 <VIcon>ri-close-large-line</VIcon>
               </VBtn>
             </VToolbarItems>
-
           </VToolbar>
           <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
             <VTab>Grafik</VTab>
@@ -28,29 +27,23 @@
               <div id="branch-annual-chart" style="block-size: 400px" />
             </VWindowItem>
             <VWindowItem>
-              {{ kpiByBranchesDetails[0] }}
 
-              <VDataTable :items-per-page="-1" :items="kpiByBranchesDetails" :headers="headers" dense>
+              <VDataTable :items-per-page="-1" :items="items" :headers="headers" dense>
                 <template #item="{ item, index }">
-                  <tr>
+                  <tr :class="{ 'bg-secondary': item.category === 'Jami' }">
                     <td v-if="item.category !== 'Jami'">{{ index + 1 }}</td>
-                    <td>{{ item.category }}</td>
-                    <td>{{ item.indicator }}</td>
-                    <td>{{ Math.round(item.branch_kpi * 100) }}%</td>
+                    <td v-else></td>
+                    <td>{{ item.category || '' }}</td>
+                    <td>{{ item.indicator || '' }}</td>
+                    <td>{{ item.branch_kpi != null ? Math.round(item.branch_kpi * 100) : '' }}</td>
                     <td>{{ formatNumberWithSpaces(item.plan) }}</td>
                     <td>{{ formatNumberWithSpaces(item.fact) }}</td>
-                    <td>{{ Math.round(item.done_percent * 100) }}%</td>
-                    <td>{{ Math.round(item.weight * 100) }}%</td>
-                    <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
-                    <!-- <td>{{ Math.round(item.average_kpi * 100) }}%</td> -->
+                    <td>{{ item.done_percent != null ? Math.round(item.done_percent * 100) + '%' : '' }}</td>
+                    <td>{{ item.weight != null ? Math.round(item.weight * 100) + '%' : '' }}</td>
+                    <td>{{ item.kpi_percent != null ? Math.round(item.kpi_percent * 100) + '%' : '' }}</td>
                   </tr>
                 </template>
-                <template #bottom>
-                  <tr class="sum-row">
-                    <td colspan="8 " class=" text-right font-weight-bold">Sum of KPI Percent:</td>
-                    <td colspan="2" class="font-weight-bold">{{ sumKpiPercent }}%</td>
-                  </tr>
-                </template>
+                <template #bottom></template>
               </VDataTable>
             </VWindowItem>
           </VWindow>
@@ -81,10 +74,36 @@ const kpiStore = useKpiStore()
 const { kpiByBranchesDetails } = storeToRefs(kpiStore)
 
 const items = computed(() => {
-  const obj = { "region_id": 5, "source": null, "kpi": null, "id": null, "plan": null, "branch_kpi": null, "branch_id": null, "fact": null, "average_kpi": 0.496013472169511, "user_type": null, "done_percent": null, "period": null, "category": "Jami", "weight": null, "created_at": null, "indicator": null, "kpi_percent": null, "calculation": null, "min_percent": null, "max_percent": null }
+  const obj = {
+    region_id: 5,
+    source: null,
+    kpi: null,
+    id: null,
+    plan: null,
+    branch_kpi: null,
+    branch_id: null,
+    fact: null,
+    average_kpi: null,
+    user_type: null,
+    done_percent: null,
+    period: null,
+    category: 'Jami',
+    weight: null,
+    some: null,
+    created_at: null,
+    indicator: null,
+    kpi_percent: kpiByBranchesDetails.value[0].average_kpi,
+    calculation: null,
+    min_percent: null,
+    max_percent: null,
+  }
+  kpiByBranchesDetails.value.push(obj)
+  console.log(kpiByBranchesDetails.value);
+  return kpiByBranchesDetails.value
 })
 
 function formatNumberWithSpaces(number) {
+  if (number == null) return ""
   const [integerPart, decimalPart] = number.toFixed(2).toString().split('.')
   const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
   if (!decimalPart) return formattedIntegerPart
@@ -107,14 +126,13 @@ const currentPeriod = ref(null)
 
 const sumKpiPercent = computed(() => {
   return Math.round(kpiByBranchesDetails.value[0].average_kpi * 100)
-});
-
+})
 
 const headers = [
   { title: '№', value: 'id' },
   { title: "Ko'rsatkich turi" },
   { title: "KPI - asosiy ko'rsatkichlar(bank uchun muhim va yuqori ahamiyatga ega)", value: 'indicator' },
-  { title: 'Filial KPI', value: 'branch_kpi' },
+  { title: 'Filial KPI (%)', value: 'branch_kpi' },
   { title: 'Reja', value: 'plan', width: 150 },
   { title: 'Fakt', value: 'fact', width: 150 },
   { title: 'Reja bajarilishi', value: 'done_percent' },
@@ -156,7 +174,6 @@ const handleChartClick = async params => {
   }
 }
 
-
 const initializeChart = () => {
   const chartDom = document.getElementById('chart')
   if (chartDom) {
@@ -197,7 +214,6 @@ const initializeAnnualChart = data => {
     const maxKPI = Math.max(...kpiValues)
 
     const getColor = value => {
-
       if (minKPI == maxKPI) {
         return 'rgb(0, 255, 0)'
       }
@@ -245,7 +261,6 @@ const initializeAnnualChart = data => {
         axisPointer: {
           type: 'shadow',
         },
-
       },
     }
 
@@ -297,7 +312,7 @@ const updateChart = (chartInstance, data) => {
       axisLabel: {
         interval: 0,
         fontSize: 14,
-        rotate: 30
+        rotate: 30,
       },
     },
     yAxis: {},
