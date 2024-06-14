@@ -25,9 +25,9 @@ export async function fetchStatistics(dataParams) {
   }
 }
 
-export async function fetchBranchList() {
+export async function fetchBranchList(id) {
   try {
-    const { data } = await axios.get('/kpi_indicator_details/v1/get-branches')
+    const { data } = await axios.get(`branch/v1/by-region?region_id=${id}`)
 
     return data
   } catch (error) {
@@ -35,7 +35,7 @@ export async function fetchBranchList() {
   }
 }
 
-export async function getDepartament(id) {
+export async function getAllDataByDepartment(id) {
   try {
     const { data } = await axios.get(`department/v1/get-by-branch/${id}`)
 
@@ -45,7 +45,7 @@ export async function getDepartament(id) {
   }
 }
 
-export async function getBlockList(id) {
+export async function getAllDataByBlock(id) {
   try {
     const { data } = await axios.get(`block/v1/get-by-branch-id/${id}`)
     return data
@@ -54,7 +54,7 @@ export async function getBlockList(id) {
   }
 }
 
-export async function getAllByBlock(id) {
+export async function getDepartmentByBlock(id) {
   try {
     const { data } = await axios.get(`department/v1/get-by-block/${id}`)
     return data

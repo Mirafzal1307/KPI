@@ -3,7 +3,7 @@ import { useBranchStore } from '@/store/branch'
 import { useEmployeeStore } from '@/store/employee'
 import UserProfileCard from '@/views/dashboard/UserProfileCard.vue'
 import { storeToRefs } from 'pinia'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const branchStore = useBranchStore()
 const { allBranches, allRegions } = storeToRefs(branchStore)
@@ -59,6 +59,12 @@ function getTableClass(item) {
   if (item.isActive) return 'active-item'
 }
 
+const getEmployeeAverageKpi = computed(() => {
+  if (!employee_KPI.value?.kpi?.length) return
+
+  return employee_KPI.value?.kpi[0].average_kpi
+})
+
 async function filterEmployees() {
   employee_KPI.value.kpi = []
   await getEmployeeList(
@@ -80,6 +86,8 @@ async function fetchBranchesByRegionId(id) {
 
   await getBranchesByRegionId(id)
 }
+
+
 
 onMounted(() => {
   getEmployeeList(
@@ -146,6 +154,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-for="(item, index) in employee_KPI.kpi" :key="item.id">
+
                 <td>
                   {{ index + 1 }}</td>
                 <td>
@@ -165,7 +174,19 @@ onMounted(() => {
 
               </tr>
 
+
             </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td class=" font-weight-black text-h5" >Umumiy KPI</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class=" font-weight-bold text-red-darken-4 text-h5">{{ isNaN(getEmployeeAverageKpi)? 0 :  Math.round(getEmployeeAverageKpi * 100) }}%</td>
+              </tr>
+            </tfoot>
           </VTable>
         </VCard>
       </VResponsive>

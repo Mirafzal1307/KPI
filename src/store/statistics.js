@@ -1,12 +1,12 @@
 import {
   fetchBranchList,
-  getAllByBlock,
-  getBlockList,
-  getDepartament,
+  getAllDataByDepartment,
+  getAllDataByBlock,
+  getDepartmentByBlock,
+  getManagmentByDepartment,
   getDivisionByManagement,
   getEmpListFull,
   getEmpStatistic,
-  getManagmentByDepartment,
 } from '@/services/main.office.service'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -23,11 +23,13 @@ export const useStaticsStore = defineStore('statistics', () => {
   const empList = ref([])
   const empStatistic = ref([])
 
-  const getBranches = async () => {
+  const getBranches = async id => {
     try {
       loading.value = true
-      const data = await fetchBranchList()
-      allBranches.value = data?.branches
+      const data = await fetchBranchList(id)
+      console.log(data)
+
+      allBranches.value = data
 
       return data
     } catch (error) {
@@ -42,11 +44,11 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getAllDepartaments = async id => {
+  const getAllDataByDepartments = async id => {
     try {
       loading.value = true
-      const data = await getDepartament(id)
-      departments.value = data
+      const data = await getAllDataByDepartment(id)
+      departments.value = data.departments
 
       return data
     } catch (error) {
@@ -61,10 +63,10 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getAllBlocks = async id => {
+  const getAllDataByBlocks = async id => {
     try {
       loading.value = true
-      const data = await getBlockList(id)
+      const data = await getAllDataByBlock(id)
       blocks.value = data?.blocks
       allData.value = data
 
@@ -81,52 +83,12 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getAllByBlocks = async id => {
+  const getDepartmentByBlocks = async id => {
     try {
       loading.value = true
-      const data = await getAllByBlock(id)
+      const data = await getDepartmentByBlock(id)
       allData.value = data
       departments.value = data?.departments
-
-      return data
-    } catch (error) {
-      toast.error('Xatolik sodir boldi', {
-        autoClose: 4000,
-        position: toast.POSITION.TOP_RIGHT,
-      })
-
-      return error
-    } finally {
-      loading.value = false
-    }
-  }
-
-  const getEmpList = async param => {
-    try {
-      loading.value = true
-      const { data } = await getEmpListFull(param)
-
-      empList.value = data
-
-      return data
-    } catch (error) {
-      toast.error('Xatolik sodir boldi', {
-        autoClose: 4000,
-        position: toast.POSITION.TOP_RIGHT,
-      })
-
-      return error
-    } finally {
-      loading.value = false
-    }
-  }
-
-  const getEmpStatistics = async id => {
-    try {
-      loading.value = true
-      const { data } = await getEmpStatistic(id)
-
-      empStatistic.value = data
 
       return data
     } catch (error) {
@@ -183,13 +145,53 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
+  const getEmpList = async param => {
+    try {
+      loading.value = true
+      const { data } = await getEmpListFull(param)
+
+      empList.value = data
+
+      return data
+    } catch (error) {
+      toast.error('Xatolik sodir boldi', {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+      })
+
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getEmpStatistics = async id => {
+    try {
+      loading.value = true
+      const { data } = await getEmpStatistic(id)
+
+      empStatistic.value = data
+
+      return data
+    } catch (error) {
+      toast.error('Xatolik sodir boldi', {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+      })
+
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     getBranches,
-    getAllDepartaments,
-    getAllBlocks,
     getEmpList,
     getEmpStatistics,
-    getAllByBlocks,
+    getAllDataByDepartments,
+    getAllDataByBlocks,
+    getDepartmentByBlocks,
     getManagmentByDepartments,
     getDivisionsByManagments,
     empList,
@@ -199,6 +201,6 @@ export const useStaticsStore = defineStore('statistics', () => {
     empStatistic,
     management,
     allData,
-    divisions
+    divisions,
   }
 })
