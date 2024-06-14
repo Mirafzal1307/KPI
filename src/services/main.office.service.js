@@ -54,6 +54,35 @@ export async function getBlockList(id) {
   }
 }
 
+export async function getAllByBlock(id) {
+  try {
+    const { data } = await axios.get(`department/v1/get-by-block/${id}`)
+    return data
+  } catch (error) {
+    return error
+  }
+}
+
+export async function getManagmentByDepartment(id) {
+  try {
+    const { data } = await axios.get(`management/v1/get-by-department-id/${id}`)
+    return data
+  } catch (err) {
+    return err
+  }
+}
+
+
+export async function getDivisionByManagement(id) {
+  try {
+    const { data } = await axios.get(`/division/v1/get-by-management-id/${id}`)
+    return data
+  } catch (err) {
+    return err
+  }
+
+}
+
 export async function getEmpListFull(param) {
   try {
     const data = await axios.post('employee/v1/get/by-stucture', param)

@@ -143,6 +143,7 @@ const initializeChart = () => {
 }
 
 const initializeAnnualChart = data => {
+  console.log(data);
   const chartDom = document.getElementById('branch-annual-chart')
   if (chartDom) {
     annualChart = echarts.init(chartDom)
@@ -167,6 +168,8 @@ const initializeAnnualChart = data => {
         ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi }
         : { period: month, originalPeriod: null, average_kpi: 0 }
     })
+
+    console.log(filledData);
 
     const kpiValues = filledData.map(item => item.average_kpi)
     const minKPI = Math.min(...kpiValues)
@@ -232,6 +235,7 @@ const initializeAnnualChart = data => {
 }
 
 const updateChart = (chartInstance, data) => {
+  console.log(data);
   if (!chartInstance) return
 
   const scores = data.map(item => item.score).sort((a, b) => a - b)

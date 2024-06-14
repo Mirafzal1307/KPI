@@ -60,6 +60,7 @@ function getTableClass(item) {
 }
 
 async function filterEmployees() {
+  employee_KPI.value.kpi = []
   await getEmployeeList(
     filters.value.page,
     filters.value.size,
@@ -70,6 +71,7 @@ async function filterEmployees() {
 }
 
 async function fetchBranchesByRegionId(id) {
+  employee_KPI.value.kpi = []
   if (!id) {
     await getBranches()
 
@@ -95,73 +97,27 @@ onMounted(() => {
 
 <template>
   <section>
-    <VForm
-      class="mb-3"
-      @submit.prevent="filterEmployees"
-    >
+    <VForm class="mb-3" @submit.prevent="filterEmployees">
       <VCard class="border rounded-md">
         <VCardText>
           <VRow dense>
-            <VCol
-              cols="12"
-              md="3"
-            >
-              <VAutocomplete
-                v-model="filters.region"
-                density="compact"
-                :items="allRegions"
-                item-title="region_name_uz"
-                item-value="id"
-                label="Hudud"
-                clearable
-                @update:model-value="fetchBranchesByRegionId"
-              />
+            <VCol cols="12" md="3">
+              <VAutocomplete v-model="filters.region" density="compact" :items="allRegions" item-title="region_name_uz"
+                item-value="id" label="Hudud" clearable @update:model-value="fetchBranchesByRegionId" />
             </VCol>
-            <VCol
-              cols="12"
-              md="3"
-            >
-              <VAutocomplete
-                v-model="filters.branch"
-                :items="allBranches"
-                density="compact"
-                label="Filial"
-                item-title="branch_name"
-                item-value="id"
-                clearable
-              />
+            <VCol cols="12" md="3">
+              <VAutocomplete v-model="filters.branch" :items="allBranches" density="compact" label="Filial"
+                item-title="branch_name" item-value="id" clearable />
             </VCol>
-            <VCol
-              cols="12"
-              md="2"
-            >
-              <VAutocomplete
-                v-model="filters.period"
-                density="compact"
-                :items="period"
-                item-title="period"
-                item-value="id"
-                label="Davr"
-              />
+            <VCol cols="12" md="2">
+              <VAutocomplete v-model="filters.period" density="compact" :items="period" item-title="period"
+                item-value="id" label="Davr" />
             </VCol>
-            <VCol
-              cols="12"
-              md="2"
-            >
-              <VTextField
-                v-model="filters.param"
-                density="compact"
-                label="Qidirish"
-              />
+            <VCol cols="12" md="2">
+              <VTextField v-model="filters.param" density="compact" label="Qidirish" />
             </VCol>
-            <VCol
-              cols="12"
-              md="2"
-            >
-              <VBtn
-                type="submit"
-                class="w-100"
-              >
+            <VCol cols="12" md="2">
+              <VBtn type="submit" class="w-100">
                 Qidirish
               </VBtn>
             </VCol>
@@ -171,38 +127,27 @@ onMounted(() => {
     </VForm>
   </section>
   <VRow class="match-height">
-    <VCol
-      cols="12"
-      md="12"
-      class="py-0"
-    />
-    <VCol
-      cols="12"
-      md="12"
-      class="pb-0"
-    >
+    <VCol cols="12" md="12" class="py-0" />
+    <VCol cols="12" md="12" class="pb-0">
       <VResponsive max-height="400">
         <VCard class="border pa-3 h-100">
-          <VTable
-            class="h-100 overflow-y-auto overflow-x-auto"
-            fixed-header
-          >
+          <VTable class="h-100 overflow-y-auto overflow-x-auto" fixed-header>
             <thead>
               <tr>
+                <th class="text-left">№</th>
                 <th class="text-left">Ko'rsatkich turi</th>
                 <th class="text-left">Ko'rsatkich nomi</th>
                 <th class="text-left">Reja</th>
                 <th class="text-left">Fakt</th>
                 <th class="text-left">Reja bajarilishi</th>
                 <th class="text-left">Samaradorlik bajarilishi</th>
-                <th class="text-left">Umumiy KPI natijasi</th>
+
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="item in employee_KPI.kpi"
-                :key="item.id"
-              >
+              <tr v-for="(item, index) in employee_KPI.kpi" :key="item.id">
+                <td>
+                  {{ index + 1 }}</td>
                 <td>
                   {{ item.category }}
                 </td>
@@ -217,48 +162,24 @@ onMounted(() => {
                 </td>
                 <td>{{ Math.round(item.done_percent * 100) }}%</td>
                 <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
-                <td>
-                  <span
-                    v-if="item.average_kpi"
-                    class="font-weight-bold"
-                  >
-                    {{ Math.round(item.average_kpi * 100) }}%
-                  </span>
-                </td>
+
               </tr>
+
             </tbody>
           </VTable>
         </VCard>
       </VResponsive>
     </VCol>
-    <VCol
-      cols="12"
-      md="3"
-    >
+    <VCol cols="12" md="3">
       <UserProfileCard />
     </VCol>
-    <VCol
-      cols="12"
-      md="9"
-      class="table-height"
-    >
+    <VCol cols="12" md="9" class="table-height">
       <VCard class="pa-4 border h-100">
-        <VDataTable
-          hover
-          :headers="headers"
-          :items="employeeList['items']"
-          :items-per-page="itemsPerPage"
-          item-value="id"
-          class="text-no-wrap h-100 overflow-y-auto elevation-1"
-          :items-length="employeeList['total']"
-          fixed-header
-          @update:items-per-page="updateItemsPerPage"
-        >
+        <VDataTable hover :headers="headers" :items="employeeList['items']" :items-per-page="itemsPerPage"
+          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1" :items-length="employeeList['total']"
+          fixed-header @update:items-per-page="updateItemsPerPage">
           <template #item="{ item, index }">
-            <tr
-              :class="`cursor-pointer hovering-pan ${getTableClass(item)}`"
-              @click="getEmployeeKPI_ByID(item)"
-            >
+            <tr :class="`cursor-pointer hovering-pan ${getTableClass(item)}`" @click="getEmployeeKPI_ByID(item)">
               <td>
                 {{ index + 1 }}
               </td>
@@ -299,5 +220,9 @@ onMounted(() => {
 
 .custom-hover-effect {
   cursor: pointer;
+}
+
+.justify {
+  justify-content: space-between !important;
 }
 </style>
