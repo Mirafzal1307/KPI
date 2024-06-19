@@ -27,22 +27,23 @@
               <div id="branch-annual-chart" style="block-size: 400px" />
             </VWindowItem>
             <VWindowItem>
-              <VDataTable :items-per-page="-1" :items="kpiByBranchesDetails" :headers="headers" dense>
+
+              <VDataTable :items-per-page="-1" :items="items" :headers="headers" dense>
                 <template #item="{ item, index }">
-                  <tr>
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ item.category }}</td>
-                    <td>{{ item.indicator }}</td>
-                    <td>{{ Math.round(item.branch_kpi * 100) }}%</td>
+                  <tr :class="{ 'bg-secondary': item.category === 'Jami' }">
+                    <td v-if="item.category !== 'Jami'">{{ index + 1 }}</td>
+                    <td v-else></td>
+                    <td>{{ item.category || '' }}</td>
+                    <td>{{ item.indicator || '' }}</td>
+                    <td>{{ item.branch_kpi != null ? Math.round(item.branch_kpi * 100) : '' }}</td>
                     <td>{{ formatNumberWithSpaces(item.plan) }}</td>
                     <td>{{ formatNumberWithSpaces(item.fact) }}</td>
-                    <td>{{ Math.round(item.done_percent * 100) }}%</td>
-                    <td>{{ Math.round(item.weight * 100) }}%</td>
-                    <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
-                    <td>{{ Math.round(item.average_kpi * 100) }}%</td>
+                    <td>{{ item.done_percent != null ? Math.round(item.done_percent * 100) + '%' : '' }}</td>
+                    <td>{{ item.weight != null ? Math.round(item.weight * 100) + '%' : '' }}</td>
+                    <td>{{ item.kpi_percent != null ? Math.round(item.kpi_percent * 100) + '%' : '' }}</td>
                   </tr>
                 </template>
-                <template #bottom />
+                <template #bottom></template>
               </VDataTable>
             </VWindowItem>
           </VWindow>
@@ -56,7 +57,7 @@
 import { useKpiStore } from '@/store/kpi';
 import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
-import { nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
   titleDistricts: {
@@ -72,7 +73,37 @@ const props = defineProps({
 const kpiStore = useKpiStore()
 const { kpiByBranchesDetails } = storeToRefs(kpiStore)
 
+const items = computed(() => {
+  const obj = {
+    region_id: 5,
+    source: null,
+    kpi: null,
+    id: null,
+    plan: null,
+    branch_kpi: null,
+    branch_id: null,
+    fact: null,
+    average_kpi: null,
+    user_type: null,
+    done_percent: null,
+    period: null,
+    category: 'Jami',
+    weight: null,
+    some: null,
+    created_at: null,
+    indicator: null,
+    kpi_percent: kpiByBranchesDetails.value[0].average_kpi,
+    calculation: null,
+    min_percent: null,
+    max_percent: null,
+  }
+  kpiByBranchesDetails.value.push(obj)
+  console.log(kpiByBranchesDetails.value);
+  return kpiByBranchesDetails.value
+})
+
 function formatNumberWithSpaces(number) {
+  if (number == null) return ""
   const [integerPart, decimalPart] = number.toFixed(2).toString().split('.')
   const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
   if (!decimalPart) return formattedIntegerPart
@@ -93,17 +124,21 @@ let myChart
 let annualChart
 const currentPeriod = ref(null)
 
+const sumKpiPercent = computed(() => {
+  return Math.round(kpiByBranchesDetails.value[0].average_kpi * 100)
+})
+
 const headers = [
   { title: '№', value: 'id' },
   { title: "Ko'rsatkich turi" },
   { title: "KPI - asosiy ko'rsatkichlar(bank uchun muhim va yuqori ahamiyatga ega)", value: 'indicator' },
-  { title: 'Filial KPI', value: 'branch_kpi' },
+  { title: 'Filial KPI (%)', value: 'branch_kpi' },
   { title: 'Reja', value: 'plan', width: 150 },
   { title: 'Fakt', value: 'fact', width: 150 },
   { title: 'Reja bajarilishi', value: 'done_percent' },
   { title: "Ko'rsatkich ulushi" },
   { title: 'Samaradorlik bajarilishi', value: 'kpi_percent' },
-  { title: 'Umumiy KPI natijasi', value: 'avg_kpi' },
+  // { title: 'Umumiy KPI natijasi', value: 'avg_kpi' },
 ]
 
 const handleChartClick = async params => {
@@ -122,6 +157,12 @@ const handleChartClick = async params => {
           period: chartData[0].period,
           branch_id: selectedBarId.value,
         })
+        if (kpiByBranchesDetails.value.length > 0) {
+          sumKpiPercent.value = 0
+          for (let i = 0; i < kpiByBranchesDetails.value.length; i++) {
+            sumKpiPercent.value == kpiByBranchesDetails.value[0].average_kpi
+          }
+        }
         dialog.value = true
         nextTick(() => {
           initializeAnnualChart(chartData)
@@ -143,6 +184,7 @@ const initializeChart = () => {
 }
 
 const initializeAnnualChart = data => {
+  console.log(data);
   const chartDom = document.getElementById('branch-annual-chart')
   if (chartDom) {
     annualChart = echarts.init(chartDom)
@@ -168,12 +210,13 @@ const initializeAnnualChart = data => {
         : { period: month, originalPeriod: null, average_kpi: 0 }
     })
 
+    console.log(filledData);
+
     const kpiValues = filledData.map(item => item.average_kpi)
     const minKPI = Math.min(...kpiValues)
     const maxKPI = Math.max(...kpiValues)
 
     const getColor = value => {
-
       if (minKPI == maxKPI) {
         return 'rgb(0, 255, 0)'
       }
@@ -187,6 +230,10 @@ const initializeAnnualChart = data => {
     const option = {
       xAxis: {
         type: 'category',
+        axisLabel: {
+          fontSize: 14,
+          fontWeight: 'bold',
+        },
         data: filledData.map(item => item.period),
       },
       yAxis: {
@@ -208,6 +255,7 @@ const initializeAnnualChart = data => {
             show: true,
             position: 'top',
             formatter: '{c}%',
+            fontSize: 14,
           },
         },
       ],
@@ -232,6 +280,7 @@ const initializeAnnualChart = data => {
 }
 
 const updateChart = (chartInstance, data) => {
+  console.log(data);
   if (!chartInstance) return
 
   const scores = data.map(item => item.score).sort((a, b) => a - b)
@@ -264,7 +313,11 @@ const updateChart = (chartInstance, data) => {
     ],
     xAxis: {
       type: 'category',
-      axisLabel: { interval: 0, rotate: 30 },
+      axisLabel: {
+        interval: 0,
+        fontSize: 14,
+        rotate: 30,
+      },
     },
     yAxis: {},
     series: {
@@ -273,7 +326,7 @@ const updateChart = (chartInstance, data) => {
       datasetIndex: 1,
       label: {
         show: true,
-        fontSize: 12,
+        fontSize: 14,
         position: 'top',
         formatter(value) {
           return `${value.value.score}%`
@@ -331,5 +384,18 @@ watch(
 <style scoped>
 .fixed-height {
   block-size: 600px;
+}
+
+.sum-row {
+  background-color: #f0f0f0;
+  font-size: 1.1em;
+}
+
+.text-right {
+  text-align: end;
+}
+
+.font-weight-bold {
+  font-weight: bold;
 }
 </style>

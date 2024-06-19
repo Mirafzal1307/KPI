@@ -34,8 +34,7 @@ export async function getEmpKpiById(id, period) {
 
 export async function getPersonalData(period) {
   const { data } = await axios.get(`kpi_new/v1/personal-monitoring?period=${period}`)
-
   if (!data) return
 
-  return
+  return data
 }

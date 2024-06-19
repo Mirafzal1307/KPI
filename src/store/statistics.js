@@ -1,7 +1,10 @@
 import {
   fetchBranchList,
-  getBlockList,
-  getDepartament,
+  getAllDataByDepartment,
+  getAllDataByBlock,
+  getDepartmentByBlock,
+  getManagmentByDepartment,
+  getDivisionByManagement,
   getEmpListFull,
   getEmpStatistic,
 } from '@/services/main.office.service'
@@ -12,16 +15,21 @@ import { toast } from 'vue3-toastify'
 export const useStaticsStore = defineStore('statistics', () => {
   const allBranches = ref([])
   const loading = ref(false)
-  const departments = ref({})
-  const blocks = ref({})
+  const allData = ref({})
+  const departments = ref([])
+  const management = ref([])
+  const divisions = ref([])
+  const blocks = ref([])
   const empList = ref([])
   const empStatistic = ref([])
 
-  const getBranches = async () => {
+  const getBranches = async id => {
     try {
       loading.value = true
-      const data = await fetchBranchList()
-      allBranches.value = data?.branches
+      const data = await fetchBranchList(id)
+      console.log(data)
+
+      allBranches.value = data
 
       return data
     } catch (error) {
@@ -36,11 +44,11 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getAllDepartaments = async id => {
+  const getAllDataByDepartments = async id => {
     try {
       loading.value = true
-      const { data } = await getDepartament(id)
-      departments.value = data
+      const data = await getAllDataByDepartment(id)
+      departments.value = data.departments
 
       return data
     } catch (error) {
@@ -55,11 +63,74 @@ export const useStaticsStore = defineStore('statistics', () => {
     }
   }
 
-  const getAllBlocks = async id => {
+  const getAllDataByBlocks = async id => {
     try {
       loading.value = true
-      const data = await getBlockList(id)
-      blocks.value = data
+      const data = await getAllDataByBlock(id)
+      blocks.value = data?.blocks
+      allData.value = data
+
+      return data
+    } catch (error) {
+      toast.error('Xatolik sodir boldi', {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+      })
+
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getDepartmentByBlocks = async id => {
+    try {
+      loading.value = true
+      const data = await getDepartmentByBlock(id)
+      allData.value = data
+      departments.value = data?.departments
+
+      return data
+    } catch (error) {
+      toast.error('Xatolik sodir boldi', {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+      })
+
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getManagmentByDepartments = async id => {
+    try {
+      loading.value = true
+      const data = await getManagmentByDepartment(id)
+
+      allData.value = data
+
+      management.value = data.managements
+
+      return data
+    } catch (error) {
+      toast.error('Xatolik sodir boldi', {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+      })
+
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getDivisionsByManagments = async id => {
+    try {
+      loading.value = true
+      const data = await getDivisionByManagement(id)
+      allData.value = data
+      divisions.value = data.divisions
 
       return data
     } catch (error) {
@@ -116,14 +187,20 @@ export const useStaticsStore = defineStore('statistics', () => {
 
   return {
     getBranches,
-    getAllDepartaments,
-    getAllBlocks,
     getEmpList,
     getEmpStatistics,
+    getAllDataByDepartments,
+    getAllDataByBlocks,
+    getDepartmentByBlocks,
+    getManagmentByDepartments,
+    getDivisionsByManagments,
     empList,
     blocks,
     allBranches,
     departments,
     empStatistic,
+    management,
+    allData,
+    divisions,
   }
 })

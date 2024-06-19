@@ -5,39 +5,50 @@
         <span class="font-weight-black pb-10">Ishchilarning shaxsiy monitoringgi</span>
       </VCol>
       <VRow class="flex justify-center mb-4">
-        <VCol cols="6" class="py-1" >
-          <VAutocomplete v-model="statistic.branchId" return-object label="Filial" item-title="name" clearable
-            item-value="id" :items="allBranches" />
+        <VCol cols="6" class="py-1">
+          <VAutocomplete @update:model-value="getAllBrnachByRegion" v-model="statistic.regionId" return-object
+            label="Hudud" item-title="region_name_uz" clearable item-value="id" :items="allRegions" />
+        </VCol>
+
+        <VCol cols="6" class="py-1">
+          <VAutocomplete @update:model-value="getBlocksByBranch" v-model="statistic.branchId" return-object
+            label="Filial" item-title="branch_name" clearable item-value="id" :items="allBranches" />
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="blocks.blocks">
-            <VAutocomplete v-model="statistic.blockId" return-object :items="blocks.blocks" item-title="block_name"
-              item-value="id" label="Blok"  clearable />
+          <div v-if="blocks?.length !== 0">
+            <VAutocomplete @update:model-value="getDepartmentByBlock" v-model="statistic.blockId" return-object
+              item-title="block_name" clearable item-value="id" :items="blocks" label="Blok" />
+          </div>
+        </VCol>
+        <VCol cols="6" class="py-1">
+          <div v-if="departments?.length !== 0" >
+            <VAutocomplete @update:model-value="getManagmentByDepartment" v-model="statistic.departmentId"
+              label="Departament" return-object item-value="id" :items="departments" item-title="department_name"
+              clearable />
           </div>
         </VCol>
 
         <VCol cols="6" class="py-1">
-          <div v-if="blocks.departments">
-            <VAutocomplete v-model="statistic.departmentId" label="Departament"  return-object
-              item-value="id" :items="blocks.departments" item-title="department_name" clearable />
+          <div v-if="management?.length !== 0">
+            <VAutocomplete @update:model-value="getDivisionsByManagment" v-model="statistic.managementId"
+              label="Boshqarma" return-object item-value="id" :items="management" item-title="management_name"
+              clearable />
           </div>
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="blocks?.managements">
-            <VAutocomplete v-model="statistic.managementId" label="Boshqarma"  return-object item-value="id"
-              :items="blocks.managements" item-title="management_name" clearable />
+          <div v-if="divisions.length !== 0">
+            <VAutocomplete @update:model-value="getEmployeeList" v-model="statistic.divisionId" label="Bo'lim"
+              return-object item-value="id" :items="divisions" item-title="division_name" clearable />
           </div>
         </VCol>
-        <VCol cols="6" class="py-1">
-          <div v-if="blocks?.divisions">
-            <VAutocomplete v-model="statistic.divisionId" label="Bo'lim" return-object item-value="id"
-              :items="blocks.divisions" item-title="division_name" clearable />
+        <VCol cols="6" class="py-1 text-left">
+          <div v-if="empList?.length !== 0">  
+            <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Ishchilar ro'yhati" :items="empList"
+              item-title="full_name" item-value="id" clearable />
           </div>
         </VCol>
-        <VCol cols="6" class="py-1">
-          <div v-if="empList.length !== 0 && statistic.branchId">
-            <VAutocomplete v-model="empId" label="Ishchilar ro'yhati"  :items="empList"
-              item-title="full_name" item-value="id" clearable @update:model-value="empIdChange" />
+        <VCol cols="6" class="py-1 text-left">
+          <div v-if="false">
           </div>
         </VCol>
       </VRow>
@@ -53,15 +64,42 @@
 import { useStaticsStore } from '@/store/statistics';
 import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, } from 'vue';
+import { useBranchStore } from '@/store/branch';
 
-
+const regions = useBranchStore()
 const statistics = useStaticsStore()
-const { getBranches, getAllDepartaments, getAllBlocks, getEmpList, getEmpStatistics } = useStaticsStore()
-const { allBranches, blocks, empList, empStatistic } = storeToRefs(statistics)
+
+const { getRegions } = useBranchStore()
+const { allRegions } = storeToRefs(regions)
+
+const {
+  getBranches,
+  getAllDataByDepartments,
+  getAllDataByBlocks,
+  getEmpList,
+  getEmpStatistics,
+  getDepartmentByBlocks,
+  getManagmentByDepartments,
+  getDivisionsByManagments,
+} = useStaticsStore()
+
+
+const {
+  allBranches,
+  blocks,
+  empList,
+  empStatistic,
+  departments,
+  management,
+  allData,
+  divisions
+} = storeToRefs(statistics)
+
 
 
 const statistic = ref({
+  regionId: null,
   branchId: null,
   blockId: null,
   departmentId: null,
@@ -71,38 +109,29 @@ const statistic = ref({
 
 const empId = ref(null)
 
-function formatNumberRoundDown(num) {
-  const n = Math.floor(num * 100) / 100
-
-  return n.toFixed(2)
-}
-
-
-
 const lineChart = () => {
   const empsts = empStatistic.value.map(item => item.kpi)
   const empStsValue = empsts.map(item => Math.round(item * 100))
-  console.log(empStsValue);
-  const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr']
+  const months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr']
 
-  const pureArr = ref([])
 
-  empStsValue.forEach((value) => {
-    if (value > 0) {
-      pureArr.value.push(value)
-    }
-  })
+  let filledData = []
+  months.forEach((month, index) => {
+    let kpi = empStsValue[index % empStsValue.length];
+    filledData.push({ period: month, average_kpi: kpi });
+  });;
+
+  const kpiValues = filledData.map(item => item.average_kpi)
 
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
 
-  const scores = empStsValue.map((value, index) => [months[index], value]);
-  const minKPI = Math.min(...pureArr.value)
-  const maxKPI = Math.max(...pureArr.value)
+  const minKPI = Math.min(...kpiValues)
+  const maxKPI = Math.max(...kpiValues)
 
   const getColor = value => {
-    if (pureArr.value.length == 1) {
-      return `rgb(144, 238, 144)`
+    if (minKPI == maxKPI) {
+      return 'rgb(0, 255, 0)'
     }
     const normalizedValue = (value - minKPI) / (maxKPI - minKPI)
     const green = Math.round(normalizedValue * 255)
@@ -111,39 +140,18 @@ const lineChart = () => {
     return `rgb(${red}, ${green}, 0)`
   }
 
-
-
-
   var option = {
-    dataset: [
-      {
-        dimensions: ['name', 'score', 'id'],
-        source: scores,
-      },
-      {
-        transform: {
-          type: 'sort',
-          config: { dimension: 'score', order: 'desc' },
-        },
-      },
-    ],
 
     xAxis: {
       type: 'category',
       axisLabel: {
-        interval: 0,
-        rotate: 30,
-        margin: 6,
+        fontSize: 16,
+        fontWeight: 'bold',
       },
+      data: filledData.map(item => item.period)
     },
     yAxis: {
-      // max: 120
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '1%',
-      containLabel: true,
+      type: 'value',
     },
     tooltip: {
       trigger: 'axis',
@@ -152,44 +160,89 @@ const lineChart = () => {
       },
     },
 
-    series: {
-      type: 'bar',
-      barWidth: 30,
-      encode: { x: 'name', y: 'score' },
-      datasetIndex: 1,
-      label: {
-        show: true,
-        fontSize: 12,
-        position: 'top',
-        formatter(value) {
-          return `${value.value[1]}%`
+    series: [
+      {
+        data: filledData.map(item => ({
+          value: item.average_kpi,
+
+          itemStyle: {
+            color: getColor(item.average_kpi),
+          },
+
+        })),
+        type: 'bar',
+        smooth: true,
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c}%',
         },
       },
-      itemStyle: {
-        color: function (params) {
-          const score = params.value[1]
-          console.log(params.value.length);
-          return getColor(score)
-        },
-      },
-    },
-    legend: {
-      data: ['Data'],
-    },
+    ],
+
   }
 
   myChart.setOption(option)
 
 }
 
-
-
 onMounted(() => {
-  getBranches()
+  getRegions()
   lineChart()
 })
 
-watch(statistic.value, (newValue, oldValue) => {
+const getAllBrnachByRegion = async (newValue) => {
+  await getBranches(newValue?.id)
+ 
+  statistic.value.branchId = null;
+  statistic.value.blockId = null;
+  statistic.value.departmentId = null;
+  statistic.value.managementId = null;
+  statistic.value.divisionId = null;
+  empId.value = null;
+
+}
+
+const getBlocksByBranch = async (newValue) => {
+  await getAllDataByDepartments(newValue?.id)
+  await getAllDataByBlocks(newValue?.id)
+  getEmployeeList()
+  statistic.value.blockId = null;
+  statistic.value.departmentId = null;
+  statistic.value.managementId = null;
+  statistic.value.divisionId = null;
+  empId.value = null;
+
+}
+
+const getDepartmentByBlock = async (newValue) => {
+  await getDepartmentByBlocks(newValue?.id)
+  getEmployeeList()
+  statistic.value.departmentId = null;
+  statistic.value.managementId = null;
+  statistic.value.divisionId = null;
+  empId.value = null;
+}
+
+const getManagmentByDepartment = async (newValue) => {
+  await getManagmentByDepartments(newValue?.id)
+  getEmployeeList()
+  statistic.value.managementId = null;
+  statistic.value.divisionId = null;
+  empId.value = null;
+
+}
+
+const getDivisionsByManagment = async (newValue) => {
+  await getDivisionsByManagments(newValue?.id)
+  getEmployeeList()
+  statistic.value.divisionId = null;
+  empId.value = null;
+
+}
+
+
+const getEmployeeList = async () => {
   const param = {
     branch_id: statistic.value.branchId?.id,
     block_id: statistic.value.blockId?.id,
@@ -198,13 +251,13 @@ watch(statistic.value, (newValue, oldValue) => {
     division_id: statistic.value.divisionId?.id,
   }
 
-  getAllDepartaments(statistic.value.branchId?.id)
-  getAllBlocks(statistic.value.branchId?.id)
-  getEmpList(param)
-})
 
-const empIdChange = async () => {
-  await getEmpStatistics(empId.value)
+  await getEmpList(param)
+}
+
+
+const empIdChange = async (empId) => {
+  await getEmpStatistics(empId)
   lineChart()
 }
 </script>

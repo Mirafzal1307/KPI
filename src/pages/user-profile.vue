@@ -1,48 +1,33 @@
 <template>
   <VRow class="match-height">
-    <VCol
-      cols="12"
-      md="8"
-    >
+    <VCol cols="12" md="8">
       <div class="mb-7">
+
         <VCard class="border d-flex pa-8 justify-content-between ga-3">
           <div class="w-50 my-auto pr-2">
             <div class="d-flex justify-content-between mb-10">
-              <img
-                width="150px"
-                height="150px"
-                src="../assets/images/avatars/userImg.png"
-                alt="img"
-              >
+              <img width="150px" height="150px" src="../assets/images/avatars/userImg.png" alt="img">
               <div class="d-flex flex-column ga-4">
-                <h2>{{ personalData.user_data?.full_name }}</h2>
-                <h2>{{ personalData.user_data?.position }}</h2>
+                <h2>{{ personalData?.user_data?.full_name }}</h2>
+                <h2>{{ personalData?.user_data?.position }}</h2>
               </div>
             </div>
 
             <div v-if="period.length">
-              <VAutocomplete
-                v-model="newPeriod"
-                :items="period"
-                item-title="period"
-                item-value="id"
-                label="Davr"
-              />
+              <VAutocomplete v-model="newPeriod" :items="period" item-title="period" item-value="id" label="Davr" />
             </div>
           </div>
 
           <div class="w-50 d-flex flex-column  justify-center pl-10 ">
-            <div
-              ref="indicator"
-              class="d-flex justify-center align-center"
-              :style="{ width: '450px', height: '380px' }"
-            />
+            <div ref="indicator" class="d-flex justify-center align-center"
+              :style="{ width: '450px', height: '380px' }" />
             <h4 class="text-h4">
-              Filial KPI natijasi: <span style="color: red;"> {{ formatNumberRoundDown(personalData.branch_kpi) }} %</span>
+              Filial KPI natijasi: <span style="color: red;"> {{ isNaN(personalData?.branch_kpi) ? 0 :
+                formatNumberRoundDown(personalData?.branch_kpi) }} %</span>
             </h4>
             <h4 class="text-h5">
               Jami individual KPI filial natijasidan keyin: <span style="color: red;">{{
-                formatNumberRoundDown(personalData.average_kpi) }} %</span>
+                isNaN(personalData?.average_kpi) ? 0 : formatNumberRoundDown(personalData?.average_kpi) }} %</span>
             </h4>
           </div>
         </VCard>
@@ -50,18 +35,11 @@
 
       <div>
         <VCard class="border d-flex justify-center align-center">
-          <div
-            ref="chart"
-            class="d-flex justify-center align-center"
-            :style="{ width: '100%', height: '380px' }"
-          />
+          <div ref="chart" class="d-flex justify-center align-center" :style="{ width: '100%', height: '380px' }" />
         </VCard>
       </div>
     </VCol>
-    <VCol
-      cols="12"
-      md="4"
-    >
+    <VCol cols="12" md="4">
       <VCard class="pa-6 border">
         <h2 class="pt-4 pb-8">
           Shaxsiy ma'lumotlar
@@ -80,56 +58,56 @@
               <td>
                 <span class="font-weight-bold">
                   F.I.SH:
-                </span> {{ personalData.user_data?.full_name }}
+                </span> {{ personalData?.user_data?.full_name }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Boshqarma:
-                </span>{{ personalData.user_data?.governance }}
+                </span>{{ personalData?.user_data?.governance }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Blok:
-                </span>{{ personalData.user_data?.block }}
+                </span>{{ personalData?.user_data?.block }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Departament:
-                </span>{{ personalData.user_data?.department }}
+                </span>{{ personalData?.user_data?.department }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Boshqarma:
-                </span> {{ personalData.user_data?.management }}
+                </span> {{ personalData?.user_data?.management }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Lavozim:
-                </span> {{ personalData.user_data?.position }}
+                </span> {{ personalData?.user_data?.position }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Rahbar:
-                </span> {{ personalData.user_data?.head }}
+                </span> {{ personalData?.user_data?.head }}
               </td>
             </tr>
             <tr>
               <td>
                 <span class="font-weight-bold">
                   Tel raqami:
-                </span>{{ personalData.user_data?.phone_number }}
+                </span>{{ personalData?.user_data?.phone_number }}
               </td>
             </tr>
           </tbody>
@@ -164,9 +142,9 @@ console.log(personalData.value)
 
 
 
-const KPI = computed(() => personalData.value?.average_kpi / 100)
+const KPI = isNaN(personalData.value.average_kpi) ? 0 : computed(() => personalData.value?.average_kpi / 100)
 
-console.log(KPI.value)
+console.log(personalData?.value?.average_kpi)
 
 const initGaugeChart = () => {
   const myChart2 = ref(echarts.init(indicator.value))
