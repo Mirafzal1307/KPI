@@ -77,6 +77,7 @@ async function filterEmployees() {
 }
 
 async function fetchBranchesByRegionId(id) {
+  filters.value.branch = []
   employee_KPI.value.kpi = []
   if (!id) {
     await getBranches()
@@ -113,16 +114,13 @@ onMounted(() => {
               <VAutocomplete v-model="filters.region" density="compact" :items="allRegions" item-title="region_name_uz"
                 item-value="id" label="Hudud" clearable @update:model-value="fetchBranchesByRegionId" />
             </VCol>
-            <VCol cols="12" md="3">
+            <VCol cols="12" md="4">
               <VAutocomplete v-model="filters.branch" :items="allBranches" density="compact" label="Filial"
                 item-title="branch_name" item-value="id" clearable />
             </VCol>
-            <VCol cols="12" md="2">
-              <VAutocomplete v-model="filters.period" density="compact" :items="period" item-title="period"
-                item-value="id" label="Davr" />
-            </VCol>
-            <VCol cols="12" md="2">
-              <VTextField v-model="filters.param" density="compact" label="Qidirish" />
+
+            <VCol cols="12" md="3">
+              <VTextField v-model="filters.param" density="compact" label="F.I.SH" />
             </VCol>
             <VCol cols="12" md="2">
               <VBtn type="submit" class="w-100">
@@ -179,12 +177,13 @@ onMounted(() => {
             <tfoot>
               <tr>
                 <td></td>
-                <td class=" font-weight-black text-h5" >Umumiy KPI</td>
+                <td class=" font-weight-black text-h5">Umumiy KPI</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td class=" font-weight-bold text-red-darken-4 text-h5">{{ isNaN(getEmployeeAverageKpi)? 0 :  Math.round(getEmployeeAverageKpi * 100) }}%</td>
+                <td class=" font-weight-bold text-red-darken-4 text-h5">{{ isNaN(getEmployeeAverageKpi) ? 0 :
+                  Math.round(getEmployeeAverageKpi * 100) }}%</td>
               </tr>
             </tfoot>
           </VTable>

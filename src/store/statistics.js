@@ -48,7 +48,7 @@ export const useStaticsStore = defineStore('statistics', () => {
     try {
       loading.value = true
       const data = await getAllDataByDepartment(id)
-      departments.value = data.departments
+      departments.value = data?.departments
 
       return data
     } catch (error) {
@@ -68,6 +68,8 @@ export const useStaticsStore = defineStore('statistics', () => {
       loading.value = true
       const data = await getAllDataByBlock(id)
       blocks.value = data?.blocks
+      management.value = data?.managements
+      divisions.value = data?.divisions
       allData.value = data
 
       return data
