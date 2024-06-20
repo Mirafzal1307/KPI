@@ -171,7 +171,7 @@ export const useStaticsStore = defineStore('statistics', () => {
     try {
       loading.value = true
       const { data } = await getEmpStatistic(id)
-
+      console.log(data)
       empStatistic.value = data
 
       return data

@@ -47,12 +47,17 @@ function formatNumberWithSpaces(number) {
   return `${formattedIntegerPart}.${formattedDecimalPart}`
 }
 
+
+const empID = ref(null)
+
 const getEmployeeKPI_ByID = async item => {
+  console.log(item);
+  empID.value = item.emp_id
   employeeList.value['items'].forEach(element => {
     element.isActive = false
   })
   item.isActive = true
-  await getEmployeeKpiById(item.emp_id, '2024-03-30')
+  await getEmployeeKpiById(item.emp_id, '2024-01-30')
 }
 
 function getTableClass(item) {
@@ -77,7 +82,9 @@ async function filterEmployees() {
 }
 
 async function fetchBranchesByRegionId(id) {
+
   filters.value.branch = []
+
   employee_KPI.value.kpi = []
   if (!id) {
     await getBranches()
@@ -88,6 +95,12 @@ async function fetchBranchesByRegionId(id) {
   await getBranchesByRegionId(id)
 }
 
+const getUserDataByID = async (newValue) => {
+  if (empID.value === null) return
+
+  await getEmployeeKpiById(empID.value, newValue)
+  console.log(newValue);
+}
 
 
 onMounted(() => {
@@ -137,6 +150,10 @@ onMounted(() => {
     <VCol cols="12" md="12" class="pb-0">
       <VResponsive max-height="400">
         <VCard class="border pa-3 h-100">
+          <VCol cols="12" md="4" class="ml-auto">
+            <VAutocomplete @update:model-value="getUserDataByID" v-model="filters.period" :items="period"
+              density="compact" label="Davr" item-title="period" item-value="id" clearable />
+          </VCol>
           <VTable class="h-100 overflow-y-auto overflow-x-auto" fixed-header>
             <thead>
               <tr>
@@ -152,7 +169,6 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-for="(item, index) in employee_KPI.kpi" :key="item.id">
-
                 <td>
                   {{ index + 1 }}</td>
                 <td>
@@ -169,10 +185,7 @@ onMounted(() => {
                 </td>
                 <td>{{ Math.round(item.done_percent * 100) }}%</td>
                 <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
-
               </tr>
-
-
             </tbody>
             <tfoot>
               <tr>

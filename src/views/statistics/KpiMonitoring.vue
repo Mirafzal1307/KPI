@@ -108,26 +108,32 @@ const statistic = ref({
 })
 
 const empId = ref(null)
+console.log(empStatistic.value);
 
 const lineChart = () => {
-  const empsts = empStatistic.value.map(item => item.kpi)
-  const empStsValue = empsts.map(item => Math.round(item * 100))
+  const empsts = empStatistic?.value?.emp_data?.map(item => item.kpi)
+  const empStsValue = empsts?.map(item => Math.round(item * 100))
   const months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr']
 
+  const branchs = empStatistic.value.branch?.map(item => item.average_kpi)
+  const branchValue = branchs?.map(item => Math.round(item))
+
+  console.log(empStsValue?.length);
 
   let filledData = []
   months.forEach((month, index) => {
-    let kpi = empStsValue[index % empStsValue.length];
+    console.log(month, index);
+    let kpi = empStsValue
     filledData.push({ period: month, average_kpi: kpi });
   });;
 
-  const kpiValues = filledData.map(item => item.average_kpi)
+  // const kpiValues = filledData.map(item => item.average_kpi)
 
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
 
-  const minKPI = Math.min(...kpiValues)
-  const maxKPI = Math.max(...kpiValues)
+  // const minKPI = Math.min(...kpiValues)
+  // const maxKPI = Math.max(...kpiValues)
 
   const getColor = value => {
     if (minKPI == maxKPI) {
@@ -140,47 +146,115 @@ const lineChart = () => {
     return `rgb(${red}, ${green}, 0)`
   }
 
-  var option = {
+  // var option = {
 
-    xAxis: {
-      type: 'category',
-      axisLabel: {
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
-      data: filledData.map(item => item.period)
-    },
-    yAxis: {
-      type: 'value',
-    },
+  //   xAxis: {
+  //     type: 'category',
+  //     axisLabel: {
+  //       fontSize: 16,
+  //       fontWeight: 'bold',
+  //     },
+  //     data: filledData.map(item => item.period)
+  //   },
+  //   yAxis: {
+  //     type: 'value',
+  //   },
+  //   tooltip: {
+  //     trigger: 'axis',
+  //     axisPointer: {
+  //       type: 'shadow',
+  //     },
+  //   },
+
+  //   series: [
+  //     {
+  //       data: filledData.map(item => ({
+  //         value: item.average_kpi,
+
+  //         itemStyle: {
+  //           color: getColor(item.average_kpi),
+  //         },
+
+  //       })),
+  //       type: 'bar',
+  //       smooth: true,
+  //       label: {
+  //         show: true,
+  //         position: 'top',
+  //         formatter: '{c}%',
+  //       },
+  //     },
+  //   ],
+
+  // }
+
+  var option = {
     tooltip: {
       trigger: 'axis',
       axisPointer: {
-        type: 'shadow',
-      },
+        type: 'cross',
+        crossStyle: {
+          color: '#999'
+        }
+      }
     },
-
+    xAxis: [
+      {
+        type: 'category',
+        data: months,
+        axisPointer: {
+          type: 'shadow'
+        }
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value',
+        name: 'User KPI',
+        min: 0,
+        max: 100,
+        interval: 20,
+        axisLabel: {
+          formatter: '{value} %'
+        }
+      },
+      {
+        type: 'value',
+        name: 'Branch KPI',
+        min: 0,
+        max: 100,
+        interval: 20,
+        axisLabel: {
+          formatter: '{value} %'
+        }
+      }
+    ],
     series: [
       {
-        data: filledData.map(item => ({
-          value: item.average_kpi,
 
-          itemStyle: {
-            color: getColor(item.average_kpi),
-          },
-
-        })),
+        name: 'user KPI',
         type: 'bar',
-        smooth: true,
-        label: {
-          show: true,
-          position: 'top',
-          formatter: '{c}%',
+        tooltip: {
+          valueFormatter: function (value) {
+            return value + ' %';
+          }
         },
+        data: [],
       },
-    ],
 
-  }
+      {
+        name: 'branch KPI',
+        type: 'line',
+        yAxisIndex: 1,
+        tooltip: {
+          valueFormatter: function (value) {
+            return value + ' %';
+          }
+        },
+        data: branchValue
+      }
+    ]
+  };
 
   myChart.setOption(option)
 
@@ -222,7 +296,7 @@ console.log(statistic.value.branchId);
 const getBlocksByBranch = async (newValue) => {
   console.log('block', newValue);
   if (!newValue) {
-    debugger
+
     console.log('block', newValue);
     blocks.value = []
     statistic.value.blockId = null
