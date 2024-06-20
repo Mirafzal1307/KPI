@@ -21,7 +21,7 @@
           </div>
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="departments?.length !== 0" >
+          <div v-if="departments?.length !== 0">
             <VAutocomplete @update:model-value="getManagmentByDepartment" v-model="statistic.departmentId"
               label="Departament" return-object item-value="id" :items="departments" item-title="department_name"
               clearable />
@@ -36,13 +36,13 @@
           </div>
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="divisions.length !== 0">
+          <div v-if="divisions?.length !== 0">
             <VAutocomplete @update:model-value="getEmployeeList" v-model="statistic.divisionId" label="Bo'lim"
               return-object item-value="id" :items="divisions" item-title="division_name" clearable />
           </div>
         </VCol>
         <VCol cols="6" class="py-1 text-left">
-          <div v-if="empList?.length !== 0">  
+          <div v-if="empList?.length !== 0">
             <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Ishchilar ro'yhati" :items="empList"
               item-title="full_name" item-value="id" clearable />
           </div>
@@ -61,11 +61,11 @@
 </template>
 
 <script setup>
+import { useBranchStore } from '@/store/branch';
 import { useStaticsStore } from '@/store/statistics';
 import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, } from 'vue';
-import { useBranchStore } from '@/store/branch';
 
 const regions = useBranchStore()
 const statistics = useStaticsStore()
@@ -192,8 +192,23 @@ onMounted(() => {
 })
 
 const getAllBrnachByRegion = async (newValue) => {
+  if (!newValue) {
+    allBranches.value = []
+    statistic.value.branchId = null
+    blocks.value = []
+    statistic.value.blockId = null
+    departments.value = []
+    statistic.value.departmentId = null
+    management.value = []
+    statistic.value.managementId = null
+    divisions.value = []
+    statistic.value.divisionId = null
+    empList.value = []
+    empId.value = null
+    return
+  }
   await getBranches(newValue?.id)
- 
+
   statistic.value.branchId = null;
   statistic.value.blockId = null;
   statistic.value.departmentId = null;
@@ -202,8 +217,25 @@ const getAllBrnachByRegion = async (newValue) => {
   empId.value = null;
 
 }
+console.log(statistic.value.branchId);
 
 const getBlocksByBranch = async (newValue) => {
+  console.log('block', newValue);
+  if (!newValue) {
+    debugger
+    console.log('block', newValue);
+    blocks.value = []
+    statistic.value.blockId = null
+    departments.value = []
+    statistic.value.departmentId = null
+    management.value = []
+    statistic.value.managementId = null
+    divisions.value = []
+    statistic.value.divisionId = null
+    empList.value = []
+    empId.value = null
+    return
+  }
   await getAllDataByDepartments(newValue?.id)
   await getAllDataByBlocks(newValue?.id)
   getEmployeeList()
@@ -216,6 +248,17 @@ const getBlocksByBranch = async (newValue) => {
 }
 
 const getDepartmentByBlock = async (newValue) => {
+  if (!newValue) {
+    departments.value = []
+    statistic.value.departmentId = null
+    management.value = []
+    statistic.value.managementId = null
+    divisions.value = []
+    statistic.value.divisionId = null
+    // empList.value = []
+    // empId.value = null
+    return
+  }
   await getDepartmentByBlocks(newValue?.id)
   getEmployeeList()
   statistic.value.departmentId = null;
@@ -225,6 +268,15 @@ const getDepartmentByBlock = async (newValue) => {
 }
 
 const getManagmentByDepartment = async (newValue) => {
+  if (!newValue) {
+    management.value = []
+    statistic.value.managementId = null
+    divisions.value = []
+    statistic.value.divisionId = null
+    // empList.value = []
+    // empId.value = null
+    return
+  }
   await getManagmentByDepartments(newValue?.id)
   getEmployeeList()
   statistic.value.managementId = null;
@@ -234,6 +286,13 @@ const getManagmentByDepartment = async (newValue) => {
 }
 
 const getDivisionsByManagment = async (newValue) => {
+  if (!newValue) {
+    divisions.value = []
+    statistic.value.divisionId = null
+    // empList.value = []
+    // empId.value = null
+    return
+  }
   await getDivisionsByManagments(newValue?.id)
   getEmployeeList()
   statistic.value.divisionId = null;
