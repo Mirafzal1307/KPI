@@ -67,10 +67,10 @@ export const useStaticsStore = defineStore('statistics', () => {
     try {
       loading.value = true
       const data = await getAllDataByBlock(id)
-      blocks.value = data?.blocks
+      blocks.value = data.blocks
       management.value = data?.managements
       divisions.value = data?.divisions
-      allData.value = data
+      // allData.value = data
 
       return data
     } catch (error) {

@@ -6,22 +6,31 @@
       </VCol>
       <VRow class="flex justify-center mb-4">
         <VCol cols="6" class="py-1">
-          <VAutocomplete @update:model-value="getAllBrnachByRegion" v-model="statistic.regionId" return-object
-            label="Hudud" item-title="region_name_uz" clearable item-value="id" :items="allRegions" />
+          <template #default>
+            <VAutocomplete @update:model-value="getAllBrnachByRegion" v-model="statistic.regionId" return-object
+              label="Hudud" item-title="region_name_uz" clearable item-value="id" :items="allRegions" />
+          </template>
+          <template #fallback>
+            Product is loading...
+          </template>
+
         </VCol>
 
         <VCol cols="6" class="py-1">
-          <VAutocomplete @update:model-value="getBlocksByBranch" v-model="statistic.branchId" return-object
-            label="Filial" item-title="branch_name" clearable item-value="id" :items="allBranches" />
+          <div v-if="allBranches != null && allBranches.length > 0">
+            <VAutocomplete @update:model-value="getBlocksByBranch" v-model="statistic.branchId" return-object
+              label="Filial" item-title="branch_name" clearable item-value="id" :items="allBranches" />
+          </div>
+
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="blocks?.length !== 0">
+          <div v-if="blocks != null && blocks.length > 0">
             <VAutocomplete @update:model-value="getDepartmentByBlock" v-model="statistic.blockId" return-object
               item-title="block_name" clearable item-value="id" :items="blocks" label="Blok" />
           </div>
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="departments?.length !== 0">
+          <div v-if="departments != null && departments.length > 0">
             <VAutocomplete @update:model-value="getManagmentByDepartment" v-model="statistic.departmentId"
               label="Departament" return-object item-value="id" :items="departments" item-title="department_name"
               clearable />
@@ -29,20 +38,20 @@
         </VCol>
 
         <VCol cols="6" class="py-1">
-          <div v-if="management?.length !== 0">
+          <div v-if="management != null && management.length > 0">
             <VAutocomplete @update:model-value="getDivisionsByManagment" v-model="statistic.managementId"
               label="Boshqarma" return-object item-value="id" :items="management" item-title="management_name"
               clearable />
           </div>
         </VCol>
         <VCol cols="6" class="py-1">
-          <div v-if="divisions?.length !== 0">
+          <div v-if="divisions != null && divisions.length > 0">
             <VAutocomplete @update:model-value="getEmployeeList" v-model="statistic.divisionId" label="Bo'lim"
               return-object item-value="id" :items="divisions" item-title="division_name" clearable />
           </div>
         </VCol>
         <VCol cols="6" class="py-1 text-left">
-          <div v-if="empList?.length !== 0">
+          <div v-if="empList != null && empList.length > 0">
             <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Ishchilar ro'yhati" :items="empList"
               item-title="full_name" item-value="id" clearable />
           </div>
@@ -54,7 +63,7 @@
       </VRow>
 
       <VCardActions>
-        <div id="chart" style="block-size: 400px; inline-size: 100%" class="mx-auto" />
+        <div id="chart" style="block-size: 600px; inline-size: 100%" class="mx-auto" />
       </VCardActions>
     </VCol>
   </VCard>
@@ -112,28 +121,30 @@ console.log(empStatistic.value);
 
 const lineChart = () => {
   const empsts = empStatistic?.value?.emp_data?.map(item => item.kpi)
-  const empStsValue = empsts?.map(item => Math.round(item * 100))
+  const empStsValue = ref([])
+  empStsValue.value = empsts?.map(item => Math.round(item * 100)) || []
   const months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr']
 
   const branchs = empStatistic.value.branch?.map(item => item.average_kpi)
   const branchValue = branchs?.map(item => Math.round(item))
 
-  console.log(empStsValue?.length);
+  console.log(empStsValue);
 
   let filledData = []
-  months.forEach((month, index) => {
-    console.log(month, index);
-    let kpi = empStsValue
-    filledData.push({ period: month, average_kpi: kpi });
-  });;
 
-  // const kpiValues = filledData.map(item => item.average_kpi)
+  empStsValue.value.forEach(kpi => {
+    filledData.push({ average_kpi: kpi });
+  })
+
+  console.log(filledData);
+
+  const kpiValues = filledData.map(item => item.average_kpi)
 
   const chartDom = document.getElementById('chart')
   const myChart = echarts.init(chartDom)
 
-  // const minKPI = Math.min(...kpiValues)
-  // const maxKPI = Math.max(...kpiValues)
+  const minKPI = Math.min(...kpiValues)
+  const maxKPI = Math.max(...kpiValues)
 
   const getColor = value => {
     if (minKPI == maxKPI) {
@@ -141,52 +152,10 @@ const lineChart = () => {
     }
     const normalizedValue = (value - minKPI) / (maxKPI - minKPI)
     const green = Math.round(normalizedValue * 255)
-    const red = 255 - green
+    const red = 355 - green
 
     return `rgb(${red}, ${green}, 0)`
   }
-
-  // var option = {
-
-  //   xAxis: {
-  //     type: 'category',
-  //     axisLabel: {
-  //       fontSize: 16,
-  //       fontWeight: 'bold',
-  //     },
-  //     data: filledData.map(item => item.period)
-  //   },
-  //   yAxis: {
-  //     type: 'value',
-  //   },
-  //   tooltip: {
-  //     trigger: 'axis',
-  //     axisPointer: {
-  //       type: 'shadow',
-  //     },
-  //   },
-
-  //   series: [
-  //     {
-  //       data: filledData.map(item => ({
-  //         value: item.average_kpi,
-
-  //         itemStyle: {
-  //           color: getColor(item.average_kpi),
-  //         },
-
-  //       })),
-  //       type: 'bar',
-  //       smooth: true,
-  //       label: {
-  //         show: true,
-  //         position: 'top',
-  //         formatter: '{c}%',
-  //       },
-  //     },
-  //   ],
-
-  // }
 
   var option = {
     tooltip: {
@@ -204,13 +173,15 @@ const lineChart = () => {
         data: months,
         axisPointer: {
           type: 'shadow'
-        }
+        },
+
+
       }
     ],
     yAxis: [
       {
         type: 'value',
-        name: 'User KPI',
+        name: 'Hodim KPI',
         min: 0,
         max: 100,
         interval: 20,
@@ -220,7 +191,7 @@ const lineChart = () => {
       },
       {
         type: 'value',
-        name: 'Branch KPI',
+        name: 'Filial KPI',
         min: 0,
         max: 100,
         interval: 20,
@@ -232,18 +203,30 @@ const lineChart = () => {
     series: [
       {
 
-        name: 'user KPI',
+        name: 'Hodim KPI',
         type: 'bar',
         tooltip: {
           valueFormatter: function (value) {
             return value + ' %';
           }
         },
-        data: [],
+        data: filledData.map(item => ({
+          value: item.average_kpi,
+          itemStyle: {
+            color: getColor(item.average_kpi),
+          },
+
+        })),
+        barWidth: '35%',
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c} %'
+        }
       },
 
       {
-        name: 'branch KPI',
+        name: 'Filial KPI',
         type: 'line',
         yAxisIndex: 1,
         tooltip: {
@@ -251,7 +234,20 @@ const lineChart = () => {
             return value + ' %';
           }
         },
-        data: branchValue
+        data: branchValue,
+        lineStyle: {
+
+          color: 'blue',
+          width: 2,
+          type: 'line'
+
+        },
+        label: {
+          show: true,
+          position: 'top',
+          formatter: '{c} %'
+        }
+
       }
     ]
   };

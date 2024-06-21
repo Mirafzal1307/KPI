@@ -146,7 +146,6 @@ onMounted(() => {
     </VForm>
   </section>
   <VRow class="match-height">
-    <VCol cols="12" md="12" class="py-0" />
     <VCol cols="12" md="12" class="pb-0">
       <VResponsive max-height="400">
         <VCard class="border pa-3 h-100">
@@ -154,7 +153,7 @@ onMounted(() => {
             <VAutocomplete @update:model-value="getUserDataByID" v-model="filters.period" :items="period"
               density="compact" label="Davr" item-title="period" item-value="id" clearable />
           </VCol>
-          <VTable class="h-100 overflow-y-auto overflow-x-auto" fixed-header>
+          <VTable class="h-100 overflow-y-auto overflow-x-auto height hover-table" fixed-header>
             <thead>
               <tr>
                 <th class="text-left">№</th>
@@ -209,7 +208,7 @@ onMounted(() => {
     <VCol cols="12" md="9" class="table-height">
       <VCard class="pa-4 border h-100">
         <VDataTable hover :headers="headers" :items="employeeList['items']" :items-per-page="itemsPerPage"
-          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1" :items-length="employeeList['total']"
+          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table" :items-length="employeeList['total']"
           fixed-header @update:items-per-page="updateItemsPerPage">
           <template #item="{ item, index }">
             <tr :class="`cursor-pointer hovering-pan ${getTableClass(item)}`" @click="getEmployeeKPI_ByID(item)">
@@ -257,5 +256,9 @@ onMounted(() => {
 
 .justify {
   justify-content: space-between !important;
+}
+
+.hover-table tbody tr:hover {
+  background-color: #f5f5f5 !important;
 }
 </style>
