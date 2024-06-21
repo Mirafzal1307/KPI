@@ -26,11 +26,12 @@
         <VRow>
           <VCol cols="12" md="12" v-for="(item, index) in statistics.all_kpi" :key="index">
             <VCard class="border">
-              <h3 class="text-center mb-2">{{ item.name }}</h3>
+              <VCardText class="d-flex justify-between align-center">
+                <h3 class="text-center mb-2">{{ item.name }}</h3>
+                <span class="font-weight-bold">O'rtacha KPI: {{ item?.avg_kpi }}%</span>
+              </VCardText>
               <VSheet :id="'chart-' + item.head" :height="getHeight(item)" />
             </VCard>
-
-
           </VCol>
         </VRow>
       </VContainer>
@@ -468,16 +469,34 @@ function colorify(kpiResult) {
   font-size: 18px;
 
   /* Adjust font size as needed */
-  font-weight: bold;
-
-  /* Adjust font weight as needed */
   text-align: center;
-
 }
 
 .mb-2 {
-  margin-block-end: 2rem;
+  margin-block-end: 1rem;
 
   /* Adjust margin bottom as needed */
+}
+
+.font-weight-bold {
+  font-weight: bold;
+
+  /* Adjust font weight as needed */
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+
+  /* Align items to the start and end of the container */
+}
+
+.align-center {
+  align-items: center;
+
+  /* Center items vertically */
 }
 </style>
