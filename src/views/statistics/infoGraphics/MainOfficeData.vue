@@ -79,6 +79,7 @@ const dataParams = ref({
   type: 2,
 });
 const getHeight = (arr) => {
+  if (!arr.kpi) return 300;
   const itemCount = arr.kpi.length;
   if (itemCount >= 10) {
     return 500; // Set a larger height if there are 10 or more items
@@ -280,6 +281,7 @@ const initializeCharts = async () => {
       const ratio = (score - minScore) / (maxScore - minScore);
       const green = Math.round((1 - ratio) * 255);
       const red = Math.round(ratio * 255);
+
       return `rgb(${green}, ${red}, 0)`;
     };
 
