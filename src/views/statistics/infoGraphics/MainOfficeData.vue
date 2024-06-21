@@ -4,7 +4,7 @@
       <VCol cols="12" md="5">
         <VSelect v-model="dataParams.type" item-title="name" item-value="value"
           :items="[{ name: 'Rahbariyat', value: 1 }, { name: 'Tarkibiy bo\'linma', value: 2 }]"
-          @update:model-value="getStatistics" />
+          @update:model-value="getStatistics()" />
       </VCol>
       <VCol cols="12" md="2" />
       <VCol cols="12" md="5">
@@ -20,7 +20,21 @@
       Bosh ofis bo'yicha KPI ko'rsatkichlari boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
     <VSheet v-show="dataParams.type === 1" id="main" height="300" />
-    <VSheet v-show="dataParams.type === 2" id="second" height="1000" />
+
+    <template v-if="dataParams.type === 2">
+      <VContainer>
+        <VRow>
+          <VCol cols="12" md="12" v-for="(item, index) in statistics.all_kpi" :key="index">
+            <VCard class="border">
+              <h3 class="text-center mb-2">{{ item.name }}</h3>
+              <VSheet :id="'chart-' + item.head" :height="getHeight(item)" />
+            </VCard>
+
+
+          </VCol>
+        </VRow>
+      </VContainer>
+    </template>
     <VDialog v-model="dialog" transition="dialog-bottom-transition">
       <VCard>
         <VToolbar>
@@ -42,6 +56,8 @@
   </VCard>
 </template>
 
+
+
 <script setup>
 import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service';
 import { useKpiStore } from '@/store/kpi';
@@ -55,97 +71,37 @@ const dialog = ref(false);
 const departmentChartData = ref([]);
 const tab = ref(0);
 const currentDepartment = ref('null');
-
-const initializeChart = async () => {
-  await nextTick(); // Ensure the DOM is updated before initializing the chart
-
-  const chartDom = dataParams.value.type === 1 ? document.getElementById('main') : document.getElementById('second');
-  if (!chartDom) return;
-
-  const myChart = echarts.init(chartDom);
-  const datasetSource = datasetSourceItem.value;
-
-  if (!datasetSource.length) return;
-  const scores = datasetSource.map(item => item.kpi);
-  const minScore = Math.min(...scores);
-  const maxScore = Math.max(...scores);
-
-  const getColor = score => {
-    const ratio = (score - minScore) / (maxScore - minScore);
-    const green = Math.round((1 - ratio) * 255);
-    const red = Math.round(ratio * 255);
-    return `rgb(${green}, ${red}, 0)`;
-  };
-
-  const option = {
-    dataset: [
-      {
-        dimensions: ['name', 'kpi', 'id'],
-        source: datasetSource,
-      },
-      {
-        transform: {
-          type: 'sort',
-          config: { dimension: 'kpi', order: 'asc' },
-        },
-      },
-    ],
-    yAxis: {
-      type: 'category',
-      axisLabel: { interval: 0 },
-    },
-    xAxis: {
-      type: 'value',
-      max: 100,
-    },
-    series: {
-      label: {
-        show: true,
-        fontSize: 14,
-        position: 'right',
-        formatter(value) {
-          return `${value.value.kpi} %`;
-        },
-      },
-      type: 'bar',
-      encode: { y: 'name', x: 'kpi' },
-      datasetIndex: 1,
-      itemStyle: {
-        color: function (params) {
-          const score = params.value.kpi;
-          return getColor(score);
-        },
-      },
-    },
-    tooltip: {
-      show: true,
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
-      },
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    legend: {
-      data: ['Data'],
-    },
-  };
-
-  myChart.setOption(option);
-
-  myChart.on('click', function (params) {
-    currentDepartment.value = params?.data?.name;
-    getDepartmentChartData(params?.data?.id);
-  });
-};
+const filteredDepartments = ref([]);
 
 const dataParams = ref({
   period: null,
   type: 2,
+});
+const getHeight = (arr) => {
+  const itemCount = arr.kpi.length;
+  if (itemCount >= 10) {
+    return 500; // Set a larger height if there are 10 or more items
+  } else if (itemCount >= 8) {
+    return 350; // Adjust heights based on your specific requirements
+  } else if (itemCount >= 5) {
+    return 300; // Another example adjustment for mid-range item counts
+  } else if (itemCount >= 4) {
+    return 250; // Another example adjustment for mid-range item counts
+  } else if (itemCount >= 2) {
+    return 150; // Another example adjustment for mid-range item counts
+  }
+  else {
+    return 300; // Default height for fewer items
+  }
+};
+const cardHeight = computed(() => {
+  const itemCount = statistics.value.all_kpi.length;
+  if (itemCount > 9) {
+    console.log('itemCount', itemCount);
+    return 600; // Set a larger height if there are more than 7 items
+  } else {
+    return 300; // Default height for fewer than or equal to 7 items
+  }
 });
 
 const periodList = ref([]);
@@ -159,20 +115,229 @@ const statistics = ref({
   average_kpi: null,
   all_kpi: [],
 });
+const rahbariyatOrder = [
+  'Butayev',
+  'Hamidov',
+  'Sulaymonov',
+  'Allaniyazov',
+  'Mamadjanov',
+  'Djumaniyozov',
+  'Muxammadiyev',
+  'Mustafayev'
+];
+function reorderKpiData(data) {
+  const orderedNames = {
+    "Butayev": "Butaev Orif Aliboevich",
+    "Hamidov": "Xamidov Akmal Akramovich",
+    "Sulaymonov": "Sulaymonov Rustam Davutovich",
+    "Allaniyazov": "Allaniyazov Baxadir Ubbiniyazovich",
+    "Mamadjanov": "Mamadjanov Ibroximjon Abdushukurovich",
+    "Djumaniyozov": "Djumaniyazov Ikram Karimbaevich",
+    "Muxammadiyev": "Muxammadiyev Qosim Xoʻjayorvich",
+    "Mustafayev": "Mustafayev Alisher Abdulloyevich"
+  };
+  const orderMap = new Map();
+  rahbariyatOrder.forEach((name, index) => {
+    orderMap.set(orderedNames[name], index);
+  });
+
+  const sortedKpiData = data.all_kpi.sort((a, b) => {
+    const nameA = a.name.trim();
+    const nameB = b.name.trim();
+    return orderMap.get(nameA) - orderMap.get(nameB);
+  });
+  return {
+    ...data,
+    all_kpi: sortedKpiData
+  };
+}
+
 
 async function getStatistics() {
   if (!dataParams.value.period) return;
   const result = await fetchStatistics(dataParams);
-  if (result) {
-    statistics.value.all_kpi = result.all_kpi;
-    statistics.value.average_kpi = result.average_kpi;
-    datasetSourceItem.value = statistics.value.all_kpi.map(item => ({
-      name: item.name,
-      kpi: item.Kpi_by_department.kpi,
-      id: item.Kpi_by_department.department_id,
+  statistics.value.average_kpi = result.average_kpi;
+  statistics.value.all_kpi = result.all_kpi;
+  if (dataParams.value.type === 2) {
+    console.log(result.all_kpi);
+    datasetSourceItem.value = result.all_kpi.map(head => ({
+      head: head.head,
+      kpi: head.kpi.map(item => ({ name: item.name.trim(), kpi: item.kpi, id: item.department_id })).reverse(),
+
     }));
+    console.log(datasetSourceItem.value);
+
+  } else {
+    datasetSourceItem.value = await reorderKpiData(result);
+    datasetSourceItem.value = result.all_kpi.map(item => ({
+      name: item.name,
+      kpi: item.kpi,
+      id: item.department_id
+    })).reverse();
   }
+  initializeCharts();
 }
+
+const initializeCharts = async () => {
+  await nextTick();
+  if (dataParams.value.type === 2) {
+    datasetSourceItem.value.forEach(head => {
+      const chartDom = document.getElementById('chart-' + head.head);
+      if (!chartDom) return;
+      const myChart = echarts.init(chartDom);
+      const scores = head.kpi.map(item => item.kpi);
+      const minScore = Math.min(...scores);
+      const maxScore = Math.max(...scores);
+
+      const getColor = score => {
+        const ratio = (score - minScore) / (maxScore - minScore);
+        const green = Math.round((1 - ratio) * 255);
+        const red = Math.round(ratio * 255);
+
+        return `rgb(${green}, ${red}, 0)`;
+      };
+      const option = {
+        dataset: {
+          dimensions: ['name', 'kpi', 'id'],
+          source: head.kpi,
+        },
+        yAxis: {
+          show: false,
+          type: 'category',
+          axisLabel: { interval: 0 },
+        },
+        xAxis: {
+          type: 'value',
+          max: 100,
+
+        },
+        series: {
+          label: {
+            show: true,
+            fontSize: 14,
+            barGap: 50,
+            position: 'insideleft',
+            formatter(value) {
+              return `${value.value.name} ${value.value.kpi} %`;
+            },
+          },
+          type: 'bar',
+          barWidth: 20,
+          barGap: 50,
+          encode: { y: 'name', x: 'kpi' },
+          itemStyle: {
+            color: function (params) {
+              const score = params.value.kpi;
+              return getColor(score);
+            },
+
+          },
+        },
+
+
+        tooltip: {
+          show: true,
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '5%',
+          containLabel: false,
+
+        },
+        legend: {
+          data: ['Data'],
+        },
+      };
+      myChart.setOption(option);
+
+      myChart.on('click', function (params) {
+        currentDepartment.value = params?.data?.name;
+        console.log(params);
+        getDepartmentChartData(params?.data?.id);
+      });
+    });
+  }
+
+  else {
+    const chartDom = document.getElementById('main');
+    if (!chartDom) return;
+    const myChart = echarts.init(chartDom);
+    const datasetSource = datasetSourceItem.value;
+
+    if (!datasetSource.length) return;
+    const scores = datasetSource.map(item => item.kpi);
+    const minScore = Math.min(...scores);
+    const maxScore = Math.max(...scores);
+
+    const getColor = score => {
+      const ratio = (score - minScore) / (maxScore - minScore);
+      const green = Math.round((1 - ratio) * 255);
+      const red = Math.round(ratio * 255);
+      return `rgb(${green}, ${red}, 0)`;
+    };
+
+    const option = {
+      dataset: {
+        dimensions: ['name', 'kpi'],
+        source: datasetSource,
+      },
+      yAxis: {
+        type: 'category',
+        axisLabel: { interval: 0 },
+      },
+      xAxis: {
+        type: 'value',
+        max: 100,
+      },
+      series: {
+        label: {
+          show: true,
+          fontSize: 14,
+          position: 'right',
+          formatter(value) {
+            return `${value.value.kpi} %`;
+          },
+        },
+        type: 'bar',
+        encode: { y: 'name', x: 'kpi' },
+        itemStyle: {
+          color: function (params) {
+            const score = params.value.kpi;
+            return getColor(score);
+          },
+        },
+      },
+      tooltip: {
+        show: true,
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '0%',
+        containLabel: true,
+      },
+      legend: {
+        data: ['Data'],
+      },
+    };
+
+    myChart.setOption(option);
+
+    myChart.on('click', function (params) {
+      currentDepartment.value = params?.data?.name;
+      getDepartmentChartData(params?.data?.id);
+    });
+  }
+};
 
 const getDepartmentChartData = async (id) => {
   try {
@@ -187,7 +352,6 @@ const getDepartmentChartData = async (id) => {
     console.log(error);
   }
 };
-
 
 const initializeDepartmentAnnualChart = () => {
   const chartDom = document.getElementById('departments-annual-chart');
@@ -235,10 +399,22 @@ const initializeDepartmentAnnualChart = () => {
           value: item.average_kpi,
           itemStyle: {
             color: getColor(item.average_kpi),
+            normal: {
+              label: {
+                show: true,
+                fontSize: 10,
+              },
+            },
           },
           originalPeriod: item.originalPeriod
         })),
         type: 'bar',
+        label: {
+          show: true,
+          position: 'top',
+          fontSize: 14,
+          formatter: '{c}%',
+        },
       },
     ],
     tooltip: {
@@ -269,7 +445,6 @@ const initializeDepartmentAnnualChart = () => {
 const getDepartmentMonthlyData = async (period) => {
   try {
     const result = await kpiStore.getDepartmentMonthlyData({ period });
-    // Handle the result accordingly
   } catch (error) {
     console.log(error);
   }
@@ -280,7 +455,7 @@ onMounted(() => {
 });
 
 watch(datasetSourceItem, () => {
-  initializeChart();
+  initializeCharts();
 });
 
 function colorify(kpiResult) {
@@ -288,3 +463,21 @@ function colorify(kpiResult) {
   return 'font-weight-bold text-error';
 }
 </script>
+<style scoped>
+.text-center {
+  font-size: 18px;
+
+  /* Adjust font size as needed */
+  font-weight: bold;
+
+  /* Adjust font weight as needed */
+  text-align: center;
+
+}
+
+.mb-2 {
+  margin-block-end: 2rem;
+
+  /* Adjust margin bottom as needed */
+}
+</style>
