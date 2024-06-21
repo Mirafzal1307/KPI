@@ -215,7 +215,8 @@ const initializeCharts = async () => {
         series: {
           label: {
             show: true,
-            fontSize: 14,
+            fontSize: 15,
+            fontWeight: 'bold',
             barGap: 50,
             position: 'insideleft',
             formatter(value) {
@@ -223,7 +224,7 @@ const initializeCharts = async () => {
             },
           },
           type: 'bar',
-          barWidth: 20,
+          barWidth: 22,
           barGap: 50,
           encode: { y: 'name', x: 'kpi' },
           itemStyle: {
@@ -246,7 +247,7 @@ const initializeCharts = async () => {
         grid: {
           left: '3%',
           right: '4%',
-          bottom: '5%',
+          bottom: '12%',
           containLabel: false,
 
         },
