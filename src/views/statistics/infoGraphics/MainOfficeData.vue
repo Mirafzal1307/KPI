@@ -76,7 +76,7 @@ const filteredDepartments = ref([]);
 
 const dataParams = ref({
   period: null,
-  type: 2,
+  type: 1,
 });
 const getHeight = (arr) => {
   if (!arr.kpi) return 300;
@@ -165,19 +165,19 @@ async function getStatistics() {
     datasetSourceItem.value = result.all_kpi.map(head => ({
       head: head.head,
       kpi: head.kpi.map(item => ({ name: item.name.trim(), kpi: item.kpi, id: item.department_id })).reverse(),
-
+      monitoring- statistics
     }));
-    console.log(datasetSourceItem.value);
+  console.log(datasetSourceItem.value);
 
-  } else {
-    datasetSourceItem.value = await reorderKpiData(result);
-    datasetSourceItem.value = result.all_kpi.map(item => ({
-      name: item.name,
-      kpi: item.kpi,
-      id: item.department_id
-    })).reverse();
-  }
-  initializeCharts();
+} else {
+  datasetSourceItem.value = await reorderKpiData(result);
+  datasetSourceItem.value = result.all_kpi.map(item => ({
+    name: item.name,
+    kpi: item.kpi,
+    id: item.department_id
+  })).reverse();
+}
+initializeCharts();
 }
 
 const initializeCharts = async () => {
