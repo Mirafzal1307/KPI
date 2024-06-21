@@ -76,9 +76,10 @@ const filteredDepartments = ref([]);
 
 const dataParams = ref({
   period: null,
-  type: 2,
+  type: 1,
 });
 const getHeight = (arr) => {
+  if (!arr.kpi) return 300;
   const itemCount = arr.kpi.length;
   if (itemCount >= 10) {
     return 500; // Set a larger height if there are 10 or more items
@@ -164,19 +165,19 @@ async function getStatistics() {
     datasetSourceItem.value = result.all_kpi.map(head => ({
       head: head.head,
       kpi: head.kpi.map(item => ({ name: item.name.trim(), kpi: item.kpi, id: item.department_id })).reverse(),
-
+      monitoring- statistics
     }));
-    console.log(datasetSourceItem.value);
+  console.log(datasetSourceItem.value);
 
-  } else {
-    datasetSourceItem.value = await reorderKpiData(result);
-    datasetSourceItem.value = result.all_kpi.map(item => ({
-      name: item.name,
-      kpi: item.kpi,
-      id: item.department_id
-    })).reverse();
-  }
-  initializeCharts();
+} else {
+  datasetSourceItem.value = await reorderKpiData(result);
+  datasetSourceItem.value = result.all_kpi.map(item => ({
+    name: item.name,
+    kpi: item.kpi,
+    id: item.department_id
+  })).reverse();
+}
+initializeCharts();
 }
 
 const initializeCharts = async () => {
@@ -280,6 +281,7 @@ const initializeCharts = async () => {
       const ratio = (score - minScore) / (maxScore - minScore);
       const green = Math.round((1 - ratio) * 255);
       const red = Math.round(ratio * 255);
+
       return `rgb(${green}, ${red}, 0)`;
     };
 
