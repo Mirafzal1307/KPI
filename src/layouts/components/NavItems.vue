@@ -28,7 +28,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
   }" />
   <VerticalNavLink :item="{
     title: 'Hududiy bo\'linma statistika',
-    icon: 'ri-numbers-line',
+    icon: 'ri-map-2-line',
     to: '/general-data',
   }" />
 

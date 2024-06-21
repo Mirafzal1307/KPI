@@ -9,7 +9,7 @@
       <VDialog v-model="dialog" transition="dialog-bottom-transition">
         <VCard>
           <VToolbar>
-            <VToolbarTitle v-if="tab == 0"> Yillik KPI ko'rsatkichlari (foizda) </VToolbarTitle>
+            <VToolbarTitle v-if="tab == 0"> Oylik KPI ko'rsatkichlari (foizda) </VToolbarTitle>
             <VToolbarTitle v-if="tab == 1"> {{ currentPeriod }} davridagi KPI ma'lumotlari </VToolbarTitle>
             <VSpacer />
             <VToolbarItems>
@@ -19,8 +19,8 @@
             </VToolbarItems>
           </VToolbar>
           <VTabs v-model="tab" class="d-flex w-full justify-center align-center">
-            <VTab>Grafik</VTab>
-            <VTab v-if="kpiByBranchesDetails.length > 0"> Jadval </VTab>
+            <VTab>Dinamika</VTab>
+            <VTab v-if="kpiByBranchesDetails.length > 0"> Batafsil</VTab>
           </VTabs>
           <VWindow v-model="tab" class="fixed-height">
             <VWindowItem>
@@ -184,7 +184,6 @@ const initializeChart = () => {
 }
 
 const initializeAnnualChart = data => {
-  console.log(data);
   const chartDom = document.getElementById('branch-annual-chart')
   if (chartDom) {
     annualChart = echarts.init(chartDom)
