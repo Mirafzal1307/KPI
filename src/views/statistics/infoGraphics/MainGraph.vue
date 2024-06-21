@@ -67,10 +67,9 @@ async function getBranchesData() {
   }
 }
 
-
 function formatData(data) {
   formattedDatasetSource.value = data.map((item) => {
-    const formattedName = item.name.replace(/viloyati\s*/, 'v.').replace(/Respublikasi\s*/, 'R.')
+    const formattedName = item.name.replace(/viloyati\s*/, '').replace(/Respublikasi\s*/, 'R.')
     return [formattedName, item.average_kpi, item.id]
   })
 }

@@ -11,7 +11,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     query: { id: '1' }
   }" />
   <VerticalNavLink :item="{
-    title: 'Ishchilarning monitoringi',
+    title: 'Hodimlarning monitoringi',
     icon: 'ri-dashboard-line',
     to: '/dashboard',
   }" />
@@ -28,7 +28,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
   }" />
   <VerticalNavLink :item="{
     title: 'Hududiy bo\'linma statistika',
-    icon: 'ri-numbers-line',
+    icon: 'ri-map-2-line',
     to: '/general-data',
   }" />
 

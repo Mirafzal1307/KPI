@@ -26,8 +26,11 @@
                 formatNumberRoundDown(personalData?.branch_kpi) }} %</span>
             </h4>
             <h4 class="text-h5">
-              Jami individual KPI filial natijasidan keyin: <span style="color: red;">{{
-                isNaN(personalData?.average_kpi) ? 0 : formatNumberRoundDown(personalData?.average_kpi) }} %</span>
+              Jami individual KPI filial natijasidan keyin: <span style="color: red;">
+
+                {{
+                  isNaN(personalData?.average_kpi) ? 0 : formatNumberRoundDown(personalData?.average_kpi) }} %</span>
+
             </h4>
           </div>
         </VCard>
@@ -138,13 +141,12 @@ const indicator = ref(null)
 function formatNumberRoundDown(num) {
   return Math.floor(num * 100) / 100
 }
-console.log(personalData.value)
 
 
 
-const KPI = isNaN(personalData.value.average_kpi) ? 0 : computed(() => personalData.value?.average_kpi / 100)
+const KPI = ref(0)
 
-console.log(personalData?.value?.average_kpi)
+
 
 const initGaugeChart = () => {
   const myChart2 = ref(echarts.init(indicator.value))
@@ -229,7 +231,7 @@ const initGaugeChart = () => {
         },
         data: [
           {
-            value: KPI.value,
+            value: personalData.value?.average_kpi / 100,
             name: 'KPI natijasi',
           },
         ],
@@ -243,13 +245,11 @@ const initGaugeChart = () => {
 const lineChart = () => {
   if (chart.value && personalData.value && personalData.value.kpi_compare) {
     const myChart = echarts.init(chart.value)
-
-    // Extract month names and KPI values from the data
-    const kpiCompareData = personalData.value.kpi_compare
-    const months = kpiCompareData.map(item => item.month_name)
-    const kpiValues = kpiCompareData.map(item => item.kpi)
+    const kpiCompareData = personalData.value.kpi_compare.emp_data
+    const kpiValues = kpiCompareData.map(item => item.kpi) || []
 
     const KPIValue = kpiValues.map(item => formatNumberRoundDown(item) * 100)
+
 
     const option = {
       tooltip: {
@@ -279,7 +279,14 @@ const lineChart = () => {
         {
           data: KPIValue,
           type: 'line',
+          label: {
+            show: true,
+            position: 'top',
+            color: 'black',
+            formatter: '{c} %'
+          }
         },
+
       ],
     }
 
