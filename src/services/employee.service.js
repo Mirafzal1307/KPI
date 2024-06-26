@@ -38,3 +38,10 @@ export async function getPersonalData(period) {
 
   return data
 }
+
+export async function getSubordinate() {
+  const { data } = await axios.get('/kpi_new/v1/subordinate/all')
+  if (!data) return
+
+  return data
+}

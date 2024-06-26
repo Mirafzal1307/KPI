@@ -70,6 +70,7 @@ export const useStaticsStore = defineStore('statistics', () => {
       blocks.value = data.blocks
       management.value = data?.managements
       divisions.value = data?.divisions
+      
       // allData.value = data
 
       return data
@@ -91,6 +92,8 @@ export const useStaticsStore = defineStore('statistics', () => {
       const data = await getDepartmentByBlock(id)
       allData.value = data
       departments.value = data?.departments
+      divisions.value = data?.divisions
+      management.value = data?.managements
 
       return data
     } catch (error) {
@@ -113,6 +116,7 @@ export const useStaticsStore = defineStore('statistics', () => {
       allData.value = data
 
       management.value = data.managements
+      divisions.value = data?.divisions
 
       return data
     } catch (error) {

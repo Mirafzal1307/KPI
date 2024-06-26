@@ -11,10 +11,17 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     query: { id: '1' }
   }" />
   <VerticalNavLink :item="{
-    title: 'Hodimlarning monitoringi',
+    title: 'Xodimlarning monitoringi',
     icon: 'ri-dashboard-line',
     to: '/dashboard',
   }" />
+
+<VerticalNavLink :item="{
+    title: 'Rahbar monitoringi',
+    icon: 'ri-voiceprint-line',
+    to: '/employer-profile',
+  }" />
+
   <VerticalNavLink :item="{
     title: 'Individual natija',
     icon: 'ri-line-chart-line',
