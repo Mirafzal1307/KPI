@@ -204,7 +204,7 @@ const initializeCharts = async () => {
           source: head.kpi,
         },
         yAxis: {
-          show: false,
+          show: true,
           type: 'category',
           axisLabel: { interval: 0 },
         },
@@ -219,9 +219,9 @@ const initializeCharts = async () => {
             fontSize: 15,
             fontWeight: 'bold',
             barGap: 50,
-            position: 'insideleft',
+            position: 'right',
             formatter(value) {
-              return `${value.value.name} ${value.value.kpi} %`;
+              return `${value.value.kpi} %`;
             },
           },
           type: 'bar',
@@ -246,7 +246,7 @@ const initializeCharts = async () => {
           },
         },
         grid: {
-          left: '3%',
+          left: '31%',
           right: '4%',
           bottom: '12%',
           containLabel: false,
