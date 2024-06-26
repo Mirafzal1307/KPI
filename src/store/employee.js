@@ -1,4 +1,4 @@
-import { getEmpKpiById, getEmpList, getPeriod, getPersonalData } from '@/services/employee.service'
+import { getEmpKpiById, getEmpList, getPeriod, getPersonalData, getSubordinate } from '@/services/employee.service'
 import { ref } from 'vue'
 
 export const useEmployeeStore = defineStore('employee', () => {
@@ -7,6 +7,7 @@ export const useEmployeeStore = defineStore('employee', () => {
   const period = ref([])
   const employee_KPI = ref({})
   const personalData = ref({})
+  const subordinate = ref([])
 
   const getEmployeeList = async (page, size, branch, param, period) => {
     loading.value = true
@@ -68,15 +69,32 @@ export const useEmployeeStore = defineStore('employee', () => {
     }
   }
 
+  const getSubordinateAll = async () => {
+    try {
+      loading.value = true
+
+      const data = await getSubordinate()
+      subordinate.value = data
+
+      return data
+    } catch (error) {
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     loading,
     period,
     employeeList,
     employee_KPI,
     personalData,
+    subordinate,
     getEmployeeList,
     getPeriodList,
     getEmployeeKpiById,
     getPersonalDataByPeriod,
+    getSubordinateAll,
   }
 })
