@@ -98,7 +98,6 @@ const items = computed(() => {
     max_percent: null,
   }
   kpiByBranchesDetails.value.push(obj)
-  console.log(kpiByBranchesDetails.value);
   return kpiByBranchesDetails.value
 })
 
@@ -209,7 +208,6 @@ const initializeAnnualChart = data => {
         : { period: month, originalPeriod: null, average_kpi: 0 }
     })
 
-    console.log(filledData);
 
     const kpiValues = filledData.map(item => item.average_kpi)
     const minKPI = Math.min(...kpiValues)
@@ -265,7 +263,6 @@ const initializeAnnualChart = data => {
         },
       },
     }
-
     annualChart.setOption(option)
     annualChart.resize()
     annualChart.on('click', function (params) {
@@ -279,7 +276,6 @@ const initializeAnnualChart = data => {
 }
 
 const updateChart = (chartInstance, data) => {
-  console.log(data);
   if (!chartInstance) return
 
   const scores = data.map(item => item.score).sort((a, b) => a - b)

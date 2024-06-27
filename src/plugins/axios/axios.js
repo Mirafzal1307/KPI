@@ -1,8 +1,72 @@
+// import { useUserStore } from '@/store/user'
+// import axios from 'axios'
+// import { toast } from 'vue3-toastify'
+
+// // const userStore = useUserStore()
+
+// axios.defaults.baseURL = 'http://172.29.64.65:8000'
+
+// axios.defaults.headers.Accept = 'application/json'
+// axios.defaults.headers['Content-Type'] = 'application/json'
+// axios.defaults.withCredentials = false
+
+// axios.interceptors.request.use(
+//   config => {
+//     const token = localStorage.getItem('access_token')
+//     if (token) config.headers.Authorization = `Bearer ${token}`
+
+//     return config
+//   },
+//   error => {
+//     return Promise.reject(error)
+//   },
+// )
+// axios.interceptors.response.use(
+//   response => response,
+//   error => {
+//     const userStore = useUserStore()
+
+//     if (error?.response?.status.includes(500)) {
+//       toast.error('Серверда хатолик!')
+//     }
+//     if (error.response.status === 401) {
+//       userStore.logout()
+//       toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
+//     }
+
+//     return Promise.reject(error)
+//   },
+// )
+
+// axios.interceptors.response.use(
+//   config => config,
+//   error => {
+//     // const { logout } = useUserStore()
+
+//     const userStore = useUserStore()
+
+//     if (error.response?.status === 400 && error.response.data?.message.includes('Already authenticated')) {
+//       userStore.logout()
+//       toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
+//     }
+
+//     if (error.response?.status === 400 || error.response?.status === 500) toast.error(error.response.data?.message)
+
+//     if (error.response?.status === 422) toast.error(error.response.data?.message)
+
+//     if (error.response?.status === 401) userStore.logout()
+
+//     if (error.message === 'Network Error') toast.error('Серверда хатолик юз берди, илтимос қайтадан уриниб кўринг')
+
+//     return Promise.reject(error)
+//   },
+// )
+
+// export default axios
+
 import { useUserStore } from '@/store/user'
 import axios from 'axios'
 import { toast } from 'vue3-toastify'
-
-// const userStore = useUserStore()
 
 axios.defaults.baseURL = 'http://172.29.64.65:8000'
 
@@ -14,53 +78,45 @@ axios.interceptors.request.use(
   config => {
     const token = localStorage.getItem('access_token')
     if (token) config.headers.Authorization = `Bearer ${token}`
-
     return config
   },
   error => {
     return Promise.reject(error)
   },
 )
+
 axios.interceptors.response.use(
-  response => response,
-  error => {
+  response => {
+    const status = response?.status
     const userStore = useUserStore()
 
-    if (error?.response?.status.includes(500)) {
-      toast.error('Серверда хатолик!')
-    }
-    if (error.response.status === 401) {
+    if (status === 401 || status === 403) {
       userStore.logout()
-      toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
+      toast.error("Ushbu foydalanuvchi sessiyasi muddati o'tgan!")
     }
-    if (error.response.status === 403) {
-      userStore.logout()
-      toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
-    }
-
-    return Promise.reject(error)
+    return response
   },
-)
-
-axios.interceptors.response.use(
-  config => config,
+  // response => response,
   error => {
-    // const { logout } = useUserStore()
-
     const userStore = useUserStore()
+    const status = error?.response?.status
+    const message = error?.response?.data?.message || error.message
 
-    if (error.response?.status === 400 && error.response.data?.message.includes('Already authenticated')) {
+    if (status === 401 || status === 403) {
       userStore.logout()
-      toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
+      toast.error('Your session has expired, please log in again')
+    } else if (status === 400 && message.includes('Already authenticated')) {
+      userStore.logout()
+      toast.error('Your session has expired, please log in again')
+    } else if (status === 400 || status === 500) {
+      toast.error(message)
+    } else if (status === 422) {
+      toast.error(message)
+    } else if (error.message === 'Network Error') {
+      toast.error('There was a server error, please try again')
+    } else if (status >= 500) {
+      toast.error('Server error!')
     }
-
-    if (error.response?.status === 400 || error.response?.status === 500) toast.error(error.response.data?.message)
-
-    if (error.response?.status === 422) toast.error(error.response.data?.message)
-
-    if (error.response?.status === 401) userStore.logout()
-
-    if (error.message === 'Network Error') toast.error('Серверда хатолик юз берди, илтимос қайтадан уриниб кўринг')
 
     return Promise.reject(error)
   },
