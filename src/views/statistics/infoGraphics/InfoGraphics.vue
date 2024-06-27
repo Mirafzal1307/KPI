@@ -36,7 +36,7 @@
             <VBtn :style="{ boxShadow: kpiStore.currentUserType === 2 ? '0px 4px 4px rgba(0, 0, 0, 0.25)' : '' }"
               :color="kpiStore.currentUserType === 2 ? 'primary' : ''" class="text-caption border"
               @click="kpiStore.currentUserType = 2">
-              Bek offis
+              Bek ofis
             </VBtn>
           </VCol>
         </VCol>
