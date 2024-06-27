@@ -23,7 +23,7 @@
       <VRow>
         <VCol cols="12" md="12">
           <VCard v-show="dataParams.type === 1" class="border">
-            <VSheet id="main" height="300" />
+            <VSheet id="main" height="350" />
           </VCard>
         </VCol>
       </VRow>
@@ -213,7 +213,10 @@ const initializeCharts = async () => {
         yAxis: {
           show: true,
           type: 'category',
-          axisLabel: { interval: 0 },
+          axisLabel: {
+            interval: 0,
+            fontSize: 15,
+          },
         },
         xAxis: {
           type: 'value',
@@ -250,7 +253,7 @@ const initializeCharts = async () => {
           },
         },
         grid: {
-          left: '31%',
+          left: '39%',
           right: '4%',
           bottom: '12%',
           containLabel: false,
@@ -260,7 +263,6 @@ const initializeCharts = async () => {
         },
       };
       myChart.setOption(option);
-
       myChart.on('click', function (params) {
         currentDepartment.value = params?.data?.name;
         console.log(params);
@@ -296,7 +298,9 @@ const initializeCharts = async () => {
       },
       yAxis: {
         type: 'category',
-        axisLabel: { interval: 0 },
+        axisLabel: {
+          interval: 0, fontSize: 15, fontWeight: 'bold'
+        },
       },
       xAxis: {
         type: 'value',
