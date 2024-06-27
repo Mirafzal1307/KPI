@@ -17,7 +17,7 @@
           <VRow>
             <!-- email -->
             <VCol cols="12">
-              <VTextField v-model="form.username" label="Email" type="text" />
+              <VTextField v-model="form.username" label="Username" type="text" />
             </VCol>
 
             <!-- password -->

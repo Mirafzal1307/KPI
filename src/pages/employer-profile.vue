@@ -1,12 +1,13 @@
 <script setup>
 import { useEmployeeStore } from '@/store/employee'
+import UserProfileCard from '@/views/dashboard/UserProfileCard.vue';
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 
 
 const useEmployee = useEmployeeStore()
-const { employeeList, period, employee_KPI, subordinate } = storeToRefs(useEmployee)
-const { getPeriodList, getEmployeeKpiById, getSubordinateAll } = useEmployeeStore()
+const { employeeList, period, employee_list_KPI, subordinate } = storeToRefs(useEmployee)
+const { getPeriodList, getEmployeeListKpiById, getSubordinateAll } = useEmployeeStore()
 
 const headers = ref([
   { title: '№', key: 'emp_id' },
@@ -45,7 +46,7 @@ const getEmployeeKPI_ByID = async item => {
     element.isActive = false
   })
   item.isActive = true
-  await getEmployeeKpiById(item.emp_id, '2024-01-30')
+  await getEmployeeListKpiById(item.emp_id, '2024-01-30')
 }
 
 function getTableClass(item) {
@@ -53,9 +54,9 @@ function getTableClass(item) {
 }
 
 const getEmployeeAverageKpi = computed(() => {
-  if (!employee_KPI.value?.kpi?.length) return
+  if (!employee_list_KPI.value?.kpi?.length) return
 
-  return employee_KPI.value?.kpi[0].average_kpi
+  return employee_list_KPI.value?.kpi[0].average_kpi
 })
 
 
@@ -64,7 +65,7 @@ const getEmployeeAverageKpi = computed(() => {
 const getUserDataByID = async (newValue) => {
   if (empID.value === null) return
 
-  await getEmployeeKpiById(empID.value, newValue)
+  await getEmployeeListKpiById(empID.value, newValue)
   console.log(newValue);
 }
 
@@ -99,7 +100,7 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in employee_KPI.kpi" :key="item.id">
+              <tr v-for="(item, index) in employee_list_KPI.kpi" :key="item.id">
                 <td>
                   {{ index + 1 }}</td>
                 <td>
@@ -134,8 +135,11 @@ onMounted(() => {
         </VCard>
       </VResponsive>
     </VCol>
+    <VCol cols="12" md="3">
+      <UserProfileCard :img="employee_list_KPI?.img_path" />
+    </VCol>
 
-    <VCol cols="12" md="12" class="table-height">
+    <VCol cols="12" md="9" class="table-height">
       <VCard class="pa-4 border h-100">
         <VDataTable hover :headers="headers" :items="subordinate" item-value="id"  items-per-page="300"
           class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table" fixed-header>

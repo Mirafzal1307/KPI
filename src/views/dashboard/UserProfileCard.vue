@@ -1,20 +1,25 @@
 <script setup>
 
-
+const props = defineProps({
+  img: {
+    type: String,
+    required: true,
+    default: ''
+  }
+});
 
 </script>
 
 <template>
   <VCard class="border">
-    <div class="mx-10 h-100 d-flex align-center flex-column justify">
-      <img
-        class="w-75 h-50 text-center"
-        src="/src/assets//images/avatars/userImg.png"
-        alt=""
-      />
-      <RouterLink :to="{ name: 'user-profile', query: { id: '1' } }">
 
-        <VBtn >Shaxsiy monitoring / ma'lumot</VBtn>
+    <div class="mx-10 h-100 d-flex align-center flex-column justify">
+    
+      <img v-if="props.img != ''" class="w-75 h-60  text-center" :src="props.img" alt="" />
+
+      <img v-else class="w-75 h-50 text-center" src="/src/assets//images/avatars/userImg.png" alt="" />
+      <RouterLink :to="{ name: 'user-profile', query: { id: '1' } }">
+        <VBtn>Shaxsiy monitoring / ma'lumot</VBtn>
       </RouterLink>
     </div>
   </VCard>

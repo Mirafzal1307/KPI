@@ -202,13 +202,13 @@ onMounted(() => {
       </VResponsive>
     </VCol>
     <VCol cols="12" md="3">
-      <UserProfileCard />
+      <UserProfileCard :img="employee_KPI?.img_path" />
     </VCol>
     <VCol cols="12" md="9" class="table-height">
       <VCard class="pa-4 border h-100">
         <VDataTable hover :headers="headers" :items="employeeList['items']" :items-per-page="itemsPerPage"
-          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table" :items-length="employeeList['total']"
-          fixed-header @update:items-per-page="updateItemsPerPage">
+          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table"
+          :items-length="employeeList['total']" fixed-header @update:items-per-page="updateItemsPerPage">
           <template #item="{ item, index }">
             <tr :class="`cursor-pointer hovering-pan ${getTableClass(item)}`" @click="getEmployeeKPI_ByID(item)">
               <td>
