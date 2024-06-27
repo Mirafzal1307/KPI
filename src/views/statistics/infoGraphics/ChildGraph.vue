@@ -277,7 +277,6 @@ const initializeAnnualChart = data => {
 
 const updateChart = (chartInstance, data) => {
   if (!chartInstance) return
-
   const scores = data.map(item => item.score).sort((a, b) => a - b)
   const minScore = scores[0]
   const maxScore = scores[scores.length - 1]
