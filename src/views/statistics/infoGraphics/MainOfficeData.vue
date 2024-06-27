@@ -268,7 +268,6 @@ const initializeCharts = async () => {
       myChart.setOption(option);
       myChart.on('click', function (params) {
         currentDepartment.value = params?.data?.name;
-        console.log(params);
         getDepartmentChartData(params?.data?.id);
       });
     });
@@ -363,14 +362,14 @@ const getDepartmentChartData = async (id) => {
       departmentChartData.value = result;
       dialog.value = true;
       await nextTick();
-      initializeDepartmentAnnualChart();
+      initializeDepartmentAnnualChart(result);
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-const initializeDepartmentAnnualChart = () => {
+const initializeDepartmentAnnualChart = (val) => {
   const chartDom = document.getElementById('departments-annual-chart');
   if (!chartDom) return;
 
@@ -382,33 +381,37 @@ const initializeDepartmentAnnualChart = () => {
   ];
 
   const filledData = months.map((month, index) => {
-    const monthData = departmentChart.value.find(d => new Date(d.period).getMonth() === index);
+    const monthData = val.find(d => new Date(d.period).getMonth() === index);
     return monthData ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi } : { period: month, originalPeriod: null, average_kpi: 0 };
   });
 
   const kpiValues = filledData.map(item => item.average_kpi);
-  const minKPI = Math.min(...kpiValues);
-  const maxKPI = Math.max(...kpiValues);
 
-  const getColor = (value) => {
-    const normalizedValue = (value - minKPI) / (maxKPI - minKPI);
-    const green = Math.round(normalizedValue * 255);
-    const red = 255 - green;
-    return `rgb(${red}, ${green}, 0)`;
-  };
+  const minKPI = Math.min(...kpiValues)
+  const maxKPI = Math.max(...kpiValues)
+
+  const getColor = value => {
+    if (minKPI == maxKPI) {
+      return 'rgb(0, 255, 0)'
+    }
+    const normalizedValue = (value - minKPI) / (maxKPI - minKPI)
+    const green = Math.round(normalizedValue * 250)
+    const red = 255 - green
+
+    return `rgb(${red}, ${green}, 0)`
+  }
 
   const option = {
     xAxis: {
       type: 'category',
-      data: filledData.map(item => item.period),
       axisLabel: {
         fontSize: 14,
         fontWeight: 'bold',
       },
+      data: filledData.map(item => item.period),
     },
     yAxis: {
       type: 'value',
-      max: 100,
     },
     series: [
       {
@@ -416,48 +419,124 @@ const initializeDepartmentAnnualChart = () => {
           value: item.average_kpi,
           itemStyle: {
             color: getColor(item.average_kpi),
-            normal: {
-              label: {
-                show: true,
-                fontSize: 10,
-              },
-            },
           },
-          originalPeriod: item.originalPeriod
+          originalPeriod: item.originalPeriod,
         })),
         type: 'bar',
+        smooth: true,
         label: {
           show: true,
           position: 'top',
-          fontSize: 14,
           formatter: '{c}%',
+          fontSize: 14,
         },
       },
     ],
     tooltip: {
-      show: true,
       trigger: 'axis',
       axisPointer: {
         type: 'shadow',
       },
     },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
   };
 
   myChart.setOption(option);
-
-  myChart.on('click', function (params) {
-    const originalPeriod = params.data.originalPeriod;
-    if (originalPeriod) {
-      getDepartmentMonthlyData(originalPeriod);
-    }
-  });
 };
+
+
+// const initializeDepartmentAnnualChart = (val) => {
+//   const chartDom = document.getElementById('departments-annual-chart');
+//   if (!chartDom) return;
+
+//   const myChart = echarts.init(chartDom);
+
+//   const months = [
+//     'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+//     'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+//   ];
+
+//   const filledData = months.map((month, index) => {
+//     const monthData = departmentChart.value.find(d => new Date(d.period).getMonth() === index);
+//     return monthData ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi } : { period: month, originalPeriod: null, average_kpi: 0 };
+//   });
+
+//   const kpiValues = filledData.map(item => item.average_kpi);
+//   const minKPI = Math.min(...val)
+//   const maxKPI = Math.max(...val)
+
+//   const getColor = value => {
+//     console.log(minKPI);
+//     if (minKPI == maxKPI) {
+//       return 'rgb(0, 255, 0)'
+//     }
+//     const normalizedValue = (value - minKPI) / (maxKPI - minKPI)
+//     const green = Math.round(normalizedValue * 255)
+//     const red = 255 - green
+
+//     return `rgb(${green}, ${red}, 0)`
+//   }
+
+//   const option = {
+//     xAxis: {
+//       type: 'category',
+//       data: filledData.map(item => item.period),
+//       axisLabel: {
+//         fontSize: 14,
+//         fontWeight: 'bold',
+//       },
+//     },
+//     yAxis: {
+//       type: 'value',
+//       max: 100,
+//     },
+//     series: [
+//       {
+//         data: filledData.map(item => ({
+//           value: item.average_kpi,
+//           itemStyle: {
+//             color: getColor(item.average_kpi),
+//             normal: {
+//               label: {
+//                 show: true,
+//                 fontSize: 10,
+//               },
+//             },
+//           },
+//           originalPeriod: item.originalPeriod
+//         })),
+//         type: 'bar',
+//         label: {
+//           show: true,
+//           position: 'top',
+//           fontSize: 14,
+//           formatter: '{c}%',
+//         },
+//       },
+//     ],
+//     tooltip: {
+//       show: true,
+//       trigger: 'axis',
+//       axisPointer: {
+//         type: 'shadow',
+//       },
+//     },
+//     grid: {
+//       left: '3%',
+//       right: '4%',
+//       bottom: '3%',
+//       containLabel: true,
+//     },
+//   };
+
+//   myChart.setOption(option);
+
+//   myChart.on('click', function (params) {
+//     const originalPeriod = params.data.originalPeriod;
+//     if (originalPeriod) {
+//       getDepartmentMonthlyData(originalPeriod);
+//     }
+//   });
+// };
 
 const getDepartmentMonthlyData = async (period) => {
   try {

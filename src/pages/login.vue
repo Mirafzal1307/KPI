@@ -17,12 +17,12 @@
           <VRow>
             <!-- email -->
             <VCol cols="12">
-              <VTextField v-model="form.username" label="Username" type="text" />
+              <VTextField v-model="form.username" label="Login" type="text" />
             </VCol>
 
             <!-- password -->
             <VCol cols="12">
-              <VTextField v-model="form.password" label="Password" placeholder="············"
+              <VTextField v-model="form.password" label="Parol" placeholder="············"
                 :type="isPasswordVisible ? 'text' : 'password'"
                 :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible" />
