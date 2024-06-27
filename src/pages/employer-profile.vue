@@ -1,17 +1,12 @@
 <script setup>
-import { useBranchStore } from '@/store/branch'
 import { useEmployeeStore } from '@/store/employee'
-import UserProfileCard from '@/views/dashboard/UserProfileCard.vue'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 
-const branchStore = useBranchStore()
-const { allBranches, allRegions } = storeToRefs(branchStore)
-const { getBranches, getRegions, getBranchesByRegionId } = useBranchStore()
 
 const useEmployee = useEmployeeStore()
-const { employeeList, period, employee_KPI } = storeToRefs(useEmployee)
-const { getEmployeeList, getPeriodList, getEmployeeKpiById } = useEmployeeStore()
+const { employeeList, period, employee_KPI, subordinate } = storeToRefs(useEmployee)
+const { getPeriodList, getEmployeeKpiById, getSubordinateAll } = useEmployeeStore()
 
 const headers = ref([
   { title: '№', key: 'emp_id' },
@@ -29,14 +24,8 @@ const filters = ref({
   region: null,
 })
 
-const itemsPerPage = ref(filters.value.size)
 
-const updateItemsPerPage = newItemsPerPage => {
-  getEmployeeList(filters.value.page, newItemsPerPage, filters.value.branch, filters.value.param, filters.value.period)
 
-  filters.value.size = newItemsPerPage
-  itemsPerPage.value = newItemsPerPage
-}
 
 function formatNumberWithSpaces(number) {
   const [integerPart, decimalPart] = number.toFixed(2).toString().split('.')
@@ -52,7 +41,7 @@ const empID = ref(null)
 
 const getEmployeeKPI_ByID = async item => {
   empID.value = item.emp_id
-  employeeList.value['items'].forEach(element => {
+  subordinate.value.forEach(element => {
     element.isActive = false
   })
   item.isActive = true
@@ -69,30 +58,8 @@ const getEmployeeAverageKpi = computed(() => {
   return employee_KPI.value?.kpi[0].average_kpi
 })
 
-async function filterEmployees() {
-  employee_KPI.value.kpi = []
-  await getEmployeeList(
-    filters.value.page,
-    filters.value.size,
-    filters.value.branch,
-    filters.value.param,
-    filters.value.period,
-  )
-}
 
-async function fetchBranchesByRegionId(id) {
 
-  filters.value.branch = []
-
-  employee_KPI.value.kpi = []
-  if (!id) {
-    await getBranches()
-
-    return
-  }
-
-  await getBranchesByRegionId(id)
-}
 
 const getUserDataByID = async (newValue) => {
   if (empID.value === null) return
@@ -103,47 +70,13 @@ const getUserDataByID = async (newValue) => {
 
 
 onMounted(() => {
-  getEmployeeList(
-    filters.value.page,
-    filters.value.size,
-    filters.value.branch,
-    filters.value.param,
-    filters.value.period,
-  )
+  getSubordinateAll()
   getPeriodList()
-  getBranches()
-  getRegions()
+
 })
 </script>
 
 <template>
-  <section>
-    <VForm class="mb-3" @submit.prevent="filterEmployees">
-      <VCard class="border rounded-md">
-        <VCardText>
-          <VRow dense>
-            <VCol cols="12" md="3">
-              <VAutocomplete v-model="filters.region" density="compact" :items="allRegions" item-title="region_name_uz"
-                item-value="id" label="Hudud" clearable @update:model-value="fetchBranchesByRegionId" />
-            </VCol>
-            <VCol cols="12" md="4">
-              <VAutocomplete v-model="filters.branch" :items="allBranches" density="compact" label="Filial"
-                item-title="branch_name" item-value="id" clearable />
-            </VCol>
-
-            <VCol cols="12" md="3">
-              <VTextField v-model="filters.param" density="compact" label="F.I.SH" />
-            </VCol>
-            <VCol cols="12" md="2">
-              <VBtn type="submit" class="w-100">
-                Qidirish
-              </VBtn>
-            </VCol>
-          </VRow>
-        </VCardText>
-      </VCard>
-    </VForm>
-  </section>
   <VRow class="match-height">
     <VCol cols="12" md="12" class="pb-0">
       <VResponsive max-height="400">
@@ -201,14 +134,11 @@ onMounted(() => {
         </VCard>
       </VResponsive>
     </VCol>
-    <VCol cols="12" md="3">
-      <UserProfileCard />
-    </VCol>
-    <VCol cols="12" md="9" class="table-height">
+
+    <VCol cols="12" md="12" class="table-height">
       <VCard class="pa-4 border h-100">
-        <VDataTable hover :headers="headers" :items="employeeList['items']" :items-per-page="itemsPerPage"
-          item-value="id" class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table" :items-length="employeeList['total']"
-          fixed-header @update:items-per-page="updateItemsPerPage">
+        <VDataTable hover :headers="headers" :items="subordinate" item-value="id"  items-per-page="300"
+          class="text-no-wrap h-100 overflow-y-auto elevation-1 hover-table" fixed-header>
           <template #item="{ item, index }">
             <tr :class="`cursor-pointer hovering-pan ${getTableClass(item)}`" @click="getEmployeeKPI_ByID(item)">
               <td>
@@ -234,11 +164,11 @@ onMounted(() => {
 
 <style scoped>
 .height {
-  max-block-size: 275px !important;
+  max-block-size: 320px !important;
 }
 
 .table-height {
-  max-block-size: 390px !important;
+  max-block-size: 490px !important;
 }
 
 .custom-item:hover {

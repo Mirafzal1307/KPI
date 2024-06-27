@@ -7,7 +7,7 @@
           @update:model-value="getStatistics()" />
       </VCol>
       <VCol cols="12" md="2" />
-      <VCol cols="12" md="5">
+          <VCol cols="12" md="5">
         <VSelect v-model="dataParams.period" :items="periodList" label="Davr bo'yicha" item-title="period"
           item-value="period" @update:model-value="getStatistics" />
       </VCol>
@@ -172,7 +172,6 @@ async function getStatistics() {
       head: head.head,
       kpi: head.kpi.map(item => ({ name: item.name.trim(), kpi: item.kpi, id: item.department_id })).reverse(),
     }));
-    console.log(datasetSourceItem.value);
   } else {
     datasetSourceItem.value = await reorderKpiData(result);
     datasetSourceItem.value = result.all_kpi.map(item => ({
@@ -508,4 +507,5 @@ function colorify(kpiResult) {
   align-items: center;
 
 }
+
 </style>
