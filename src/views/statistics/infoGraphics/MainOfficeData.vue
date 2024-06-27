@@ -7,9 +7,9 @@
           @update:model-value="getStatistics()" />
       </VCol>
       <VCol cols="12" md="2" />
-          <VCol cols="12" md="5">
+      <VCol cols="12" md="5">
         <VSelect v-model="dataParams.period" :items="periodList" label="Davr bo'yicha" item-title="period"
-          item-value="period" @update:model-value="getStatistics" />
+          item-value="period" @update:model-value="getStatistics()" />
       </VCol>
     </VRow>
     <VCardItem class="text-right text-h5">
@@ -90,16 +90,20 @@ const getHeight = (arr) => {
   if (itemCount >= 10) {
     return 500;
   } else if (itemCount >= 8) {
+    return 390;
+  } else if (itemCount >= 7) {
     return 350;
-  } else if (itemCount >= 5) {
-    return 300; // Another example adjustment for mid-range item counts
-  } else if (itemCount >= 4) {
-    return 250; // Another example adjustment for mid-range item counts
+  }
+  else if (itemCount >= 5) {
+    return 290;
+  }
+  else if (itemCount >= 4) {
+    return 240;
   } else if (itemCount >= 2) {
-    return 150; // Another example adjustment for mid-range item counts
+    return 150;
   }
   else {
-    return 300; // Default height for fewer items
+    return 300;
   }
 };
 const cardHeight = computed(() => {
@@ -507,5 +511,4 @@ function colorify(kpiResult) {
   align-items: center;
 
 }
-
 </style>

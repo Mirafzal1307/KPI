@@ -63,20 +63,16 @@ import { useKpiStore } from '@/store/kpi';
 import * as echarts from 'echarts';
 import { onMounted, ref, watch } from 'vue';
 
-
 const props = defineProps({
   datasetSource: {
     type: Array,
     default: () => [],
   },
 })
-
 const loading = ref(false)
 const filterItems = ref([{ title: 'Boshqaruvchi', value: 1 }, { title: 'Bosh buxgalter', value: 2 }, { title: 'Davlat dasturlari blok', value: 3 }, { title: 'Biznes va operatsion blok', value: 4 }, { title: 'Kredit blok', value: 5 }])
-
 const kpiStore = useKpiStore()
 const user_type = ref(1)
-
 const items = ref([
   { text: 'Boshqaruvchi', value: 1 },
   { text: 'Bosh buxgalter', value: 2 },
@@ -88,7 +84,6 @@ const items = ref([
 const initializeChart = () => {
   var chartDom = document.getElementById('main')
   var myChart = echarts.init(chartDom)
-
   const scores = props.datasetSource.map(item => item[1]).sort((a, b) => a - b)
   const minScore = scores[0]
   const maxScore = scores[scores.length - 1]
@@ -113,7 +108,6 @@ const initializeChart = () => {
         },
       },
     ],
-
     xAxis: {
       type: 'category',
       axisLabel: {

@@ -33,6 +33,10 @@ axios.interceptors.response.use(
       userStore.logout()
       toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
     }
+    if (error.response.status === 403) {
+      userStore.logout()
+      toast.error('Сизнинг сессиянгиз муддати ўтган, илтимос киринг')
+    }
 
     return Promise.reject(error)
   },
