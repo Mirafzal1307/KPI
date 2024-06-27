@@ -1,5 +1,4 @@
 <script setup>
-import avatar1 from '@images/avatars/avatar-1.png';
 
 
 
@@ -14,8 +13,12 @@ function logout() {
 <template>
   <VBadge dot location="bottom right" offset-x="3" offset-y="3" color="success" bordered>
     <VAvatar class="cursor-pointer" color="primary" variant="tonal">
-      <VImg :src="avatar1" />
-
+      <!-- <VImg :src="avatar1" /> -->
+      <!-- <Icon icon="ri:account-circle-fill" /> -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="5em" height="5em" viewBox="0 0 24 24">
+        <path fill="currentColor"
+          d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2M6.023 15.416C7.491 17.606 9.695 19 12.16 19s4.669-1.393 6.136-3.584A8.97 8.97 0 0 0 12.16 13a8.97 8.97 0 0 0-6.137 2.416M12 11a3 3 0 1 0 0-6a3 3 0 0 0 0 6" />
+      </svg>
       <!-- SECTION Menu -->
       <VMenu activator="parent" width="230" location="bottom end" offset="14px">
         <VList>
@@ -31,7 +34,7 @@ function logout() {
               </VListItemAction>
             </template> -->
 
-            <!-- <VListItemTitle class="font-weight-semibold">
+          <!-- <VListItemTitle class="font-weight-semibold">
               John Doe
             </VListItemTitle>
             <VListItemSubtitle>Admin</VListItemSubtitle>
