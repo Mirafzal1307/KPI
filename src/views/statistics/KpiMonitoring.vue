@@ -2,7 +2,7 @@
   <VCard class="border">
     <VCol cols="12 mx-auto mt-4">
       <VCol cols="12" class="text-center text-h2 mb-8">
-        <span class="font-weight-black pb-10">Ishchilarning shaxsiy monitoringgi</span>
+        <span class="font-weight-black pb-10">Xodimlarning shaxsiy monitoringgi</span>
       </VCol>
       <VRow class="flex justify-center mb-4">
         <VCol cols="6" class="py-1">
@@ -52,8 +52,8 @@
         </VCol>
         <VCol cols="6" class="py-1 text-left" v-if="empList != null && empList.length > 0">
           <div>
-            <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Ishchilar ro'yhati" :items="empList"
-              item-title="full_name" item-value="id" clearable />
+            <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Xodimlar ro'yxati" :items="empList"
+              item-title="full_name" item-value="id" clearable return-object />
           </div>
         </VCol>
         <VCol cols="6" class="py-1 text-left">
@@ -126,8 +126,16 @@ const lineChart = () => {
   empStsValue.value = empsts?.map(item => Math.round(item * 100)) || []
   const months = ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr']
 
-  const branchs = empStatistic.value.branch?.map(item => item.average_kpi)
-  const branchValue = branchs?.map(item => Math.round(item))
+  const branches = months.map((month, index) => {
+    const monthData = empStatistic?.value?.branch?.find(d => new Date(d.period).getMonth() === index)
+
+    return monthData
+      ? { period: month, originalPeriod: monthData.period, average_kpi: monthData.average_kpi }
+      : { period: month, originalPeriod: null, average_kpi: 0 }
+  })
+  // empStatistic.value.branch?.map(item => item.average_kpi)
+  const branchValue = branches?.map(item => Math.round(item.average_kpi))
+  console.log(branchValue);
 
   let filledData = []
 
@@ -179,7 +187,7 @@ const lineChart = () => {
     yAxis: [
       {
         type: 'value',
-        name: 'Hodim KPI',
+        name: 'Xodim KPI',
         min: 0,
         max: 100,
         interval: 20,
@@ -201,7 +209,7 @@ const lineChart = () => {
     series: [
       {
 
-        name: 'Hodim KPI',
+        name: 'Xodim KPI',
         type: 'bar',
         tooltip: {
           valueFormatter: function (value) {
@@ -240,11 +248,7 @@ const lineChart = () => {
           type: 'line'
 
         },
-        label: {
-          show: true,
-          position: 'top',
-          formatter: '{c} %'
-        }
+
 
       }
     ]
@@ -368,8 +372,8 @@ const getDivisionsByManagment = async (newValue) => {
 
     // divisions.value = []
     // statistic.value.divisionId = null
-    // empList.value = []
-    // empId.value = null
+    empList.value = []
+    empId.value = null || []
     return
   }
   await getDivisionsByManagments(newValue?.id)
@@ -388,6 +392,8 @@ const getEmployeeList = async () => {
     management_id: statistic.value.managementId?.id,
     division_id: statistic.value.divisionId?.id,
   }
+  empId.value = null;
+
 
 
   await getEmpList(param)
@@ -395,11 +401,12 @@ const getEmployeeList = async () => {
 
 
 const empIdChange = async (empId) => {
-  if (!empId) {
-    await getAllDataByDepartments(statistic.value.branchId)
-    await getAllDataByBlocks(statistic.value.branchId)
+
+  if (empId?.id) {
+    console.log(empId);
+    await getEmpStatistics(empId?.id)
+
   }
-  await getEmpStatistics(empId)
   lineChart()
 }
 </script>

@@ -11,7 +11,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     query: { id: '1' }
   }" />
   <VerticalNavLink :item="{
-    title: 'Xodimlarning monitoringi',
+    title: 'Xodimlar monitoringi',
     icon: 'ri-dashboard-line',
     to: '/dashboard',
   }" />

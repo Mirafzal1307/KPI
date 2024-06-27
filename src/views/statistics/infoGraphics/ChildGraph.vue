@@ -208,6 +208,7 @@ const initializeAnnualChart = data => {
         : { period: month, originalPeriod: null, average_kpi: 0 }
     })
 
+    console.log(filledData, 'filled data');
 
     const kpiValues = filledData.map(item => item.average_kpi)
     const minKPI = Math.min(...kpiValues)
