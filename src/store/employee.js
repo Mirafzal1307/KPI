@@ -6,6 +6,7 @@ export const useEmployeeStore = defineStore('employee', () => {
   const employeeList = ref([])
   const period = ref([])
   const employee_KPI = ref({})
+  const employee_list_KPI = ref({})
   const personalData = ref({})
   const subordinate = ref([])
 
@@ -41,9 +42,23 @@ export const useEmployeeStore = defineStore('employee', () => {
 
       const data = await getEmpKpiById(id, period)
 
-      console.log(data)
-
       employee_KPI.value = data
+
+      return data
+    } catch (error) {
+      return error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const getEmployeeListKpiById = async (id, period) => {
+    try {
+      loading.value = true
+
+      const data = await getEmpKpiById(id, period)
+
+      employee_list_KPI.value = data
 
       return data
     } catch (error) {
@@ -91,10 +106,12 @@ export const useEmployeeStore = defineStore('employee', () => {
     employee_KPI,
     personalData,
     subordinate,
+    employee_list_KPI,
     getEmployeeList,
     getPeriodList,
     getEmployeeKpiById,
     getPersonalDataByPeriod,
     getSubordinateAll,
+    getEmployeeListKpiById,
   }
 })

@@ -2,7 +2,7 @@
   <VCard class="border px-4 py-2">
     <VRow justify="center" class="d-flex justify-center px-2">
       <VRow justify="center" class="d-flex justify-center px-2">
-        <VCol cols="12 d-flex justify-center ">
+        <VCol cols="12 d-flex justify-center">
           <VCol cols="2 d-flex justify-center">
             <VBtn :color="kpiStore.currentUserType === 1 ? 'primary' : ''" color="secondary" :dark="true"
               :class="{ 'primary': kpiStore.currentUserType === 1 }" class="text-caption border"
@@ -39,22 +39,17 @@
               Bek offis
             </VBtn>
           </VCol>
-
-
-
         </VCol>
       </VRow>
     </VRow>
   </VCard>
   <VCard class="border">
-
     <h2 class="text-center mt-1"> Hududlar bo'yicha boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </h2>
-
     <div v-show="!datasetSource.length" class="text-center">
       Ma'lumot yo'q
     </div>
-    <div id="main" style="block-size: 330px;" class="mx-auto " />
+    <div id="main" style="block-size: 330px;" class="mx-auto" />
   </VCard>
 </template>
 
@@ -62,7 +57,6 @@
 import { useKpiStore } from '@/store/kpi';
 import * as echarts from 'echarts';
 import { onMounted, ref, watch } from 'vue';
-
 
 const props = defineProps({
   datasetSource: {
@@ -73,10 +67,8 @@ const props = defineProps({
 
 const loading = ref(false)
 const filterItems = ref([{ title: 'Boshqaruvchi', value: 1 }, { title: 'Bosh buxgalter', value: 2 }, { title: 'Davlat dasturlari blok', value: 3 }, { title: 'Biznes va operatsion blok', value: 4 }, { title: 'Kredit blok', value: 5 }])
-
 const kpiStore = useKpiStore()
 const user_type = ref(1)
-
 const items = ref([
   { text: 'Boshqaruvchi', value: 1 },
   { text: 'Bosh buxgalter', value: 2 },
@@ -88,7 +80,6 @@ const items = ref([
 const initializeChart = () => {
   var chartDom = document.getElementById('main')
   var myChart = echarts.init(chartDom)
-
   const scores = props.datasetSource.map(item => item[1]).sort((a, b) => a - b)
   const minScore = scores[0]
   const maxScore = scores[scores.length - 1]
@@ -113,7 +104,6 @@ const initializeChart = () => {
         },
       },
     ],
-
     xAxis: {
       type: 'category',
       axisLabel: {
@@ -121,11 +111,15 @@ const initializeChart = () => {
         rotate: 30,
         margin: 6,
         fontSize: 14,
+        formatter: function (value) {
+          if (value.length > 9) {
+            return value.length > 15 ? value.slice(0, 12) + '..' : value
+          }
+          return value
+        },
       },
     },
-    yAxis: {
-      // max: 120
-    },
+    yAxis: {},
     grid: {
       left: '3%',
       right: '4%',
@@ -154,7 +148,6 @@ const initializeChart = () => {
       itemStyle: {
         color: function (params) {
           const score = params.value[1]
-
           return getColor(score)
         },
         fontSize: 16,

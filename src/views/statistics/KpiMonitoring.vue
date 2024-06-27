@@ -16,42 +16,42 @@
 
         </VCol>
 
-        <VCol cols="6" class="py-1">
-          <div v-if="allBranches != null && allBranches.length > 0">
+        <VCol cols="6" class="py-1" v-if="allBranches != null && allBranches.length > 0" i>
+          <div>
             <VAutocomplete @update:model-value="getBlocksByBranch" v-model="statistic.branchId" return-object
               label="Filial" item-title="branch_name" clearable item-value="id" :items="allBranches" />
           </div>
 
         </VCol>
-        <VCol cols="6" class="py-1">
-          <div v-if="blocks != null && blocks.length > 0">
+        <VCol cols="6" class="py-1" v-if="blocks != null && blocks.length > 0">
+          <div>
             <VAutocomplete @update:model-value="getDepartmentByBlock" v-model="statistic.blockId" return-object
               item-title="block_name" clearable item-value="id" :items="blocks" label="Blok" />
           </div>
         </VCol>
-        <VCol cols="6" class="py-1">
-          <div v-if="departments != null && departments.length > 0">
+        <VCol cols="6" class="py-1" v-if="departments != null && departments.length > 0">
+          <div>
             <VAutocomplete @update:model-value="getManagmentByDepartment" v-model="statistic.departmentId"
               label="Departament" return-object item-value="id" :items="departments" item-title="department_name"
               clearable />
           </div>
         </VCol>
 
-        <VCol cols="6" class="py-1">
-          <div v-if="management != null && management.length > 0">
+        <VCol cols="6" class="py-1" v-if="management != null && management.length > 0">
+          <div>
             <VAutocomplete @update:model-value="getDivisionsByManagment" v-model="statistic.managementId"
               label="Boshqarma" return-object item-value="id" :items="management" item-title="management_name"
               clearable />
           </div>
         </VCol>
-        <VCol cols="6" class="py-1">
-          <div v-if="divisions != null && divisions.length > 0">
+        <VCol cols="6" class="py-1" v-if="divisions != null && divisions.length > 0">
+          <div>
             <VAutocomplete @update:model-value="getEmployeeList" v-model="statistic.divisionId" label="Bo'lim"
               return-object item-value="id" :items="divisions" item-title="division_name" clearable />
           </div>
         </VCol>
-        <VCol cols="6" class="py-1 text-left">
-          <div v-if="empList != null && empList.length > 0">
+        <VCol cols="6" class="py-1 text-left" v-if="empList != null && empList.length > 0">
+          <div>
             <VAutocomplete @update:model-value="empIdChange" v-model="empId" label="Ishchilar ro'yhati" :items="empList"
               item-title="full_name" item-value="id" clearable />
           </div>
@@ -101,7 +101,6 @@ const {
   empStatistic,
   departments,
   management,
-  allData,
   divisions
 } = storeToRefs(statistics)
 
@@ -117,6 +116,8 @@ const statistic = ref({
 })
 
 const empId = ref(null)
+
+
 console.log(empStatistic.value);
 
 const lineChart = () => {
@@ -128,15 +129,11 @@ const lineChart = () => {
   const branchs = empStatistic.value.branch?.map(item => item.average_kpi)
   const branchValue = branchs?.map(item => Math.round(item))
 
-  console.log(empStsValue);
-
   let filledData = []
 
   empStsValue.value.forEach(kpi => {
     filledData.push({ average_kpi: kpi });
   })
-
-  console.log(filledData);
 
   const kpiValues = filledData.map(item => item.average_kpi)
 
@@ -147,6 +144,7 @@ const lineChart = () => {
   const maxKPI = Math.max(...kpiValues)
 
   const getColor = value => {
+    getBlocksByBranch
     if (minKPI == maxKPI) {
       return 'rgb(0, 255, 0)'
     }
@@ -275,11 +273,13 @@ const getAllBrnachByRegion = async (newValue) => {
     statistic.value.divisionId = null
     empList.value = []
     empId.value = null
+    empStatistic.value = []
+
     return
   }
   await getBranches(newValue?.id)
 
-  statistic.value.branchId = null;
+  statistic.value.branchId = null; getBlocksByBranch
   statistic.value.blockId = null;
   statistic.value.departmentId = null;
   statistic.value.managementId = null;
@@ -287,13 +287,9 @@ const getAllBrnachByRegion = async (newValue) => {
   empId.value = null;
 
 }
-console.log(statistic.value.branchId);
 
 const getBlocksByBranch = async (newValue) => {
-  console.log('block', newValue);
   if (!newValue) {
-
-    console.log('block', newValue);
     blocks.value = []
     statistic.value.blockId = null
     departments.value = []
@@ -304,33 +300,35 @@ const getBlocksByBranch = async (newValue) => {
     statistic.value.divisionId = null
     empList.value = []
     empId.value = null
+    empStatistic.value = []
+
     return
   }
   await getAllDataByDepartments(newValue?.id)
   await getAllDataByBlocks(newValue?.id)
-  getEmployeeList()
+  await getEmployeeList()
   statistic.value.blockId = null;
   statistic.value.departmentId = null;
   statistic.value.managementId = null;
   statistic.value.divisionId = null;
   empId.value = null;
 
+
 }
 
 const getDepartmentByBlock = async (newValue) => {
   if (!newValue) {
-    departments.value = []
-    statistic.value.departmentId = null
-    management.value = []
-    statistic.value.managementId = null
-    divisions.value = []
-    statistic.value.divisionId = null
-    // empList.value = []
-    // empId.value = null
+    await getBlocksByBranch(statistic.value.branchId)
+    await getEmployeeList()
+    empStatistic.value = []
+
+    statistic.value.departmentId = null;
+    statistic.value.managementId = null;
+    statistic.value.divisionId = null;
     return
   }
   await getDepartmentByBlocks(newValue?.id)
-  getEmployeeList()
+  await getEmployeeList()
   statistic.value.departmentId = null;
   statistic.value.managementId = null;
   statistic.value.divisionId = null;
@@ -339,16 +337,22 @@ const getDepartmentByBlock = async (newValue) => {
 
 const getManagmentByDepartment = async (newValue) => {
   if (!newValue) {
-    management.value = []
-    statistic.value.managementId = null
-    divisions.value = []
-    statistic.value.divisionId = null
+
+    await getDepartmentByBlock(statistic.value.blockId)
+    await getEmployeeList()
+
+    statistic.value.managementId = null;
+    statistic.value.divisionId = null;
+    // management.value = []
+    // statistic.value.managementId = null
+    // divisions.value = []
+    // statistic.value.divisionId = null
     // empList.value = []
     // empId.value = null
     return
   }
   await getManagmentByDepartments(newValue?.id)
-  getEmployeeList()
+  await getEmployeeList()
   statistic.value.managementId = null;
   statistic.value.divisionId = null;
   empId.value = null;
@@ -357,14 +361,19 @@ const getManagmentByDepartment = async (newValue) => {
 
 const getDivisionsByManagment = async (newValue) => {
   if (!newValue) {
-    divisions.value = []
-    statistic.value.divisionId = null
+    await getManagmentByDepartment(statistic.value.departmentId)
+    await getEmployeeList()
+
+    statistic.value.divisionId = null;
+
+    // divisions.value = []
+    // statistic.value.divisionId = null
     // empList.value = []
     // empId.value = null
     return
   }
   await getDivisionsByManagments(newValue?.id)
-  getEmployeeList()
+  await getEmployeeList()
   statistic.value.divisionId = null;
   empId.value = null;
 
@@ -386,6 +395,10 @@ const getEmployeeList = async () => {
 
 
 const empIdChange = async (empId) => {
+  if (!empId) {
+    await getAllDataByDepartments(statistic.value.branchId)
+    await getAllDataByBlocks(statistic.value.branchId)
+  }
   await getEmpStatistics(empId)
   lineChart()
 }
