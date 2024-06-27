@@ -1,5 +1,5 @@
 <template>
-  <VCard class="pa-10 border rounded-lg" >
+  <VCard class="pa-10 border rounded-lg">
     <div class="w-100">
       <VForm @submit.prevent class="d-flex justify">
         <div class="w-50">
@@ -13,15 +13,12 @@
                   Ko'rsatkich biriktirish
                 </VBtn>
               </template>
-
               <VCard prepend-icon="mdi-map-marker"
                 text="Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running."
                 title="Use Google's location service?">
                 <template v-slot:actions>
                   <VSpacer></VSpacer>
-
                   <VBtn @click="dialog = false"> Disagree </VBtn>
-
                   <VBtn @click="dialog = false"> Agree </VBtn>
                 </template>
               </VCard>
@@ -50,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 const search = ref('')
 

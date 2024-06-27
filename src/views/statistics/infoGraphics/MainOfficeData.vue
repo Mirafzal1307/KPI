@@ -19,8 +19,15 @@
     <template #title>
       Bosh ofis bo'yicha KPI ko'rsatkichlari boshqaruvchilar KPI ko'rsatkichlar (foizda)
     </template>
-    <VSheet v-show="dataParams.type === 1" id="main" height="300" />
-
+    <VContainer>
+      <VRow>
+        <VCol cols="12" md="12">
+          <VCard v-show="dataParams.type === 1" class="border">
+            <VSheet id="main" height="350" />
+          </VCard>
+        </VCol>
+      </VRow>
+    </VContainer>
     <template v-if="dataParams.type === 2">
       <VContainer>
         <VRow>
@@ -57,13 +64,12 @@
   </VCard>
 </template>
 
-
-
 <script setup>
 import { fetchPeriodList, fetchStatistics } from '@/services/main.office.service';
 import { useKpiStore } from '@/store/kpi';
 import * as echarts from 'echarts';
 import { nextTick, onMounted, ref, watch } from 'vue';
+import { VContainer, VRow } from 'vuetify/lib/components/index.mjs';
 
 const kpiStore = useKpiStore();
 const { departmentChart } = storeToRefs(kpiStore);
@@ -82,9 +88,9 @@ const getHeight = (arr) => {
   if (!arr.kpi) return 300;
   const itemCount = arr.kpi.length;
   if (itemCount >= 10) {
-    return 500; // Set a larger height if there are 10 or more items
+    return 500;
   } else if (itemCount >= 8) {
-    return 350; // Adjust heights based on your specific requirements
+    return 350;
   } else if (itemCount >= 5) {
     return 300; // Another example adjustment for mid-range item counts
   } else if (itemCount >= 4) {
@@ -190,25 +196,30 @@ const initializeCharts = async () => {
 
       const getColor = score => {
         const ratio = (score - minScore) / (maxScore - minScore);
-        const green = Math.round((1 - ratio) * 255);
-        const red = Math.round(ratio * 255);
-
+        let green = Math.round((1 - ratio) * 255);
+        let red = Math.round(ratio * 255);
+        if (score > 50) {
+          red = 216;
+        }
         return `rgb(${green}, ${red}, 0)`;
       };
+
       const option = {
         dataset: {
           dimensions: ['name', 'kpi', 'id'],
           source: head.kpi,
         },
         yAxis: {
-          show: false,
+          show: true,
           type: 'category',
-          axisLabel: { interval: 0 },
+          axisLabel: {
+            interval: 0,
+            fontSize: 15,
+          },
         },
         xAxis: {
           type: 'value',
           max: 100,
-
         },
         series: {
           label: {
@@ -216,9 +227,9 @@ const initializeCharts = async () => {
             fontSize: 15,
             fontWeight: 'bold',
             barGap: 50,
-            position: 'insideleft',
+            position: 'right',
             formatter(value) {
-              return `${value.value.name} ${value.value.kpi} %`;
+              return ` ${value.value.kpi} %`;
             },
           },
           type: 'bar',
@@ -230,10 +241,8 @@ const initializeCharts = async () => {
               const score = params.value.kpi;
               return getColor(score);
             },
-
           },
         },
-
 
         tooltip: {
           show: true,
@@ -243,18 +252,16 @@ const initializeCharts = async () => {
           },
         },
         grid: {
-          left: '3%',
+          left: '39%',
           right: '4%',
           bottom: '12%',
           containLabel: false,
-
         },
         legend: {
           data: ['Data'],
         },
       };
       myChart.setOption(option);
-
       myChart.on('click', function (params) {
         currentDepartment.value = params?.data?.name;
         console.log(params);
@@ -262,7 +269,6 @@ const initializeCharts = async () => {
       });
     });
   }
-
   else {
     const chartDom = document.getElementById('main');
     if (!chartDom) return;
@@ -277,8 +283,10 @@ const initializeCharts = async () => {
     const getColor = score => {
       const ratio = (score - minScore) / (maxScore - minScore);
       const green = Math.round((1 - ratio) * 255);
-      const red = Math.round(ratio * 255);
-
+      let red = Math.round(ratio * 255);
+      if (score > 50) {
+        red = 216;
+      }
       return `rgb(${green}, ${red}, 0)`;
     };
 
@@ -289,13 +297,17 @@ const initializeCharts = async () => {
       },
       yAxis: {
         type: 'category',
-        axisLabel: { interval: 0 },
+        axisLabel: {
+          interval: 0, fontSize: 15, fontWeight: 'bold'
+        },
       },
       xAxis: {
         type: 'value',
         max: 100,
       },
       series: {
+        barWidth: 22,
+        interval: 10,
         label: {
           show: true,
           fontSize: 14,
@@ -321,8 +333,8 @@ const initializeCharts = async () => {
         },
       },
       grid: {
-        left: '3%',
-        right: '4%',
+        left: '10%',
+        right: '5%',
         bottom: '0%',
         containLabel: true,
       },
@@ -467,8 +479,6 @@ function colorify(kpiResult) {
 <style scoped>
 .text-center {
   font-size: 18px;
-
-  /* Adjust font size as needed */
   text-align: center;
 }
 
@@ -496,7 +506,6 @@ function colorify(kpiResult) {
 .align-center {
   align-items: center;
 
-  /* Center items vertically */
 }
 
 </style>

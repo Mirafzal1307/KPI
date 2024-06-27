@@ -85,23 +85,11 @@ const items = ref([
   { text: 'Kredit blok', value: 5 },
 ])
 
-const getChangedData = async () => {
-  try {
-    kpiStore.currentUserType = user_type.value
-    await kpiStore.fetchKpiByRegion({ user_type: user_type.value, period: kpiStore.currentPeriod })
-    initializeChart()
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 const initializeChart = () => {
   var chartDom = document.getElementById('main')
   var myChart = echarts.init(chartDom)
 
   const scores = props.datasetSource.map(item => item[1]).sort((a, b) => a - b)
-  console.log(props.datasetSource);
-
   const minScore = scores[0]
   const maxScore = scores[scores.length - 1]
 
@@ -109,7 +97,6 @@ const initializeChart = () => {
     const ratio = (score - minScore) / (maxScore - minScore)
     const green = Math.round((1 - ratio) * 255)
     const red = Math.round(ratio * 255)
-
     return `rgb(${green}, ${red}, 0)`
   }
 
@@ -135,7 +122,6 @@ const initializeChart = () => {
         margin: 6,
         fontSize: 14,
       },
-
     },
     yAxis: {
       // max: 120
@@ -152,7 +138,6 @@ const initializeChart = () => {
         type: 'shadow',
       },
     },
-
     series: {
       type: 'bar',
       barWidth: 30,
