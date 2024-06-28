@@ -39,9 +39,57 @@
 
       <div>
         <VCard class="border d-flex justify-center align-center mb-6 py-5 px-3 ">
-          <VDataTable :headers="headers" :items="personalData?.kpi" class="p-10 rounded-lg" >
-            
-          <template #bottom ></template>
+          <VDataTable class="p-10 rounded-lg">
+            <thead>
+              <tr>
+                <th class="text-left">№</th>
+                <th class="text-left">Ko'rsatkich turi</th>
+                <th class="text-left">Ko'rsatkich nomi</th>
+                <th class="text-left">Reja</th>
+                <th class="text-left">Fakt</th>
+                <th class="text-left">Reja bajarilishi</th>
+                <th class="text-left">Samaradorlik bajarilishi</th>
+                <th class="text-left">Korsatkich ulushi</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in personalData.kpi" :key="item.id">
+                <td>
+                  {{ index + 1 }}</td>
+                <td>
+                  {{ item.category }}
+                </td>
+                <td>
+                  {{ item.source }}
+                </td>
+                <td>
+                  {{ formatNumberWithSpaces(item.plan) }}
+                </td>
+                <td>
+                  {{ formatNumberWithSpaces(item.fact) }}
+                </td>
+                <td>{{ Math.round(item.done_percent * 100) }}%</td>
+                <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
+                <td>{{ Math.round(item.weight * 100) }}%</td>
+
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td></td>
+                <td class=" font-weight-black text-h5">Umumiy KPI</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+                <td class=" font-weight-bold text-red-darken-4 text-h5">{{ isNaN(getEmployeeAverageKpi) ? 0 :
+                  Math.round(getEmployeeAverageKpi * 100) }}%</td>
+              </tr>
+            </tfoot>
+            <template #bottom></template>
           </VDataTable>
         </VCard>
       </div>
@@ -137,19 +185,23 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import { VDataTable, VTable } from 'vuetify/lib/components/index.mjs'
 
-const headers = [
-  {
-    title: 'Korsatkich turi',
-    align: 'start',
-    sortable: false,
-    key: 'category',
-  },
-  { title: 'KPI - asosiy koʻrsatkichlar (bank uchun muhum va yuqori ahamiyatga ega)', key: 'source', align: 'end' },
-  { title: 'Reja', key: 'plan', align: 'end' },
-  { title: 'Fakt', key: 'fact', align: 'end' },
-  { title: 'Reja bajarilishi', key: 'done_percent', align: 'end' },
-  { title: 'Korsatkich ulushi', key: 'kpi_percent', align: 'end' },
-]
+const getEmployeeAverageKpi = computed(() => {
+  if (!personalData.value?.kpi?.length) return
+
+  return personalData.value?.kpi[0].average_kpi
+})
+
+
+
+function formatNumberWithSpaces(number) {
+  const [integerPart, decimalPart] = number.toFixed(2).toString().split('.')
+  const formattedIntegerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  if (!decimalPart) return formattedIntegerPart
+  const formattedDecimalPart = decimalPart.replace(/(\d{3})(?=\d)/g, '$1 ')
+
+  return `${formattedIntegerPart}.${formattedDecimalPart}`
+}
+
 
 const emit = defineEmits(['indicator'])
 const useEmployee = useEmployeeStore()
