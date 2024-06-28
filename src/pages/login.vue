@@ -13,6 +13,9 @@
       </VCardItem>
 
       <VCardText class="w-100">
+        <h2 class="mb-3"  >MKBANK KPI tizimiga xush kelibsiz!</h2>
+        <p class="pb-5" >Tizimga kirish uchun foydalanuvchi logini va parolini kiriting</p>
+
         <VForm @submit.prevent="login()">
           <VRow>
             <!-- email -->
@@ -29,7 +32,7 @@
 
               <!-- login button -->
               <VBtn class="mt-5" block :type="'submit'">
-                Login
+                Kirish 
               </VBtn>
             </VCol>
           </VRow>

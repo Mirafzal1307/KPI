@@ -28,6 +28,7 @@
             <h4 class="text-h5">
               Jami individual KPI filial natijasidan keyin: <span style="color: red;">
 
+
                 {{
                   isNaN(personalData?.average_kpi) ? 0 : formatNumberRoundDown(personalData?.average_kpi) }} %</span>
 
@@ -36,6 +37,14 @@
         </VCard>
       </div>
 
+      <div>
+        <VCard class="border d-flex justify-center align-center mb-6 py-5 px-3 ">
+          <VDataTable :headers="headers" :items="personalData?.kpi" class="p-10 rounded-lg" >
+            
+          <template #bottom ></template>
+          </VDataTable>
+        </VCard>
+      </div>
       <div>
         <VCard class="border d-flex justify-center align-center">
           <div ref="chart" class="d-flex justify-center align-center" :style="{ width: '100%', height: '380px' }" />
@@ -126,6 +135,21 @@ import * as echarts from 'echarts'
 import debounce from 'lodash/debounce'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
+import { VDataTable, VTable } from 'vuetify/lib/components/index.mjs'
+
+const headers = [
+  {
+    title: 'Korsatkich turi',
+    align: 'start',
+    sortable: false,
+    key: 'category',
+  },
+  { title: 'KPI - asosiy koʻrsatkichlar (bank uchun muhum va yuqori ahamiyatga ega)', key: 'source', align: 'end' },
+  { title: 'Reja', key: 'plan', align: 'end' },
+  { title: 'Fakt', key: 'fact', align: 'end' },
+  { title: 'Reja bajarilishi', key: 'done_percent', align: 'end' },
+  { title: 'Korsatkich ulushi', key: 'kpi_percent', align: 'end' },
+]
 
 const emit = defineEmits(['indicator'])
 const useEmployee = useEmployeeStore()
