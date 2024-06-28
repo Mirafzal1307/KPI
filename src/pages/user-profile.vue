@@ -49,7 +49,6 @@
                 <th class="text-left">Fakt</th>
                 <th class="text-left">Reja bajarilishi</th>
                 <th class="text-left">Samaradorlik bajarilishi</th>
-                <th class="text-left">Korsatkich ulushi</th>
 
               </tr>
             </thead>
@@ -71,7 +70,6 @@
                 </td>
                 <td>{{ Math.round(item.done_percent * 100) }}%</td>
                 <td>{{ Math.round(item.kpi_percent * 100) }}%</td>
-                <td>{{ Math.round(item.weight * 100) }}%</td>
 
               </tr>
             </tbody>
@@ -79,7 +77,6 @@
               <tr>
                 <td></td>
                 <td class=" font-weight-black text-h5">Umumiy KPI</td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
